@@ -3,24 +3,12 @@ package com.betit.queries;
 import com.betit.entities.BQ;
 import com.betit.entities.Group;
 
-public class QueryManager implements QueryManagerInterface {
+public interface QueryManager {
 
-	@Override
-	public Group getGroup() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public BQ getBQ();
 
-	@Override
-	public BQ getBQ() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public Group getGroup();
 
-	@Override
-	public String getString(final String s) {
-		// TODO Auto-generated method stub
-		return s;
-	}
+	public String getString(String s);
 
 }

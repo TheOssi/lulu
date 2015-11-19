@@ -3,8 +3,8 @@ package com.betit.kai.tests;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import com.betit.queries.DatabaseQueryManager;
 import com.betit.queries.QueryManager;
-import com.betit.queries.QueryManagerInterface;
 
 public class KaiTests {
 
@@ -13,7 +13,7 @@ public class KaiTests {
 		final String p1 = "get";
 		final String p2 = "String";
 
-		final QueryManagerInterface bqi = new QueryManager();
+		final QueryManager bqi = new DatabaseQueryManager();
 
 		// get Methode mit Name der Klasse und Parameter Typen, damit überladene
 		// Methoden erkannt werden
