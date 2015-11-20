@@ -8,6 +8,7 @@ public class SQLFactory {
 		statement.append(schema);
 		statement.append(".");
 		statement.append(table);
+		statement.append(";");
 		return statement.toString();
 	}
 
