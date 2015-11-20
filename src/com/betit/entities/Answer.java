@@ -11,7 +11,6 @@ public class Answer {
 	}
 
 	public Answer(final Long answerID, final Long bqID, final String answer) {
-		super();
 		this.answerID = answerID;
 		this.bqID = bqID;
 		this.answer = answer;
