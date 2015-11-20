@@ -3,7 +3,12 @@ package com.betit.queries;
 public class SQLFactory {
 
 	public static String buildSimpleSelectStatement(final String schema, final String table) {
-		return "SELECT * FROM " + schema + "." + table;
+		final StringBuilder statement = new StringBuilder();
+		statement.append("SELECT * FROM ");
+		statement.append(schema);
+		statement.append(".");
+		statement.append(table);
+		return statement.toString();
 	}
 
 	/**
