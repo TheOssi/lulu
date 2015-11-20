@@ -7,17 +7,19 @@ public class User {
 	private Long userID;
 	private final String phoneNrHash;
 	private final String username;
-	private final String userHash;
 	private final Date accessionDate;
 	private String profilePictureURI;
 	private final int globaleScore;
 
-	public User(final String phoneNrHash, final String username, final String userHash, final Date accessionDate, final int globaleScore) {
+	public User(final String phoneNrHash, final String username, final Date accessionDate, final int globaleScore) {
 		this.phoneNrHash = phoneNrHash;
 		this.username = username;
-		this.userHash = userHash;
 		this.accessionDate = accessionDate;
 		this.globaleScore = globaleScore;
+	}
+
+	public User(final String phoneNrHash, final String username, final int globaleScore) {
+		this(phoneNrHash, username, null, globaleScore);
 	}
 
 	public Long getUserID() {
@@ -30,10 +32,6 @@ public class User {
 
 	public String getUsername() {
 		return username;
-	}
-
-	public String getUserHash() {
-		return userHash;
 	}
 
 	public Date getAccessionDate() {

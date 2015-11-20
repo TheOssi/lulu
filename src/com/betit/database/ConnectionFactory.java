@@ -9,23 +9,27 @@ public class ConnectionFactory {
 	private final static String PARAMETER_USER = "user";
 	private final static String PARAMETER_PASSWORD = "password";
 	public static final String IP_OF_DATABASE = "localhost";
-
 	private static ConnectionFactory INSTANCE;
+
 	private Connection readerConnection;
 	private Connection writerConnection;
 	private Connection deleteConnection;
 
-	private ConnectionFactory() throws ClassNotFoundException {
-		Class.forName("org.mariadb.jdbc.Driver");
+	private ConnectionFactory() {
+		try {
+			Class.forName("org.mariadb.jdbc.Driver");
+		} catch (final ClassNotFoundException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 
 	/**
 	 * This Instance handle all the Connections to the Database
 	 * 
 	 * @return the instance of the ConnectionFactory
-	 * @throws ClassNotFoundException
 	 */
-	public static ConnectionFactory getInstance() throws ClassNotFoundException {
+	public static synchronized ConnectionFactory getInstance() {
 		if (INSTANCE == null) {
 			INSTANCE = new ConnectionFactory();
 		}
