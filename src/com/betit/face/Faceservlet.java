@@ -1,7 +1,8 @@
-package com.betit.backend;
+package com.betit.face;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,35 +12,57 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.betit.queries.DatabaseQueryManager;
+import com.betit.queries.QueryManager;
+
 /**
  * Servlet implementation class Faceservlet
  */
 @WebServlet("/Faceservlet/*")
-public class Faceservlet extends HttpServlet {
+public class Faceservlet extends HttpServlet{
 	private static final long serialVersionUID = 1L;
        
 	
 	 @SuppressWarnings("unused")
 	private class GETRequest {
 		    // Accommodate two requests, one for all resources, another for a specific resource
-		    private Pattern regExAllPattern = Pattern.compile("/resource");
-		    private Pattern regExIdPattern = Pattern.compile("/resource/([0-9]*)");
+		    
 		    private Pattern regExBetPattern = Pattern.compile("/BET/([0-9]*)|/BET");
+		    private Pattern regExBetsPattern = Pattern.compile("/BETS");
+		   
+		    private Pattern regExGroupPattern = Pattern.compile("/GROUP/([0-9]*)|/GROUP");
+		    private Pattern regExGroupsPattern = Pattern.compile("/GROUPS");
+		    
+		    private Pattern regExUserPattern = Pattern.compile("/USER/([0-9]*)|/USER");
+		    private Pattern regExUsersPattern = Pattern.compile("/USERS");
+		    
+		    private Pattern regExSessionPattern = Pattern.compile("/SESSION");
+		    
 		    
 		    private Integer id;
-		 
-		    public GETRequest(String pathInfo) throws ServletException {
-		      // regex parse pathInfo
+		    
+		  
+		    public GETRequest(String pathInfo, Map<String,String[]> parameters) throws ServletException {
+		      
 		      Matcher matcher;
 		 
-		      // Check for ID case first, since the All pattern would also match
+		  
+		      matcher = regExSessionPattern.matcher(pathInfo);
+		      if (matcher.find()) {
+		    	  String hash[];
+		    	  hash = parameters.get("HASH");
+		    	  SessionManager.getInstance().createSession(hash[0]);
+		      }
+		      
+		      
 		      matcher = regExBetPattern.matcher(pathInfo);
 		      if (matcher.find()) {
 		        id = Integer.parseInt(matcher.group(1));
-		        return;
+		        DatabaseQueryManager qm = new DatabaseQueryManager();
+		        
 		      }
 		 
-		      matcher = regExAllPattern.matcher(pathInfo);
+		      matcher = regExBetsPattern.matcher(pathInfo);
 		      if (matcher.find()) return;
 		      
 		      throw new ServletException("Invalid URI");
@@ -69,12 +92,13 @@ public class Faceservlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Params").append(request.getParameter("BET") + "|" + request.getParameter("ID"));
 		 PrintWriter out = response.getWriter();
-		 
+		 QueryManager qm = new DatabaseQueryManager();
+		
 		    out.println("GET request handling");
 		    out.println(request.getPathInfo());
 		    out.println(request.getParameterMap());
 		    try {
-		      GETRequest resourceValues = new GETRequest(request.getPathInfo());
+		      GETRequest resourceValues = new GETRequest(request.getPathInfo(),request.getParameterMap());
 		      out.println("ID: " + resourceValues.getId());
 		    } catch (ServletException e) {
 		      response.setStatus(400);
