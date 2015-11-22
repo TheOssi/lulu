@@ -3,24 +3,42 @@ package com.betit.database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Date;
+
+import javax.mail.MessagingException;
+
+import com.betit.etc.ErrorHelper;
+import com.betit.etc.SMPTEmailSender;
 
 public class ConnectionFactory {
 	private final static String JDBC_PROTOCOLL = "jdbc:mysql";
 	private final static String PARAMETER_USER = "user";
 	private final static String PARAMETER_PASSWORD = "password";
-	public static final String IP_OF_DATABASE = "localhost";
+	private static final String IP_OF_DATABASE = "localhost";
 	private static ConnectionFactory INSTANCE;
 
 	private Connection readerConnection;
 	private Connection writerConnection;
 	private Connection deleteConnection;
 
+	public static void main(final String[] args) {
+		ConnectionFactory.getInstance();
+	}
+
 	private ConnectionFactory() {
 		try {
 			Class.forName("org.mariadb.jdbc.Driver");
 		} catch (final ClassNotFoundException e) {
+			// TODO send Error to Frontend
 			e.printStackTrace();
-			System.exit(1);
+			ErrorHelper.writeToErrorFile(e);
+			final String exceptionText = ErrorHelper.getExceptionText(e);
+			final String message = "" + new Date(System.currentTimeMillis()).toString() + System.lineSeparator() + exceptionText;
+			try {
+				SMPTEmailSender.sendMail(new String[] { "kai.jmueller@gmail.com" }, "Error in Backend", message);
+			} catch (final MessagingException e1) {
+				ErrorHelper.writeToErrorFile(e1);
+			}
 		}
 	}
 
@@ -80,6 +98,12 @@ public class ConnectionFactory {
 		return deleteConnection;
 	}
 
+	/**
+	 * 
+	 * @param databaseUser
+	 *            the password and the username of a database user
+	 * @return the login URL
+	 */
 	private String buildLoginUR(final DatabaseUser databaseUser) {
 		final String mainPart = JDBC_PROTOCOLL + ":\\" + IP_OF_DATABASE + "/" + Constants.SCHEMA_NAME + "?";
 		final String parameterPart = PARAMETER_USER + "=" + databaseUser.getUsername() + "&" + PARAMETER_PASSWORD + "=" + databaseUser.getPassword();
