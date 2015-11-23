@@ -15,8 +15,13 @@ public class JSONBuilder {
 //		public JSONBuilder(){
 //			
 //		}
+		//Generate fom Single Entity
 		public static void createJSON(Object o){
 			String json = gson.toJson(o);
+			
+		}
+		
+		public void createJSON(Object[]o){
 			
 		}
 }

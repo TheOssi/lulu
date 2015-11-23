@@ -1,16 +1,21 @@
 package com.betit.face;
 
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map.Entry;
+
+import com.betit.queries.DatabaseQueryManager;
+import com.betit.queries.QueryManager;
 
 public class SessionManager implements Runnable {
 
 	private static SessionManager instance;
 	private HashMap<String, Long> sessionMap;
-
+	private QueryManager queryManager ;
 	private SessionManager() {
 		final Thread t1 = new Thread(new SessionManager());
+		queryManager = new DatabaseQueryManager();
 		t1.start();
 	}
 
@@ -22,17 +27,22 @@ public class SessionManager implements Runnable {
 	}
 
 	public void createSession(final String hash) {
-		if (checkHash(hash)) {
-			sessionMap.put(createSessionHash(), Calendar.getInstance().getTimeInMillis() + 600000);
-		} else {
-
+		try {
+			if (checkHash(hash)) {
+				sessionMap.put(createSessionHash(), Calendar.getInstance().getTimeInMillis() + 600000);
+			} else {
+				
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
-	private boolean checkHash(final String hash) {
-		// QueryManager queryManager = new DatabaseQueryManager();
-		// return queryManager.checkPhoneNumberHash(hash);
-		return true;
+	private boolean checkHash(final String hash) throws SQLException {
+		 
+		return queryManager.checkPhoneNumberHash(hash);
+
 	}
 
 	private String createSessionHash() {
@@ -54,7 +64,12 @@ public class SessionManager implements Runnable {
 				}
 
 			} else {
-				// evtl Standbymodus
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 	}
