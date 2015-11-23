@@ -1,28 +1,33 @@
 package com.betit.face;
 
-
-import com.betit.entities.Answer;
 import com.google.gson.Gson;
-
-
-
+import com.google.gson.JsonObject;
 
 public class JSONBuilder {
-		static Gson gson = new Gson();
-		public static void main(String[] args) {
-			Answer aw = new Answer(new Long(23245), new Long(23123134),"HI");
-			createJSON(aw);
+	Gson gson = new Gson();
+
+	public JSONBuilder() {
+
+	}
+
+	// Generate from Single Entity
+	public String createJSON(Object o) {
+
+		JsonObject jo = new JsonObject();
+		String json = gson.toJson(o);
+
+		jo.addProperty(o.getClass().getSimpleName(), json);
+		return gson.toJson(jo);
+
+	}
+	//Generate from Collection
+	public String createJSON(Object[] objectArray) {
+		JsonObject jo = new JsonObject();
+		String json;
+		for (Object currentObject : objectArray) {
+			json = gson.toJson(currentObject);
+			jo.addProperty(currentObject.getClass().getSimpleName() + currentObject.hashCode(), json);
 		}
-//		public JSONBuilder(){
-//			
-//		}
-		//Generate fom Single Entity
-		public static void createJSON(Object o){
-		
-			//gson = new Gson();
-		}
-		
-		public void createJSON(Object[]o){
-			
-		}
+		return gson.toJson(jo);
+	}
 }
