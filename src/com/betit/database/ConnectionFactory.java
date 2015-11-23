@@ -10,6 +10,8 @@ import javax.mail.MessagingException;
 import com.betit.etc.ErrorHelper;
 import com.betit.etc.SMPTEmailSender;
 
+//TODO make thread-safe
+
 public class ConnectionFactory {
 	private final static String JDBC_PROTOCOLL = "jdbc:mysql";
 	private final static String PARAMETER_USER = "user";
@@ -31,7 +33,7 @@ public class ConnectionFactory {
 			final String exceptionText = ErrorHelper.getExceptionText(e);
 			final String message = "" + new Date(System.currentTimeMillis()).toString() + System.lineSeparator() + exceptionText;
 			try {
-				SMPTEmailSender.sendMail(new String[] { "kai.jmueller@gmail.com" }, "Error in Backend", message);
+				SMPTEmailSender.sendMail(new String[] { "kai.jmueller@gmail.com" }, e.getMessage(), message);
 			} catch (final MessagingException e1) {
 				ErrorHelper.writeToErrorFile(e1);
 			}
@@ -55,13 +57,19 @@ public class ConnectionFactory {
 	 * @return a connection to the database with the "reader" user
 	 * @throws SQLException
 	 */
-	public synchronized Connection getReaderConnection() throws SQLException {
-		if (readerConnection == null || readerConnection.isClosed()) {
-			readerConnection = DriverManager.getConnection(buildLoginUR(DatabaseUser.READ_USER));
+	public synchronized Connection getReaderConnection() {
+		try {
+			if (readerConnection == null || readerConnection.isClosed()) {
+				readerConnection = DriverManager.getConnection(buildLoginUR(DatabaseUser.READ_USER));
+			}
+			// TODO isValid
+			// TODO timeout
+			return readerConnection;
+		} catch (final SQLException e) {
+			// TODO handle
+			return null;
 		}
-		// TODO isValid
-		// TODO timeout
-		return readerConnection;
+
 	}
 
 	/**
@@ -69,14 +77,19 @@ public class ConnectionFactory {
 	 * @return a connection to the database with the "writer" user
 	 * @throws SQLException
 	 */
-	public synchronized Connection getWriterConnection() throws SQLException {
-		if (writerConnection == null || writerConnection.isClosed()) {
-			writerConnection = DriverManager.getConnection(buildLoginUR(DatabaseUser.WRITE_USER));
+	public synchronized Connection getWriterConnection() {
+		try {
+			if (writerConnection == null || writerConnection.isClosed()) {
+				writerConnection = DriverManager.getConnection(buildLoginUR(DatabaseUser.WRITE_USER));
+			}
+			// TODO isValid
+			// TODO commit
+			// TODO timeout
+			return writerConnection;
+		} catch (final SQLException e) {
+			// TODO handle
+			return null;
 		}
-		// TODO isValid
-		// TODO commit
-		// TODO timeout
-		return writerConnection;
 	}
 
 	/**
@@ -84,14 +97,19 @@ public class ConnectionFactory {
 	 * @return a connection to the database with the "delete" user
 	 * @throws SQLException
 	 */
-	public synchronized Connection getDeleteConnection() throws SQLException {
-		if (deleteConnection == null || deleteConnection.isClosed()) {
-			deleteConnection = DriverManager.getConnection(buildLoginUR(DatabaseUser.DELETE_USER));
+	public synchronized Connection getDeleteConnection() {
+		try {
+			if (deleteConnection == null || deleteConnection.isClosed()) {
+				deleteConnection = DriverManager.getConnection(buildLoginUR(DatabaseUser.DELETE_USER));
+			}
+			// TODO isValid
+			// TODO commit
+			// TODO timeout
+			return deleteConnection;
+		} catch (final SQLException e) {
+			// TODO handle
+			return null;
 		}
-		// TODO isValid
-		// TODO commit
-		// TODO timeout
-		return deleteConnection;
 	}
 
 	/**
