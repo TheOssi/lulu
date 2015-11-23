@@ -3,19 +3,15 @@ package com.betit.database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Date;
 
-import javax.mail.MessagingException;
-
-import com.betit.etc.ErrorHelper;
-import com.betit.etc.SMPTEmailSender;
-import com.betit.etc.Util;
+import com.betit.etc.ErrorHandler;
 
 public class ConnectionFactory {
 	private final static String JDBC_PROTOCOLL = "jdbc:mysql";
 	private final static String PARAMETER_USER = "user";
 	private final static String PARAMETER_PASSWORD = "password";
 	private static final String IP_OF_DATABASE = "localhost";
+	private static final ErrorHandler ERROR_HANDLER = ErrorHandler.getInstance();
 	private static ConnectionFactory INSTANCE;
 
 	private Connection readerConnection;
@@ -26,7 +22,7 @@ public class ConnectionFactory {
 		try {
 			Class.forName("org.mariadb.jdbc.Driver");
 		} catch (final ClassNotFoundException e) {
-			handleError(e);
+			ERROR_HANDLER.handleError(e);
 		}
 	}
 
@@ -55,7 +51,7 @@ public class ConnectionFactory {
 			// TODO timeout
 			return readerConnection;
 		} catch (final SQLException e) {
-			handleError(e);
+			ERROR_HANDLER.handleError(e);
 			return null;
 		}
 	}
@@ -74,7 +70,7 @@ public class ConnectionFactory {
 			// TODO timeout
 			return writerConnection;
 		} catch (final SQLException e) {
-			handleError(e);
+			ERROR_HANDLER.handleError(e);
 			return null;
 		}
 	}
@@ -93,7 +89,7 @@ public class ConnectionFactory {
 			// TODO timeout
 			return deleteConnection;
 		} catch (final SQLException e) {
-			handleError(e);
+			ERROR_HANDLER.handleError(e);
 			return null;
 		}
 	}
@@ -108,18 +104,5 @@ public class ConnectionFactory {
 		final String mainPart = JDBC_PROTOCOLL + "://" + IP_OF_DATABASE + "/" + Constants.SCHEMA_NAME + "?";
 		final String parameterPart = PARAMETER_USER + "=" + databaseUser.getUsername() + "&" + PARAMETER_PASSWORD + "=" + databaseUser.getPassword();
 		return mainPart + parameterPart;
-	}
-
-	private void handleError(final Exception exception) {
-		// TODO send Error to Frontend
-		exception.printStackTrace();
-		ErrorHelper.writeToErrorFile(exception);
-		final String exceptionText = Util.getExceptionText(exception);
-		final String message = "" + new Date(System.currentTimeMillis()).toString() + System.lineSeparator() + exceptionText;
-		try {
-			SMPTEmailSender.sendMail(new String[] { "kai.jmueller@gmail.com" }, exception.getMessage(), message);
-		} catch (final MessagingException e1) {
-			ErrorHelper.writeToErrorFile(e1);
-		}
 	}
 }
