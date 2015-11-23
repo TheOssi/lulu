@@ -1,4 +1,5 @@
 package com.betit.etc;
+
 import java.util.Properties;
 
 import javax.mail.Authenticator;
@@ -16,7 +17,7 @@ public class SMPTEmailSender {
 
 	private static final String SMTP_HOST_NAME = "smtp.gmail.com";
 	private static final String SMTP_AUTH_USER = "kai.jmueller@gmail.com";
-	private static final String SMTP_AUTH_PWD = "epyivrmlcseppkgf";
+	private static final String SMTP_AUTH_PWD = "";
 
 	/**
 	 * This Method sends a simple email over SMTP
