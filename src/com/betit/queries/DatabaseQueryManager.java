@@ -2,6 +2,7 @@ package com.betit.queries;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.betit.database.ConnectionFactory;
@@ -14,7 +15,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public void getBQ(final long id) throws SQLException {
 		final Connection connection = CONNECTION_FACTORY.getReaderConnection();
 		final PreparedStatement statement = connection.prepareStatement(SQLFactory.buildSimpleSelectStatement(Constants.SCHEMA_NAME,
-				Constants.TABLE_BQ));
+				Constants.TABLE_BQS));
 		statement.executeQuery();
 
 	}
@@ -22,10 +23,23 @@ public class DatabaseQueryManager implements QueryManager {
 	public void getBQMetadata(final long id) throws SQLException {
 		final Connection connection = CONNECTION_FACTORY.getReaderConnection();
 		final String[] columns = new String[] { "bqID", "titel", "question" };
-		final String firstPart = SQLFactory.buildSelectStatement(Constants.SCHEMA_NAME, Constants.TABLE_BQ, columns);
+		final String firstPart = SQLFactory.buildSelectStatement(Constants.SCHEMA_NAME, Constants.TABLE_BQS, columns);
 		final PreparedStatement statement = connection.prepareStatement(firstPart + "bqID = ?;");
 		statement.setLong(0, id);
 		statement.executeQuery();
 	}
 
+	@Override
+	public boolean checkPhoneNumberHash(final String phoneNumberHash) throws SQLException {
+		final Connection connection = CONNECTION_FACTORY.getReaderConnection();
+		final String[] columns = new String[] { "phoneNumberHash" };
+		final String firstPart = SQLFactory.buildSelectStatement(Constants.SCHEMA_NAME, Constants.TABLE_USERS, columns);
+		final PreparedStatement statement = connection.prepareStatement(firstPart + "phoneNumberHash = ?");
+		statement.setString(0, phoneNumberHash);
+		final ResultSet result = statement.executeQuery();
+		if (!result.wasNull()) { // TODO right method
+			return true;
+		}
+		return false;
+	}
 }

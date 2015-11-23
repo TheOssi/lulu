@@ -10,7 +10,7 @@ public class SessionManager implements Runnable {
 	private HashMap<String, Long> sessionMap;
 
 	private SessionManager() {
-		Thread t1 = new Thread(new SessionManager());
+		final Thread t1 = new Thread(new SessionManager());
 		t1.start();
 	}
 
@@ -21,7 +21,7 @@ public class SessionManager implements Runnable {
 		return SessionManager.instance;
 	}
 
-	public void createSession(String hash) {
+	public void createSession(final String hash) {
 		if (checkHash(hash)) {
 			sessionMap.put(createSessionHash(), Calendar.getInstance().getTimeInMillis() + 600000);
 		} else {
@@ -29,7 +29,9 @@ public class SessionManager implements Runnable {
 		}
 	}
 
-	private boolean checkHash(String hash) {
+	private boolean checkHash(final String hash) {
+		// QueryManager queryManager = new DatabaseQueryManager();
+		// return queryManager.checkPhoneNumberHash(hash);
 		return true;
 	}
 
@@ -42,18 +44,17 @@ public class SessionManager implements Runnable {
 	public void run() {
 		while (true) {
 			if (!sessionMap.isEmpty()) {
-				for (Entry<String, Long> entry : sessionMap.entrySet()) {
-					String key = entry.getKey();
-					Long value = entry.getValue();
+				for (final Entry<String, Long> entry : sessionMap.entrySet()) {
+					final String key = entry.getKey();
+					final Long value = entry.getValue();
 					if (value <= Calendar.getInstance().getTimeInMillis()) {
 						sessionMap.remove(key);
 					}
 
 				}
 
-			}
-			else{
-				//evtl Standbymodus
+			} else {
+				// evtl Standbymodus
 			}
 		}
 	}

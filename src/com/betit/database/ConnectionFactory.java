@@ -21,10 +21,6 @@ public class ConnectionFactory {
 	private Connection writerConnection;
 	private Connection deleteConnection;
 
-	public static void main(final String[] args) {
-		ConnectionFactory.getInstance();
-	}
-
 	private ConnectionFactory() {
 		try {
 			Class.forName("org.mariadb.jdbc.Driver");
@@ -59,7 +55,7 @@ public class ConnectionFactory {
 	 * @return a connection to the database with the "reader" user
 	 * @throws SQLException
 	 */
-	public Connection getReaderConnection() throws SQLException {
+	public synchronized Connection getReaderConnection() throws SQLException {
 		if (readerConnection == null || readerConnection.isClosed()) {
 			readerConnection = DriverManager.getConnection(buildLoginUR(DatabaseUser.READ_USER));
 		}
@@ -73,7 +69,7 @@ public class ConnectionFactory {
 	 * @return a connection to the database with the "writer" user
 	 * @throws SQLException
 	 */
-	public Connection getWriterConnection() throws SQLException {
+	public synchronized Connection getWriterConnection() throws SQLException {
 		if (writerConnection == null || writerConnection.isClosed()) {
 			writerConnection = DriverManager.getConnection(buildLoginUR(DatabaseUser.WRITE_USER));
 		}
@@ -88,7 +84,7 @@ public class ConnectionFactory {
 	 * @return a connection to the database with the "delete" user
 	 * @throws SQLException
 	 */
-	public Connection getDeleteConnection() throws SQLException {
+	public synchronized Connection getDeleteConnection() throws SQLException {
 		if (deleteConnection == null || deleteConnection.isClosed()) {
 			deleteConnection = DriverManager.getConnection(buildLoginUR(DatabaseUser.DELETE_USER));
 		}
