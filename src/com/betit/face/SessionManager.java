@@ -36,8 +36,8 @@ public class SessionManager implements Runnable {
 	}
 
 	private String createSessionHash() {
-
-		return null;
+			
+		return Calendar.getInstance().getTimeInMillis() + "a" + Calendar.getInstance().hashCode() ;
 	}
 
 	@Override
