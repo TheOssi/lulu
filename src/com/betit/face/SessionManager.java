@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import com.betit.exception.DriverNotFoundException;
 import com.betit.queries.DatabaseQueryManager;
 import com.betit.queries.QueryManager;
 
@@ -12,11 +13,12 @@ public class SessionManager implements Runnable {
 
 	private static SessionManager instance;
 	private HashMap<String, Long> sessionMap;
-	private QueryManager queryManager ;
+	private final QueryManager queryManager;
+
 	private SessionManager() {
-		final Thread t1 = new Thread(new SessionManager());
+		final Thread checkSessionsThread = new Thread(new SessionManager());
 		queryManager = new DatabaseQueryManager();
-		t1.start();
+		checkSessionsThread.start();
 	}
 
 	public static synchronized SessionManager getInstance() {
@@ -31,23 +33,23 @@ public class SessionManager implements Runnable {
 			if (checkHash(hash)) {
 				sessionMap.put(createSessionHash(), Calendar.getInstance().getTimeInMillis() + 600000);
 			} else {
-				
+
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (final DriverNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 	}
 
-	private boolean checkHash(final String hash) throws SQLException {
-		 
+	private boolean checkHash(final String hash) throws SQLException, DriverNotFoundException {
 		return queryManager.checkPhoneNumberHash(hash);
-
 	}
 
 	private String createSessionHash() {
-			
-		return Calendar.getInstance().getTimeInMillis() + "a" + Calendar.getInstance().hashCode() ;
+		return Calendar.getInstance().getTimeInMillis() + "a" + Calendar.getInstance().hashCode();
 	}
 
 	@Override
@@ -60,14 +62,11 @@ public class SessionManager implements Runnable {
 					if (value <= Calendar.getInstance().getTimeInMillis()) {
 						sessionMap.remove(key);
 					}
-
 				}
-
 			} else {
 				try {
 					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					
+				} catch (final InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
