@@ -30,16 +30,21 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	@Override
-	public boolean checkPhoneNumberHash(final String phoneNumberHash) throws SQLException {
-		final Connection connection = CONNECTION_FACTORY.getReaderConnection();
-		final String[] columns = new String[] { "phoneNumberHash" };
-		final String firstPart = SQLFactory.buildSelectStatement(Constants.SCHEMA_NAME, Constants.TABLE_USERS, columns);
-		final PreparedStatement statement = connection.prepareStatement(firstPart + "phoneNumberHash = ?");
-		statement.setString(0, phoneNumberHash);
-		final ResultSet result = statement.executeQuery();
-		if (!result.wasNull()) { // TODO right method
-			return true;
+	public boolean checkPhoneNumberHash(final String phoneNumberHash) {
+		try {
+			final Connection connection = CONNECTION_FACTORY.getReaderConnection();
+			final String[] columns = new String[] { "phoneNumberHash" };
+			final String firstPart = SQLFactory.buildSelectStatement(Constants.SCHEMA_NAME, Constants.TABLE_USERS, columns);
+			final PreparedStatement statement = connection.prepareStatement(firstPart + "phoneNumberHash = ?");
+			statement.setString(0, phoneNumberHash);
+			final ResultSet result = statement.executeQuery();
+			if (!result.wasNull()) { // TODO right method?
+				return true;
+			}
+			return false;
+		} catch (final SQLException e) {
+			// TODO handle
+			return false;
 		}
-		return false;
 	}
 }

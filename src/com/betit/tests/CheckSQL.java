@@ -1,5 +1,7 @@
 package com.betit.tests;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -13,6 +15,7 @@ import org.junit.Test;
 
 import com.betit.database.ConnectionFactory;
 import com.betit.database.Constants;
+import com.betit.queries.DatabaseQueryManager;
 import com.betit.queries.SQLFactory;
 
 public class CheckSQL {
@@ -42,5 +45,9 @@ public class CheckSQL {
 		statement.setString(1, "ABCDEFG");
 		statement.setString(2, "TestUser");
 		statement.setDate(3, new Date(System.currentTimeMillis()));
+
+		assertThat("The phoneNumerHash wasn't found", new DatabaseQueryManager().checkPhoneNumberHash("ABCDEFG") == true);
+		assertThat("The phoneNumerhHash was found", new DatabaseQueryManager().checkPhoneNumberHash("123456") == false);
+
 	}
 }

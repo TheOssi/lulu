@@ -2,6 +2,7 @@ package com.betit.database;
 
 public enum DatabaseUser {
 
+	// TODO passes alter
 	READ_USER("betAppReader", "marciMarcMarc"),
 	WRITE_USER("betAppWriter", "felliFellFell"),
 	DELETE_USER("betAppDeleter", "lenkiLenkLenk");
