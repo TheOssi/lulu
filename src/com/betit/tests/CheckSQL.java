@@ -41,10 +41,11 @@ public class CheckSQL {
 		final Connection connection = ConnectionFactory.getInstance().getWriterConnection();
 		final String[] columns = new String[] { "phoneNumberHash", "username", "accessionDate" };
 		final String firstPart = SQLFactory.buildInsertStatement(Constants.SCHEMA_NAME, Constants.TABLE_USERS, columns);
-		final PreparedStatement statement = connection.prepareStatement(firstPart + "?,?,?);");
+		final PreparedStatement statement = connection.prepareStatement(firstPart + "?,?,? );");
 		statement.setString(1, "ABCDEFG");
 		statement.setString(2, "TestUser");
 		statement.setDate(3, new Date(System.currentTimeMillis()));
+		statement.executeQuery();
 
 		assertThat("The phoneNumerHash wasn't found", new DatabaseQueryManager().checkPhoneNumberHash("ABCDEFG") == true);
 		assertThat("The phoneNumerhHash was found", new DatabaseQueryManager().checkPhoneNumberHash("123456") == false);
