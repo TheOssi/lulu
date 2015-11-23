@@ -10,7 +10,7 @@ public enum DatabaseUser {
 	private String password;
 	private String username;
 
-	private DatabaseUser(final String password, final String username) {
+	private DatabaseUser(final String username, final String password) {
 		this.password = password;
 		this.username = username;
 	}
