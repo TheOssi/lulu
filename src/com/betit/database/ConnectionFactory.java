@@ -9,8 +9,7 @@ import javax.mail.MessagingException;
 
 import com.betit.etc.ErrorHelper;
 import com.betit.etc.SMPTEmailSender;
-
-//TODO make thread-safe
+import com.betit.etc.Util;
 
 public class ConnectionFactory {
 	private final static String JDBC_PROTOCOLL = "jdbc:mysql";
@@ -27,16 +26,7 @@ public class ConnectionFactory {
 		try {
 			Class.forName("org.mariadb.jdbc.Driver");
 		} catch (final ClassNotFoundException e) {
-			// TODO send Error to Frontend
-			e.printStackTrace();
-			ErrorHelper.writeToErrorFile(e);
-			final String exceptionText = ErrorHelper.getExceptionText(e);
-			final String message = "" + new Date(System.currentTimeMillis()).toString() + System.lineSeparator() + exceptionText;
-			try {
-				SMPTEmailSender.sendMail(new String[] { "kai.jmueller@gmail.com" }, e.getMessage(), message);
-			} catch (final MessagingException e1) {
-				ErrorHelper.writeToErrorFile(e1);
-			}
+			handleError(e);
 		}
 	}
 
@@ -62,14 +52,12 @@ public class ConnectionFactory {
 			if (readerConnection == null || readerConnection.isClosed()) {
 				readerConnection = DriverManager.getConnection(buildLoginUR(DatabaseUser.READ_USER));
 			}
-			// TODO isValid
 			// TODO timeout
 			return readerConnection;
 		} catch (final SQLException e) {
-			// TODO handle
+			handleError(e);
 			return null;
 		}
-
 	}
 
 	/**
@@ -82,12 +70,11 @@ public class ConnectionFactory {
 			if (writerConnection == null || writerConnection.isClosed()) {
 				writerConnection = DriverManager.getConnection(buildLoginUR(DatabaseUser.WRITE_USER));
 			}
-			// TODO isValid
 			// TODO commit
 			// TODO timeout
 			return writerConnection;
 		} catch (final SQLException e) {
-			// TODO handle
+			handleError(e);
 			return null;
 		}
 	}
@@ -102,12 +89,11 @@ public class ConnectionFactory {
 			if (deleteConnection == null || deleteConnection.isClosed()) {
 				deleteConnection = DriverManager.getConnection(buildLoginUR(DatabaseUser.DELETE_USER));
 			}
-			// TODO isValid
 			// TODO commit
 			// TODO timeout
 			return deleteConnection;
 		} catch (final SQLException e) {
-			// TODO handle
+			handleError(e);
 			return null;
 		}
 	}
@@ -119,8 +105,21 @@ public class ConnectionFactory {
 	 * @return the login URL
 	 */
 	private String buildLoginUR(final DatabaseUser databaseUser) {
-		final String mainPart = JDBC_PROTOCOLL + ":\\" + IP_OF_DATABASE + "/" + Constants.SCHEMA_NAME + "?";
+		final String mainPart = JDBC_PROTOCOLL + "://" + IP_OF_DATABASE + "/" + Constants.SCHEMA_NAME + "?";
 		final String parameterPart = PARAMETER_USER + "=" + databaseUser.getUsername() + "&" + PARAMETER_PASSWORD + "=" + databaseUser.getPassword();
 		return mainPart + parameterPart;
+	}
+
+	private void handleError(final Exception exception) {
+		// TODO send Error to Frontend
+		exception.printStackTrace();
+		ErrorHelper.writeToErrorFile(exception);
+		final String exceptionText = Util.getExceptionText(exception);
+		final String message = "" + new Date(System.currentTimeMillis()).toString() + System.lineSeparator() + exceptionText;
+		try {
+			SMPTEmailSender.sendMail(new String[] { "kai.jmueller@gmail.com" }, exception.getMessage(), message);
+		} catch (final MessagingException e1) {
+			ErrorHelper.writeToErrorFile(e1);
+		}
 	}
 }

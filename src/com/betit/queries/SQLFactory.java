@@ -31,7 +31,7 @@ public class SQLFactory {
 			statement.append(column);
 			statement.append(",");
 		}
-		statement.delete(statement.length() - 2, statement.length() - 1);
+		statement.delete(statement.length() - 1, statement.length() + 1);
 		statement.append(" FROM ");
 		statement.append(schema);
 		statement.append(".");
@@ -83,7 +83,7 @@ public class SQLFactory {
 			statement.append(column);
 			statement.append(",");
 		}
-		statement.delete(statement.length() - 2, statement.length() - 1);
+		statement.delete(statement.length() - 1, statement.length() + 1);
 		statement.append(")");
 		statement.append(" VALUES ( ");
 		return statement.toString();
@@ -107,5 +107,9 @@ public class SQLFactory {
 		statement.append(table);
 		statement.append(" WHERE ");
 		return statement.toString();
+	}
+
+	public static void main(final String[] args) {
+		System.out.println(buildInsertStatement("APP", "Question", new String[] { "a1", "a2" }));
 	}
 }
