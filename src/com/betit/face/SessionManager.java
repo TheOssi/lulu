@@ -12,12 +12,12 @@ import com.betit.queries.QueryManager;
 
 public class SessionManager implements Runnable {
 
-	private static SessionManager instance;
+	private static SessionManager instance = new SessionManager();
 	private HashMap<String, Long> sessionMap;
 	private final QueryManager queryManager;
 	private static Thread checkSessionsThread;
 
-	private static final long sessionTime = 600000;
+	private static final long SESSIONTIME = 10 * 60 * 1000; //Min * 60 * 1000
 
 	private SessionManager() {
 		checkSessionsThread = new Thread(instance);
@@ -46,7 +46,7 @@ public class SessionManager implements Runnable {
 			String sessionHash = createSessionHash();
 
 			if (!(sessionMap.containsKey(sessionHash))) {
-				sessionMap.put(sessionHash, Calendar.getInstance().getTimeInMillis() + sessionTime);
+				sessionMap.put(sessionHash, Calendar.getInstance().getTimeInMillis() + SESSIONTIME);
 			}
 		} else {
 			throw new WrongHashException("Wrong Hash");
@@ -67,7 +67,6 @@ public class SessionManager implements Runnable {
 		}
 		else{
 			return false;
-			//evtl. Exception wird im Face geworfen
 		}
 	}
 
@@ -86,9 +85,7 @@ public class SessionManager implements Runnable {
 				try {
 					Thread.sleep(5000);
 				} catch (final InterruptedException e) {
-					//reicht das für einen sicheren Neustart?
-					SessionManager.destroy();
-					SessionManager.getInstance();
+					checkSessionsThread.start();
 				}
 			}
 		}
