@@ -11,7 +11,7 @@ public class ConnectionFactory {
 	private final static String PARAMETER_USER = "user";
 	private final static String PARAMETER_PASSWORD = "password";
 	private static final String IP_OF_DATABASE = "localhost";
-	private static ConnectionFactory INSTANCE;
+	private static ConnectionFactory instance;
 
 	private Connection readerConnection;
 	private Connection writerConnection;
@@ -32,12 +32,11 @@ public class ConnectionFactory {
 	 * @return the instance of the ConnectionFactory
 	 * @throws DriverNotFoundException
 	 */
-	public static synchronized ConnectionFactory getInstance()
-			throws DriverNotFoundException {
-		if (INSTANCE == null) {
-			INSTANCE = new ConnectionFactory();
+	public static synchronized ConnectionFactory getInstance() throws DriverNotFoundException {
+		if (instance == null) {
+			instance = new ConnectionFactory();
 		}
-		return INSTANCE;
+		return instance;
 	}
 
 	/**
@@ -47,8 +46,9 @@ public class ConnectionFactory {
 	 */
 	public synchronized Connection getReaderConnection() throws SQLException {
 		if (readerConnection == null || readerConnection.isClosed()) {
-			readerConnection = DriverManager
-					.getConnection(buildLoginUR(DatabaseUser.READ_USER));
+			readerConnection = DriverManager.getConnection(buildLoginUR(DatabaseUser.READ_USER));
+			readerConnection.setAutoCommit(true);
+			readerConnection.setReadOnly(true);
 		}
 		// TODO timeout
 		return readerConnection;
@@ -61,10 +61,9 @@ public class ConnectionFactory {
 	 */
 	public synchronized Connection getWriterConnection() throws SQLException {
 		if (writerConnection == null || writerConnection.isClosed()) {
-			writerConnection = DriverManager
-					.getConnection(buildLoginUR(DatabaseUser.WRITE_USER));
+			writerConnection = DriverManager.getConnection(buildLoginUR(DatabaseUser.WRITE_USER));
+			writerConnection.setAutoCommit(true);
 		}
-		// TODO commit
 		// TODO timeout
 		return writerConnection;
 	}
@@ -76,10 +75,9 @@ public class ConnectionFactory {
 	 */
 	public synchronized Connection getDeleteConnection() throws SQLException {
 		if (deleteConnection == null || deleteConnection.isClosed()) {
-			deleteConnection = DriverManager
-					.getConnection(buildLoginUR(DatabaseUser.DELETE_USER));
+			deleteConnection = DriverManager.getConnection(buildLoginUR(DatabaseUser.DELETE_USER));
+			deleteConnection.setAutoCommit(true);
 		}
-		// TODO commit
 		// TODO timeout
 		return deleteConnection;
 	}
@@ -91,11 +89,8 @@ public class ConnectionFactory {
 	 * @return the login URL
 	 */
 	private String buildLoginUR(final DatabaseUser databaseUser) {
-		final String mainPart = JDBC_PROTOCOLL + "://" + IP_OF_DATABASE + "/"
-				+ Constants.SCHEMA_NAME + "?";
-		final String parameterPart = PARAMETER_USER + "="
-				+ databaseUser.getUsername() + "&" + PARAMETER_PASSWORD + "="
-				+ databaseUser.getPassword();
+		final String mainPart = JDBC_PROTOCOLL + "://" + IP_OF_DATABASE + "/" + Constants.SCHEMA_NAME + "?";
+		final String parameterPart = PARAMETER_USER + "=" + databaseUser.getUsername() + "&" + PARAMETER_PASSWORD + "=" + databaseUser.getPassword();
 		return mainPart + parameterPart;
 	}
 }
