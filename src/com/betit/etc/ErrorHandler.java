@@ -12,12 +12,12 @@ import javax.mail.MessagingException;
 
 public class ErrorHandler {
 
-	// TODO make exceptionMap thread safe
-	// TODO wegen fix, ausgabe bei Fehler immer ob Fehler noch da ist
+	// TODO is it thread safe
 
 	private static final ErrorHandler INSTANCE = new ErrorHandler();
 	private static final String ERROR_LOG_FILE_NAME = "java_error_log";
 	private static final long TIMEOUT = 5 * 60 * 1000; // 5min
+	private static final File ERROR_FILE = new File(Util.getRunntimeDirectory(), ERROR_LOG_FILE_NAME);
 
 	private final Thread checkThread;
 	private final Map<Exception, Long> exceptionMap = new ConcurrentHashMap<Exception, Long>();
@@ -42,42 +42,72 @@ public class ErrorHandler {
 		checkThread.start();
 	}
 
+	/**
+	 * 
+	 * @return the instance of the errorHandler
+	 */
 	public static synchronized ErrorHandler getInstance() {
 		return INSTANCE;
 	}
 
+	/**
+	 * This method handle a exception. If this exception doesn't appears in last
+	 * 5 minutes, the stackTrance will be printed, the error will e written to a
+	 * file and a emal will be send Else the Timeout of this exception will be
+	 * increased of 5 minutes
+	 * 
+	 * @param exception
+	 *            the Excpetion to handle
+	 */
 	public void handleError(final Exception exception) {
 		if (insertException(exception)) {
 			exception.printStackTrace();
-			writeToErrorFile(exception);
+			writeFullErrorToFile(exception);
 			final String exceptionText = Util.getExceptionText(exception);
 			final String message = "" + new Date(System.currentTimeMillis()).toString() + System.lineSeparator() + exceptionText;
 			try {
 				SMPTEmailSender.sendMail(new String[] { "kai.jmueller@gmail.com" }, exception.getMessage(), message);
 			} catch (final MessagingException e1) {
-				writeToErrorFile(e1);
+				writeFullErrorToFile(e1);
 			}
+		} else {
+			exception.printStackTrace();
+			writeHashExceptionToFile(exception);
 		}
 	}
 
-	private void writeToErrorFile(final Exception exception) {
-		final File errorFile = new File(Util.getRunntimeDirectory(), ERROR_LOG_FILE_NAME);
+	private void writeToErrorFile(final String errorText) {
 		FileWriter writer = null;
 		try {
-			writer = new FileWriter(errorFile, true);
-			writer.write(new Date(System.currentTimeMillis()).toString());
-			writer.write(" : " + Util.getExceptionText(exception));
+			writer = new FileWriter(ERROR_FILE, true);
+			writer.write(errorText);
 			writer.write(System.lineSeparator());
 		} catch (final IOException e) {
-			// TODO was da los
+			// TODO was muss man hier noch machen
+			e.printStackTrace();
 		} finally {
 			try {
 				writer.flush();
 				writer.close();
 			} catch (final IOException e) {
-				// TODO was da los
+				// TODO was muss man hier noch machen
+				e.printStackTrace();
 			}
 		}
+	}
+
+	private void writeFullErrorToFile(final Exception exception) {
+		String errorText = "";
+		errorText = errorText + new Date(System.currentTimeMillis()).toString();
+		errorText = errorText + " : (" + exception.hashCode() + ") " + Util.getExceptionText(exception);
+		writeToErrorFile(errorText);
+	}
+
+	private void writeHashExceptionToFile(final Exception exception) {
+		String errorText = "";
+		errorText = errorText + new Date(System.currentTimeMillis()).toString();
+		errorText = errorText + " : " + exception.hashCode();
+		writeToErrorFile(errorText);
 	}
 
 	private boolean insertException(final Exception exception) {
@@ -85,7 +115,6 @@ public class ErrorHandler {
 		if (exceptionMap.containsKey(exception)) {
 			for (final Entry<Exception, Long> entry : exceptionMap.entrySet()) {
 				final Exception key = entry.getKey();
-				final Long value = entry.getValue();
 				if (key.equals(exception)) {
 					entry.setValue(System.currentTimeMillis() + TIMEOUT);
 				}
@@ -95,9 +124,5 @@ public class ErrorHandler {
 			exceptionMap.put(exception, System.currentTimeMillis() + TIMEOUT);
 			return true;
 		}
-	}
-
-	private synchronized Map<Exception, Long> getExceptionMap() {
-		return exceptionMap;
 	}
 }

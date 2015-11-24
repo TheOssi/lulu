@@ -1,0 +1,100 @@
+CREATE DATABASE APP;
+USE APP;
+
+CREATE TABLE Questions (
+	questionID INT UNSIGNED UNIQUE NOT NULL AUTO_INCREMENT,
+    question VARCHAR(150) NOT NULL,
+    additionalInformation VARCHAR(250),
+    hostID MEDIUMINT UNSIGNED NOT NULL,
+    groupID MEDIUMINT UNSIGNED,
+	createDate DATETIME NOT NULL,
+    endDate DATETIME,
+    allAnswered BOOL NOT NULL DEFAULT 0,
+    optionExtension BOOL NOT NULL,
+    definitionOfEnd TINYINT UNSIGNED NOT NULL,
+	sumOfUsersToAnswer SMALLINT UNSIGNED,
+    finished BOOL NOT NULL DEFAULT 0,
+    rightAnswerID INT UNSIGNED,
+	language VARCHAR(2) NOT NULL,
+    PRIMARY KEY ( questionID )
+);                 
+
+CREATE TABLE Groups ( 
+	groupID MEDIUMINT UNSIGNED UNIQUE NOT NULL AUTO_INCREMENT,
+	createDate DATETIME NOT NULL,
+	adminID MEDIUMINT UNSIGNED NOT NULL,
+	groupname VARCHAR(30)  NOT NULL,
+	groupPictureURI VARCHAR(100),
+	isPublic BOOL NOT NULL,
+	PRIMARY KEY ( groupID )
+);
+
+CREATE TABLE Answers (
+	answerID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+	questionID INT UNSIGNED NOT NULL,
+	answer VARCHAR(100) NOT NULL,
+	PRIMARY KEY ( answerID )
+);
+                        
+CREATE TABLE QuestionsToUsers ( 
+	questionID INT UNSIGNED NOT NULL,
+	userID MEDIUMINT UNSIGNED NOT NULL,
+	choosedAnswerID INT UNSIGNED DEFAULT 0,
+	PRIMARY KEY ( questionID, userID )
+);					
+
+CREATE TABLE Users ( 
+	userID 	MEDIUMINT UNSIGNED UNIQUE NOT NULL AUTO_INCREMENT,
+	passwordHash VARCHAR(50),
+	username VARCHAR(25) NOT NULL UNIQUE,
+	accessionDate DATETIME NOT NULL,
+	globaleScore SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+	profilePictureURI VARCHAR(100),
+	language VARCHAR(2) NOT NULL,
+	PRIMARY KEY ( userID )
+);
+
+CREATE TABLE GroupsToUsers ( 
+	groupID MEDIUMINT UNSIGNED NOT NULL,
+	userID MEDIUMINT UNSIGNED NOT NULL,
+	score SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+	PRIMARY KEY ( groupID, userID )
+);
+
+CREATE TABLE Messages ( 
+	messageID MEDIUMINT	UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
+	groupID	MEDIUMINT UNSIGNED NOT NULL,
+	userID	MEDIUMINT UNSIGNED,
+	message	TEXT NOT NULL,
+	date DATETIME NOT NULL,
+	PRIMARY KEY ( messageID )
+);
+					  
+			
+CREATE TABLE NotificationsToUsers ( 
+	userID MEDIUMINT UNSIGNED NOT NULL,
+	notificationID INT UNSIGNED NOT NULL,
+	PRIMARY KEY ( userID, notificationID )
+);
+									  
+									
+CREATE TABLE Notifications ( 
+	notificationID INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	code VARCHAR(3) NOT NULL,
+	PRIMARY KEY ( notificationID )
+);
+									  
+									  
+CREATE TABLE NotificationsParameters ( 
+	parameterID INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	notificationID INT UNSIGNED NOT NULL,
+	parameterText VARCHAR(100) NOT NULL,
+	PRIMARY KEY ( parameterID )
+);
+
+CREATE TABLE AppConstants (
+	name VARCHAR(50) NOT NULL UNIQUE,
+	value VARCHAR(100) NOT NULL,
+	datatype VARCHAR(20) NOT NULL,
+	PRIMARY KEY ( name )
+);									  
