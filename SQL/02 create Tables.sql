@@ -7,6 +7,7 @@ CREATE TABLE Questions (
     additionalInformation VARCHAR(250),
     hostID MEDIUMINT UNSIGNED NOT NULL,
     groupID MEDIUMINT UNSIGNED,
+    pictureURI VARCHAR(100),
 	createDate DATETIME NOT NULL,
     endDate DATETIME,
     allAnswered BOOL NOT NULL DEFAULT 0,
