@@ -14,9 +14,12 @@ public class SessionManager implements Runnable {
 	private static SessionManager instance;
 	private HashMap<String, Long> sessionMap;
 	private final QueryManager queryManager;
+	private static Thread checkSessionsThread; // TODO static necessary ??
 
 	private SessionManager() {
-		final Thread checkSessionsThread = new Thread(new SessionManager());
+		// old version new SessionManager(); because you use a singelton you
+		// must user here the variable instance
+		checkSessionsThread = new Thread(instance);
 		queryManager = new DatabaseQueryManager();
 		checkSessionsThread.start();
 	}
@@ -26,6 +29,15 @@ public class SessionManager implements Runnable {
 			SessionManager.instance = new SessionManager();
 		}
 		return SessionManager.instance;
+	}
+
+	public static void destroy() {
+		if (checkSessionsThread != null) {
+			checkSessionsThread.interrupt();
+		}
+		if (instance != null) {
+			instance = null;
+		}
 	}
 
 	public void createSession(final String hash) {
