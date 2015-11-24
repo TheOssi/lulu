@@ -7,7 +7,7 @@ ALTER TABLE Questions
 			ON UPDATE NO ACTION,
 	ADD CONSTRAINT fk_questions_hostID
 		FOREIGN KEY ( hostID ) REFERENCES Users( userID )
-			ON DELETE NO ACTION
+			ON DELETE SET NULL
 			ON UPDATE NO ACTION,
 	ADD CONSTRAINT fk_questions_rightAnswerID
 		FOREIGN KEY ( rightAnswerID ) REFERENCES Answers ( answerID )
