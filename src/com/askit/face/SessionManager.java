@@ -1,0 +1,92 @@
+package com.askit.face;
+
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map.Entry;
+
+import com.askit.exception.DriverNotFoundException;
+import com.askit.exception.WrongHashException;
+import com.askit.queries.DatabaseQueryManager;
+import com.askit.queries.QueryManager;
+
+public class SessionManager implements Runnable {
+
+	private static SessionManager instance = new SessionManager();
+	private HashMap<String, Long> sessionMap;
+	private final QueryManager queryManager;
+	private static Thread checkSessionsThread;
+
+	private static final long SESSIONTIME = 10 * 60 * 1000; // Min * 60 * 1000
+
+	private SessionManager() {
+		checkSessionsThread = new Thread(instance);
+		queryManager = new DatabaseQueryManager();
+		checkSessionsThread.start();
+	}
+
+	public static synchronized SessionManager getInstance() {
+		if (SessionManager.instance == null) {
+			SessionManager.instance = new SessionManager();
+		}
+		return SessionManager.instance;
+	}
+
+	public static void destroy() {
+		if (checkSessionsThread != null) {
+			checkSessionsThread.interrupt();
+		}
+		if (instance != null) {
+			instance = null;
+		}
+	}
+
+	public void createSession(final String hash) throws SQLException, DriverNotFoundException, WrongHashException {
+		if (checkHash(hash)) {
+			final String sessionHash = createSessionHash();
+
+			if (!sessionMap.containsKey(sessionHash)) {
+				sessionMap.put(sessionHash, Calendar.getInstance().getTimeInMillis() + SESSIONTIME);
+			}
+		} else {
+			throw new WrongHashException("Wrong Hash");
+		}
+	}
+
+	private boolean checkHash(final String hash) throws SQLException, DriverNotFoundException {
+		return queryManager.checkPhoneNumberHash(hash);
+	}
+
+	private String createSessionHash() {
+		return Calendar.getInstance().getTimeInMillis() + "a" + Calendar.getInstance().hashCode(); // TODO
+	}
+
+	public boolean isValidSessionHash(final String hash) throws WrongHashException {
+		if (sessionMap.containsKey(hash)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public void run() {
+		while (true) {
+			if (!sessionMap.isEmpty()) {
+				for (final Entry<String, Long> entry : sessionMap.entrySet()) {
+					final String key = entry.getKey();
+					final Long value = entry.getValue();
+					if (value <= Calendar.getInstance().getTimeInMillis()) {
+						sessionMap.remove(key);
+					}
+				}
+			} else {
+				try {
+					Thread.sleep(5000);
+				} catch (final InterruptedException e) {
+					checkSessionsThread.start();
+				}
+			}
+		}
+	}
+}
