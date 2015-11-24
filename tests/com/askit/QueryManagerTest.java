@@ -17,20 +17,27 @@ import com.askit.database.ConnectionFactory;
 import com.askit.database.Constants;
 import com.askit.exception.DriverNotFoundException;
 import com.askit.queries.DatabaseQueryManager;
+import com.askit.queries.QueryManager;
 import com.askit.queries.SQLFactory;
 
-public class CheckSQL {
+public class QueryManagerTest {
+
+	private static QueryManager queryManager;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		queryManager = new DatabaseQueryManager();
+		// TODO clearTestDatabase or create database
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
+		
 	}
 
 	@Before
 	public void setUp() throws Exception {
+		// TODO delete data
 	}
 
 	@After
@@ -48,9 +55,7 @@ public class CheckSQL {
 		statement.setDate(3, new Date(System.currentTimeMillis()));
 		statement.executeQuery();
 
-		assertThat("The phoneNumerHash wasn't found", new DatabaseQueryManager().checkPhoneNumberHash("ABCDEFG") == true);
-		assertThat("The phoneNumerhHash was found", new DatabaseQueryManager().checkPhoneNumberHash("123456") == false);
-
-		// TODO delte Entry
+		assertThat("The phoneNumerHash wasn't found", queryManager.checkPhoneNumberHash("ABCDEFG") == true);
+		assertThat("The phoneNumerhHash was found", queryManager.checkPhoneNumberHash("123456") == false);
 	}
 }
