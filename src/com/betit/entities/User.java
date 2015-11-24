@@ -5,21 +5,23 @@ import java.util.Date;
 public class User {
 
 	private Long userID;
-	private final String phoneNrHash;
+	private final String passwordHash;
 	private final String username;
+	private final String language;
 	private final Date accessionDate;
 	private String profilePictureURI;
 	private final int globaleScore;
 
-	public User(final String phoneNrHash, final String username, final Date accessionDate, final int globaleScore) {
-		this.phoneNrHash = phoneNrHash;
+	public User(final String passwordHash, final String username, final Date accessionDate, final int globaleScore, final String language) {
+		this.passwordHash = passwordHash;
 		this.username = username;
 		this.accessionDate = accessionDate;
 		this.globaleScore = globaleScore;
+		this.language = language;
 	}
 
-	public User(final String phoneNrHash, final String username, final int globaleScore) {
-		this(phoneNrHash, username, null, globaleScore);
+	public User(final String phoneNrHash, final String username, final int globaleScore, final String language) {
+		this(phoneNrHash, username, null, globaleScore, language);
 	}
 
 	public Long getUserID() {
@@ -27,7 +29,7 @@ public class User {
 	}
 
 	public String getPhoneNrHash() {
-		return phoneNrHash;
+		return passwordHash;
 	}
 
 	public String getUsername() {
@@ -44,5 +46,9 @@ public class User {
 
 	public int getGlobaleScore() {
 		return globaleScore;
+	}
+
+	public String getLanguage() {
+		return language;
 	}
 }

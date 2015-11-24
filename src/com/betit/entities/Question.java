@@ -17,10 +17,11 @@ public class Question {
 	private final Integer sumOfUsersToAnswer;
 	private final Boolean finished;
 	private final Long rightAnswerID;
+	private final String language;
 
 	public Question(final Long questionID, final String question, final String additionalInformation, final Long hostID, final Long groupID,
 			final Date createDate, final Date endDate, final Boolean allAnswered, final Boolean optionExtension, final Integer definitionOfEnd,
-			final Integer sumOfUsersToAnswer, final Boolean finished, final Long rightAnswerID) {
+			final Integer sumOfUsersToAnswer, final Boolean finished, final Long rightAnswerID, final String language) {
 		this.questionID = questionID;
 		this.question = question;
 		this.additionalInformation = additionalInformation;
@@ -34,6 +35,7 @@ public class Question {
 		this.sumOfUsersToAnswer = sumOfUsersToAnswer;
 		this.finished = finished;
 		this.rightAnswerID = rightAnswerID;
+		this.language = language;
 	}
 
 	public Long getBqID() {
@@ -90,5 +92,9 @@ public class Question {
 
 	public Long getRightAnswerID() {
 		return rightAnswerID;
+	}
+
+	public String getLanguage() {
+		return language;
 	}
 }
