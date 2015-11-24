@@ -14,11 +14,10 @@ public class SessionManager implements Runnable {
 	private static SessionManager instance;
 	private HashMap<String, Long> sessionMap;
 	private final QueryManager queryManager;
-	private static Thread checkSessionsThread; // TODO static necessary ??
+	private static Thread checkSessionsThread;
 
 	private SessionManager() {
-		// old version new SessionManager(); because you use a singelton you
-		// must user here the variable instance
+
 		checkSessionsThread = new Thread(instance);
 		queryManager = new DatabaseQueryManager();
 		checkSessionsThread.start();
@@ -40,19 +39,16 @@ public class SessionManager implements Runnable {
 		}
 	}
 
-	public void createSession(final String hash) {
-		try {
-			if (checkHash(hash)) {
-				sessionMap.put(createSessionHash(), Calendar.getInstance().getTimeInMillis() + 600000);
-			} else {
+	public void createSession(final String hash) throws SQLException, DriverNotFoundException {
 
+		if (checkHash(hash)) {
+			sessionMap.put(createSessionHash(), Calendar.getInstance().getTimeInMillis() + 600000);
+		} else {
+			try {
+				throw new Exception("Hash wrong");
+			} catch (Exception e) {
+				// catch Exception while throwing an Exception --> Java = Genius
 			}
-		} catch (final SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final DriverNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 		}
 	}
 
