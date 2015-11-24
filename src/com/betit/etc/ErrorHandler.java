@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.mail.MessagingException;
 
@@ -20,7 +20,7 @@ public class ErrorHandler {
 	private static final long TIMEOUT = 5 * 60 * 1000; // 5min
 
 	private final Thread checkThread;
-	private final Map<Exception, Long> exceptionMap = new HashMap<Exception, Long>();
+	private final Map<Exception, Long> exceptionMap = new ConcurrentHashMap<Exception, Long>();
 
 	private ErrorHandler() {
 		checkThread = new Thread(new Runnable() {
@@ -39,9 +39,10 @@ public class ErrorHandler {
 				}
 			}
 		});
+		checkThread.start();
 	}
 
-	public static ErrorHandler getInstance() {
+	public static synchronized ErrorHandler getInstance() {
 		return INSTANCE;
 	}
 
