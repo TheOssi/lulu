@@ -1,4 +1,4 @@
-package com.betit.tests;
+package com.betit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
