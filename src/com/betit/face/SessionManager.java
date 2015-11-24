@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import com.betit.exception.DriverNotFoundException;
+import com.betit.exception.WrongHashException;
 import com.betit.queries.DatabaseQueryManager;
 import com.betit.queries.QueryManager;
 
@@ -16,8 +17,9 @@ public class SessionManager implements Runnable {
 	private final QueryManager queryManager;
 	private static Thread checkSessionsThread;
 
-	private SessionManager() {
+	private static final long sessionTime = 600000;
 
+	private SessionManager() {
 		checkSessionsThread = new Thread(instance);
 		queryManager = new DatabaseQueryManager();
 		checkSessionsThread.start();
@@ -39,16 +41,15 @@ public class SessionManager implements Runnable {
 		}
 	}
 
-	public void createSession(final String hash) throws SQLException, DriverNotFoundException {
-
+	public void createSession(final String hash) throws SQLException, DriverNotFoundException, WrongHashException {
 		if (checkHash(hash)) {
-			sessionMap.put(createSessionHash(), Calendar.getInstance().getTimeInMillis() + 600000);
-		} else {
-			try {
-				throw new Exception("Hash wrong");
-			} catch (Exception e) {
-				// catch Exception while throwing an Exception --> Java = Genius
+			String sessionHash = createSessionHash();
+
+			if (!(sessionMap.containsKey(sessionHash))) {
+				sessionMap.put(sessionHash, Calendar.getInstance().getTimeInMillis() + sessionTime);
 			}
+		} else {
+			throw new WrongHashException("Wrong Hash");
 		}
 	}
 
@@ -57,7 +58,17 @@ public class SessionManager implements Runnable {
 	}
 
 	private String createSessionHash() {
-		return Calendar.getInstance().getTimeInMillis() + "a" + Calendar.getInstance().hashCode();
+		return Calendar.getInstance().getTimeInMillis() + "a" + Calendar.getInstance().hashCode(); //TODO
+	}
+	
+	public boolean isValidSessionHash(String hash) throws WrongHashException{
+		if(sessionMap.containsKey(hash)){
+			return true;
+		}
+		else{
+			return false;
+			//evtl. Exception wird im Face geworfen
+		}
 	}
 
 	@Override
@@ -75,7 +86,9 @@ public class SessionManager implements Runnable {
 				try {
 					Thread.sleep(5000);
 				} catch (final InterruptedException e) {
-					e.printStackTrace();
+					//reicht das für einen sicheren Neustart?
+					SessionManager.destroy();
+					SessionManager.getInstance();
 				}
 			}
 		}

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.betit.exception.DriverNotFoundException;
+import com.betit.exception.WrongHashException;
 import com.betit.queries.DatabaseQueryManager;
 import com.betit.queries.QueryManager;
 
@@ -42,7 +43,8 @@ public class Faceservlet extends HttpServlet {
 
 		private Integer id;
 
-		public GETRequest(String pathInfo, Map<String, String[]> parameters) throws ServletException {
+		public GETRequest(String pathInfo, Map<String, String[]> parameters)
+				throws ServletException, WrongHashException, SQLException, DriverNotFoundException {
 
 			Matcher matcher;
 
@@ -50,13 +52,7 @@ public class Faceservlet extends HttpServlet {
 			if (matcher.find()) {
 				String hash[];
 				hash = parameters.get("HASH");
-				try {
-					SessionManager.getInstance().createSession(hash[0]);
-				} catch (SQLException e) {
-
-				} catch (DriverNotFoundException e1) {
-
-				}
+				SessionManager.getInstance().createSession(hash[0]);
 			}
 
 			matcher = regExBetPattern.matcher(pathInfo);
@@ -113,6 +109,13 @@ public class Faceservlet extends HttpServlet {
 			response.resetBuffer();
 			e.printStackTrace();
 			out.println(e.toString());
+		} catch (WrongHashException e) {
+			JSONBuilder jb = new JSONBuilder();
+			out.print(jb.createJSON(e));
+		} catch (DriverNotFoundException e) {
+				//TODO
+		} catch (SQLException e) {
+				//TODO
 		}
 		out.close();
 	}
