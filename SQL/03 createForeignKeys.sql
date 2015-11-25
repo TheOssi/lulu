@@ -41,7 +41,7 @@ ALTER TABLE Messages
 	
 
 
-ALTER TABLE questionsToUsers
+ALTER TABLE QuestionsToUsers
 	ADD CONSTRAINT fk_questionsToUsers_questionID
 		FOREIGN KEY ( questionID ) REFERENCES Questions( questionID )
 			ON DELETE CASCADE
@@ -63,6 +63,16 @@ ALTER TABLE GroupsToUsers
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION,
 	ADD CONSTRAINT fk_GroupsToUsers_userID
+		FOREIGN KEY ( userID ) REFERENCES Users ( userID )
+			ON DELETE CASCADE
+			ON UPDATE NO ACTION;
+
+ALTER TABLE Contacts
+	ADD CONSTRAINT fk_Contacs_userID
+		FOREIGN KEY ( groupID ) REFERENCES Users ( userID )
+			ON DELETE CASCADE
+			ON UPDATE NO ACTION,
+	ADD CONSTRAINT fk_Contacs_contactID
 		FOREIGN KEY ( userID ) REFERENCES Users ( userID )
 			ON DELETE CASCADE
 			ON UPDATE NO ACTION;

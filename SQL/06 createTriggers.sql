@@ -14,8 +14,7 @@ CREATE DEFINER = 'betAppAdmin'@'localhost'
 		DECLARE l_allUsersHaveAnswered BOOL DEFAULT false;
 		DECLARE l_threshold INT UNSIGNED;
 		DECLARE	l_countOfUser INT UNSIGNED;
-		DECLARE	l_thresholdCalculated INT UNSIGNED;
-		DECLARE l_quantityOfDubed INT UNSIGNED;
+		DECLARE l_hostID INT UNSIGNED;
 		
 		IF NEW.choosedAnswerID <> NULL 
 		AND OLD.choosedAnswerID = NULL THEN
@@ -30,6 +29,22 @@ CREATE DEFINER = 'betAppAdmin'@'localhost'
 				SET score = (score + 1)
 			WHERE groupID = (SELECT groupID FROM APP.Questions WHERE questionID = NEW.questionID) AND
 					userID = NEW.userID;
+			
+			--SELECT hostID
+			SELECT hostID FROM Questions
+				WHERE betID = NEW.questionsID
+			INTO l_hostID;
+					
+			-- Update global Score of host
+			UPDATE APP.Users 
+				SET globaleScore = ( globaleScore + 1 )
+			WHERE userID = hostID;
+           
+			-- Update Betgroup scores of host
+			UPDATE APP.GroupsToUsers
+				SET score = (score + 1)
+			WHERE groupID = ( SELECT groupID FROM Questions WHERE questionID = NEW.QuestionID ) AND
+				  userID = NEW.hostID;
 			
 			-- Count all Users whitch have allready answerd the questionID
 			SELECT Count(*) FROM APP.QuestionsToUsers 
@@ -82,7 +97,7 @@ CREATE DEFINER = 'betAppAdmin'@'localhost'
 		UPDATE APP.GroupsToUsers
 			SET score = (score + 1)
 		WHERE groupID = NEW.groupID AND
-			  userID = NEW.userID;
+			  userID = NEW.hostID;
 
 END \\
 
