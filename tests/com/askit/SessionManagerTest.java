@@ -28,13 +28,13 @@ public class SessionManagerTest {
 	public static void setUpBeforeClass() throws Exception {
 		// TODO setting up database
 		for (final String hash : hashes) {
-			registerUserInDatabase(hash);
+			TestUtil.createUser(hash);
 		}
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		// TODO delete Users
+		TestUtil.deleteAllUsers();
 	}
 
 	@Before
@@ -89,18 +89,9 @@ public class SessionManagerTest {
 
 	@Test
 	public void testTimeout() {
-
+		//nach 10 min neu anmelden
 	}
 
-	private static void registerUserInDatabase(final String hash) throws SQLException, DriverNotFoundException {
-		final Connection writerConnection = ConnectionFactory.getInstance().getWriterConnection();
-		final String[] columns = new String[] { "phoneNumberHash", "username", "accessionDate" };
-		final String firstPart = SQLFactory.buildInsertStatement(Constants.SCHEMA_NAME, Constants.TABLE_USERS, columns);
-		final PreparedStatement statement = writerConnection.prepareStatement(firstPart + "?,?,? );");
-		statement.setString(1, hash);
-		statement.setString(2, "TestUser");
-		statement.setDate(3, new Date(System.currentTimeMillis()));
-		statement.executeQuery();
-	}
+	
 
 }
