@@ -15,7 +15,7 @@ CREATE TABLE Questions (
     definitionOfEnd TINYINT UNSIGNED NOT NULL,
 	sumOfUsersToAnswer SMALLINT UNSIGNED,
     finished BOOL NOT NULL DEFAULT 0,
-    rightAnswerID INT UNSIGNED,
+    selectedAnswerID INT UNSIGNED,
 	language VARCHAR(2) NOT NULL,
     PRIMARY KEY ( questionID )
 );                 
@@ -46,7 +46,8 @@ CREATE TABLE QuestionsToUsers (
 
 CREATE TABLE Users ( 
 	userID 	MEDIUMINT UNSIGNED UNIQUE NOT NULL AUTO_INCREMENT,
-	passwordHash VARCHAR(50),
+	passwordHash VARCHAR(100) NOT NULL,
+	phoneNumberHash VARCHAR(100) UNIQUE,
 	username VARCHAR(25) NOT NULL UNIQUE,
 	accessionDate DATETIME NOT NULL,
 	globaleScore SMALLINT UNSIGNED NOT NULL DEFAULT 0,
@@ -91,6 +92,12 @@ CREATE TABLE NotificationsParameters (
 	notificationID INT UNSIGNED NOT NULL,
 	parameterText VARCHAR(100) NOT NULL,
 	PRIMARY KEY ( parameterID )
+);
+
+CREATE TABLE Contacts (
+	userID MEDIUMINT UNSIGNED NOT NULL,
+	contactID MEDIUMINT UNSIGEND NOT NULL,
+	PRIMARY KEY ( userID, contactID )
 );
 
 CREATE TABLE AppConstants (
