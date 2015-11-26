@@ -6,6 +6,6 @@ import com.askit.exception.DriverNotFoundException;
 
 public interface QueryManager {
 
-	public boolean checkPhoneNumberHash(String phoneNumberHash) throws SQLException, DriverNotFoundException;
+	public boolean checkUser(String username, String phoneNumberHash) throws SQLException, DriverNotFoundException;
 
 }

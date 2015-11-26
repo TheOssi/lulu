@@ -12,12 +12,12 @@ import com.askit.exception.DriverNotFoundException;
 public class DatabaseQueryManager implements QueryManager {
 
 	@Override
-	public boolean checkPhoneNumberHash(final String phoneNumberHash) throws SQLException, DriverNotFoundException {
+	public boolean checkUser(final String username, final String passwordHash) throws SQLException, DriverNotFoundException {
 		final Connection connection = ConnectionFactory.getInstance().getReaderConnection();
-		final String[] columns = new String[] { "phoneNumberHash" };
-		final String firstPart = SQLFactory.buildSelectStatement(Constants.SCHEMA_NAME, Constants.TABLE_USERS, columns);
-		final PreparedStatement statement = connection.prepareStatement(firstPart + "phoneNumberHash = ?;");
-		statement.setString(1, phoneNumberHash);
+		final String firstPart = SQLFactory.buildSimpleSelectStatement(Constants.SCHEMA_NAME, Constants.TABLE_USERS);
+		final PreparedStatement statement = connection.prepareStatement(firstPart + "passwordHash = ? AND username = ?;");
+		statement.setString(1, passwordHash);
+		statement.setString(2, username);
 		final ResultSet result = statement.executeQuery();
 		return result.next();
 	}
