@@ -40,7 +40,7 @@ public class SessionManager implements Runnable {
 
 	public void createSession(final String username, final String passwordHash) throws SQLException, DriverNotFoundException, WrongHashException,
 			DuplicateHashException {
-		if (checkHash(passwordHash, username)) {
+		if (checkHash(username, passwordHash)) {
 			final String sessionHash = createSessionHash();
 			if (!sessionMap.containsKey(sessionHash)) {
 				sessionMap.put(sessionHash, new MappedUserHash(username, Calendar.getInstance().getTimeInMillis() + SESSIONTIME));
