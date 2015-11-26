@@ -13,77 +13,69 @@ import com.askit.queries.QueryManager;
 
 public class SessionManager implements Runnable {
 
-	private static SessionManager instance = new SessionManager();
-	private HashMap<String, MappedUserHash> sessionMap;
-	private final QueryManager queryManager;
-	private static Thread checkSessionsThread;
-
+	private static final SessionManager INSTANCE = new SessionManager();
 	private static final long SESSIONTIME = 10 * 60 * 1000; // Min * 60 * 1000
 
+	private static Thread checkSessionsThread = new Thread(INSTANCE);
+	private final HashMap<String, MappedUserHash> sessionMap = new HashMap<String, MappedUserHash>();
+	private final QueryManager queryManager = new DatabaseQueryManager();;
+
 	private SessionManager() {
-		checkSessionsThread = new Thread(instance);
-		queryManager = new DatabaseQueryManager();
 		checkSessionsThread.start();
 	}
 
 	public static synchronized SessionManager getInstance() {
-		if (SessionManager.instance == null) {
-			SessionManager.instance = new SessionManager();
-		}
-		return SessionManager.instance;
+		return INSTANCE;
 	}
 
-	public static void destroy() {
-		if (checkSessionsThread != null) {
+	public void deleteAllSessions() {
+		if (checkSessionsThread.isAlive()) {
 			checkSessionsThread.interrupt();
 		}
-		if (instance != null) {
-			instance = null;
+		sessionMap.clear();
+		if (checkSessionsThread.isInterrupted()) {
+			checkSessionsThread.start();
 		}
 	}
 
-	public void createSession(final String hash, final String username) throws SQLException, DriverNotFoundException, WrongHashException, DuplicateHashException {
-		if (checkHash(hash, username)) {
+	public void createSession(final String username, final String passwordHash) throws SQLException, DriverNotFoundException, WrongHashException,
+			DuplicateHashException {
+		if (checkHash(passwordHash, username)) {
 			final String sessionHash = createSessionHash();
-
 			if (!sessionMap.containsKey(sessionHash)) {
-				sessionMap.put(sessionHash, new MappedUserHash(username ,Calendar.getInstance().getTimeInMillis() + SESSIONTIME));
-			}
-			else{
+				sessionMap.put(sessionHash, new MappedUserHash(username, Calendar.getInstance().getTimeInMillis() + SESSIONTIME));
+			} else {
 				throw new DuplicateHashException("Hash already existing");
 			}
 		} else {
-			throw new WrongHashException("Wrong Hash");
+			throw new WrongHashException("Wrong passwordHash");
 		}
 	}
-	
-	public void destroySessionsForUser(String username){
+
+	public void destroySessionsForUser(final String username) {
 		for (final Entry<String, MappedUserHash> entry : sessionMap.entrySet()) {
 			final String key = entry.getKey();
 			final String value = entry.getValue().getUsername();
-			if (value.equals(username) ) {
+			if (value.equals(username)) {
 				sessionMap.remove(key);
 			}
 		}
 	}
-	public void destroySession(String sessionHash){
+
+	public void destroySession(final String sessionHash) {
 		sessionMap.remove(sessionHash);
 	}
 
-	private boolean checkHash(final String hash, final String username) throws SQLException, DriverNotFoundException {
-		return queryManager.checkUser(username, hash);
+	private boolean checkHash(final String username, final String passwordHash) throws SQLException, DriverNotFoundException {
+		return queryManager.checkUser(username, passwordHash);
 	}
 
 	private String createSessionHash() {
 		return Calendar.getInstance().getTimeInMillis() + "a" + Calendar.getInstance().hashCode(); // TODO
 	}
 
-	public boolean isValidSessionHash(final String hash) throws WrongHashException {
-		if (sessionMap.containsKey(hash)) {
-			return true;
-		} else {
-			return false;
-		}
+	public boolean isValidSessionHash(final String sessionHash) throws WrongHashException {
+		return sessionMap.containsKey(sessionHash);
 	}
 
 	@Override
