@@ -44,7 +44,7 @@ public class SessionManagerTest {
 
 	@After
 	public void tearDown() throws Exception {
-		SessionManager.destroy();
+		SessionManager.deleteAllSessions();
 	}
 
 	@Test
