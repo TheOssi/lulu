@@ -21,7 +21,7 @@ public class Util {
 			jarFile = new File(ConnectionFactory.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath().toString());
 			parentPathOfJar = jarFile.getParentFile();
 		} catch (final URISyntaxException e) {
-			parentPathOfJar = new File(File.separator + "." + File.separator);
+			parentPathOfJar = new File(File.separator + ".");
 		}
 		return parentPathOfJar;
 	}

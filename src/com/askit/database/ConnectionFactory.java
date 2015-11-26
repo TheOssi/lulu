@@ -82,6 +82,11 @@ public class ConnectionFactory {
 		return deleteConnection;
 	}
 
+	public Connection buildOneTimeConnection(final String username, final String password) throws SQLException {
+		final Connection connection = DriverManager.getConnection(buildLoginURL(username, password));
+		return connection;
+	}
+
 	/**
 	 *
 	 * @param databaseUser
@@ -89,8 +94,12 @@ public class ConnectionFactory {
 	 * @return the login URL
 	 */
 	private String buildLoginUR(final DatabaseUser databaseUser) {
+		return buildLoginURL(databaseUser.getUsername(), databaseUser.getPassword());
+	}
+
+	private String buildLoginURL(final String username, final String password) {
 		final String mainPart = JDBC_PROTOCOLL + "://" + IP_OF_DATABASE + "/" + Constants.SCHEMA_NAME + "?";
-		final String parameterPart = PARAMETER_USER + "=" + databaseUser.getUsername() + "&" + PARAMETER_PASSWORD + "=" + databaseUser.getPassword();
+		final String parameterPart = PARAMETER_USER + "=" + username + "&" + PARAMETER_PASSWORD + "=" + password;
 		return mainPart + parameterPart;
 	}
 }

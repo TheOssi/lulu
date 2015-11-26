@@ -1,16 +1,24 @@
 package com.askit;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import javax.swing.JOptionPane;
+
 import com.askit.database.ConnectionFactory;
 import com.askit.database.Constants;
+import com.askit.etc.Util;
 import com.askit.exception.DriverNotFoundException;
 import com.askit.queries.SQLFactory;
 
 public class TestUtil {
+	private static final String DIR = Util.getRunntimeDirectory().getParent() + File.separator + "SQL" + File.separator;
 
 	public static void createUser(final String passwordHash) throws SQLException, DriverNotFoundException {
 		final Connection writerConnection = ConnectionFactory.getInstance().getWriterConnection();
@@ -29,11 +37,29 @@ public class TestUtil {
 
 	}
 
-	public static void createDatabase() {
+	public static void createDatabase() throws IOException, SQLException, DriverNotFoundException {
+		final String username = JOptionPane.showInputDialog("Username:");
+		final String password = JOptionPane.showInputDialog("Password:");
+		final Connection connection = ConnectionFactory.getInstance().buildOneTimeConnection(username, password);
 
+		final File dir = new File(DIR);
+		final File[] sqlFiles = dir.getAbsoluteFile().listFiles();
+
+		for (final File file : sqlFiles) {
+			final BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+			final StringBuilder contentOfFile = new StringBuilder();
+			while (bufferedReader.ready()) {
+				contentOfFile.append(bufferedReader.readLine());
+			}
+			bufferedReader.close();
+			connection.createStatement().execute(contentOfFile.toString());
+		}
 	}
 
-	public static void deleteDatabase() {
-
+	public static void deleteDatabase() throws SQLException, DriverNotFoundException {
+		final String username = JOptionPane.showInputDialog("Username:");
+		final String password = JOptionPane.showInputDialog("Password:");
+		final Connection connection = ConnectionFactory.getInstance().buildOneTimeConnection(username, password);
+		connection.createStatement().execute("DROP DATABASE " + Constants.SCHEMA_NAME);
 	}
 }
