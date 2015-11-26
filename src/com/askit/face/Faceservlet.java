@@ -52,7 +52,7 @@ public class Faceservlet extends HttpServlet {
 			if (matcher.find()) {
 				String hash[];
 				hash = parameters.get("HASH");
-				SessionManager.getInstance().createSession(hash[0]);
+				SessionManager.getInstance().createSession(hash[0],"blabla");
 			}
 
 			matcher = regExBetPattern.matcher(pathInfo);
