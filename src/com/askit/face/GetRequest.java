@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import javax.servlet.ServletException;
 
 import com.askit.exception.DriverNotFoundException;
+import com.askit.exception.DuplicateHashException;
 import com.askit.exception.WrongHashException;
 import com.askit.queries.DatabaseQueryManager;
 
@@ -26,7 +27,7 @@ public class GetRequest {
 	private Integer id;
 
 	public GetRequest(final String pathInfo, final Map<String, String[]> parameters) throws ServletException, SQLException, DriverNotFoundException,
-			WrongHashException {
+			WrongHashException, DuplicateHashException {
 
 		Matcher matcher;
 

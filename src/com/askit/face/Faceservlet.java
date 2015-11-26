@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.askit.exception.DriverNotFoundException;
+import com.askit.exception.DuplicateHashException;
 import com.askit.exception.WrongHashException;
 import com.askit.queries.DatabaseQueryManager;
 import com.askit.queries.QueryManager;
@@ -44,7 +45,7 @@ public class Faceservlet extends HttpServlet {
 		private Integer id;
 
 		public GETRequest(final String pathInfo, final Map<String, String[]> parameters) throws ServletException, WrongHashException, SQLException,
-				DriverNotFoundException {
+				DriverNotFoundException, DuplicateHashException {
 
 			Matcher matcher;
 
@@ -117,6 +118,9 @@ public class Faceservlet extends HttpServlet {
 			// TODO
 		} catch (final SQLException e) {
 			// TODO
+		}
+		catch(final DuplicateHashException e){
+			
 		}
 		out.close();
 	}

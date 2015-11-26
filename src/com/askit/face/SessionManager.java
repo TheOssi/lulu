@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import com.askit.exception.DriverNotFoundException;
+import com.askit.exception.DuplicateHashException;
 import com.askit.exception.WrongHashException;
 import com.askit.queries.DatabaseQueryManager;
 import com.askit.queries.QueryManager;
@@ -41,12 +42,15 @@ public class SessionManager implements Runnable {
 		}
 	}
 
-	public void createSession(final String hash, final String username) throws SQLException, DriverNotFoundException, WrongHashException {
+	public void createSession(final String hash, final String username) throws SQLException, DriverNotFoundException, WrongHashException, DuplicateHashException {
 		if (checkHash(hash, username)) {
 			final String sessionHash = createSessionHash();
 
 			if (!sessionMap.containsKey(sessionHash)) {
 				sessionMap.put(sessionHash, new MappedUserHash(username ,Calendar.getInstance().getTimeInMillis() + SESSIONTIME));
+			}
+			else{
+				throw new DuplicateHashException("Hash already existing");
 			}
 		} else {
 			throw new WrongHashException("Wrong Hash");
@@ -61,6 +65,9 @@ public class SessionManager implements Runnable {
 				sessionMap.remove(key);
 			}
 		}
+	}
+	public void destroySession(String sessionHash){
+		sessionMap.remove(sessionHash);
 	}
 
 	private boolean checkHash(final String hash, final String username) throws SQLException, DriverNotFoundException {
