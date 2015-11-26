@@ -10,7 +10,7 @@ public class Steuerung {
 
     }
 
-    // Die Steurung an die MainActivity Ã¼bergeben, damit sie diese verwenden kann.
+    // Die Steurung an die MainActivity übergeben, damit sie diese verwenden kann.
     public Steuerung getSteuerung(){
         return this;
     }
@@ -18,61 +18,88 @@ public class Steuerung {
 
 
     /*
-    Ab hier beginnen die Methoden fÃ¼r den Datenbankzugriff.
+    Ab hier beginnen die Methoden für den Datenbankzugriff.
      */
 
 
-    // FÃ¼ge einen Benutzer hinzu.
-    public void addUser(){
-
+    // Füge einen Benutzer hinzu.
+    // public void addUser(){
+	   public void registerUser() {
+	   
     }
+    
+    //Einen Nutzer einloggen
+    public void login() {
+    
+     }
+     
+     //Einen Nutzer auslogen
+     public void logout {
+     
+     }
 
-    // FÃ¼ge eine Gruppe hinzu
+    // Füge eine Gruppe hinzu
     public void addGroup(){
 
     }
 
-    // Einen Benutzer zu einer Gruppe hinzufÃ¼gen.
+    // Einen Benutzer zu einer Gruppe hinzufügen.
     public void addUserToGroup(){
 
     }
 
-    // FÃ¼ge einen anderen User zu der Freundesliste hinzu.
+    // Füge einen anderen User zu der Freundesliste hinzu.
     public void addNewFriend(){
 
     }
 
-    // FÃ¼ge eine Benutzer zu einer Ã¶ffentlchen Frage hinzu.
+    // Füge eine Benutzer zu einer öffentlchen Frage hinzu.
+    //TODO für was?
     public void addUserToQuestion(){
 
     }
+    
+    //TODO addUserToOneTimeBet / Question
 
-    // FÃ¼ge eine Ã¶ffentliche Wette oder Frage hinzu. (Attribut wo (DE oder INT) wird mitgeschickt).
+    // Füge eine öffentliche Wette oder Frage hinzu. (Attribut wo (DE oder INT) wird mitgeschickt).
+    //TODO INT zu XX
     public void addPublicQuestion() {
 
     }
 
-    //FÃ¼ge eine Wette in einer Gruppe hinzu
-    public void addQuestionInGroup(){
-
+    //Füge eine Frage in einer Gruppe hinzu
+    //public void addQuestionInGroup(){
+	public void addQuestionToGroup(){
     }
+    
+    //Fügt Eine Wette zu einer Gruppe hinzu
+    public void addBetToGroup()
+
 
     // Erstelle eine private Frage. (Wird nur unter Aktiv angezeigt)
+    //TODO also einmal Frage Gruppe
     public void addOneTimeQuestion(){
 
     }
+    
+    // Erstelle eine private Wette. (Wird nur unter Aktiv angezeigt)
+   //TODO also einmal Wett Gruppe
+    public void addOneTimeBet(){
 
-    // FÃ¼ge zu der Frage eine mÃ¶gliche Antwort hinzu.
+    }
+
+    // Füge zu der Frage eine mögliche Antwort hinzu.
+    //TODO Wird die Antwort gleich vom Nutzer selektiert
     public void addAnswer(){
 
     }
 
-    //Liefert eine Frage mit allen dazugehÃ¶rigen Daten zurÃ¼ck.
+    //Liefert eine Frage mit allen dazugehörigen Daten zurück.
     public void getQuestion(){
 
     }
 
-    // Liefert alle Fragen einer Gruppe zurÃ¼ck und deren Metdaten.
+    // Liefert alle Fragen einer Gruppe zurück und deren Metdaten.
     public void getGroupQuestion(){
 
     }
@@ -82,108 +109,126 @@ public class Steuerung {
 
     }
 
-    // Dem Server wird ein UserName Ã¼bergeben und es sollen alle ausgegeben werden, die in Frage kommen.
+    // Dem Server wird ein UserName übergeben und es sollen alle ausgegeben werden, die in Frage kommen.
     public void getUserWithName(){
 
     }
 
-    // Liefert den Nutzernamen eines Benutzers zurÃ¼ck.
+    // Liefert den Nutzernamen eines Benutzers zurück.
     public void getUserName(){
 
     }
 
-    // Liefert alle Nutzernamen einer Frage zurÃ¼ck.
+    // Liefert alle Nutzernamen einer Frage zurück.
+    //TODO inkl BIld?
     public void getAllUserNamesQuestion(){
 
     }
 
-    //Liefert die Nutzernamen, die eine bestimmte Antwort ausgewÃ¤hlt haben.
+    //Liefert die Nutzernamen, die eine bestimmte Antwort ausgewählt haben.
+    //TODO inkl Bild?
     public void getUserNamesAnswer(){
 
     }
 
     // Liefert alle Nutzernamen der Gruppe.
+    //TODO inkl Bild?
     public void getGroupUserNames(){
 
     }
 
-    // Liefert den globalen Score eines Benutzers zurÃ¼ck.
+    // Liefert den globalen Score eines Benutzers zurück.
     public void getUserGlobalScore(){
 
     }
+    
+    //TODO kann man neue Freunde bekommen indem man auf einen Nuternamen einer Gruppe/öffentlich,etc
+    	klickt?
+    //TODO werden Freunde irgendwie gekenntzeichnet
 
-    // Liefert den Score eines Benutzers einer Gruppe zurÃ¼ck.
+    // Liefert den Score eines Benutzers einer Gruppe zurück.
     public void getUserGroupScore(){
 
     }
 
     // Liefert eine Liste mit allen GruppenNamen in denen der User ist und seiner Punktzahl.
-    // Es soll auch Global zurÃ¼ckgegeben werden.
+    // Es soll auch Global zurückgegeben werden.
+    //TODO wie global
     public void getUSerAllGroupsAndScores(){
 
     }
 
-    // Liefert alle Spieler und deren Gruppen Score zurÃ¼ck. Sortiert nach dem Score.
+    // Liefert alle Nutzer und deren Gruppen Score zurück. Sortiert nach dem Score.
     public void getGroupScore(){
 
     }
 
     // Liefert die Handynummer vom User.
-    public void getPhoneNumber(){
+    // public void getPhoneNumber(){
+    //TODO für was
+    public void getPhoneNumberHash(){
 
     }
 
-    // Liefert die ausgewÃ¤hlte Antwort vom User zurÃ¼ck.
+    // Liefert die ausgewählte Antwort vom User zurück.
     public void getSelectedAnswer() {
 
     }
 
-    // Gibt alle mÃ¶glichen Antworten zurÃ¼ck und die Anzahl, wie oft eine Antwort angeklickt worden ist.
+    // Gibt alle möglichen Antworten zurück und die Anzahl, wie oft eine Antwort angeklickt worden ist.
+    // TODO kann man das auch verstecken
     public void getAllAnswersAndCount(){
 
     }
 
-    // Liefert den Platz in der Gruppe zurÃ¼ck.
+    // Liefert den Platz in der Gruppe zurück.
     public void getRankingInGroup(){
 
     }
 
     // Liefert den Hash vom Passwort
-    public void getPassword(){
+    // public void getPassword(){
+    //TODO für was
+    public void getPasswordHash(){
 
     }
 
-    // Liefert alle aktive Fragen des Benutzers zurÃ¼ck.
+    // Liefert alle aktive Fragen des Benutzers zurück.
+    //TODO Puffer?
     public void getAktivQuestions(){
 
     }
 
-    // Liefert alle vergangene Fragen des Benutzers zurÃ¼ck.
+    // Liefert alle vergangene Fragen des Benutzers zurück.
+    //TODO Puffer?
     public void getArchivQuestions(){
 
     }
 
-    // Liefert alle vergangenen Fragen einer Gruppe zurÃ¼ck.
+    // Liefert alle vergangenen Fragen einer Gruppe zurück.
+    //TODO Puffer?
     public void getArchivQuestionsGroup(){
 
     }
+    
+    //TODO die letzten 4 Methoden auch für Wetten und/oder zusammen
 
-    // Liefert das Bild einer Gruppe zurÃ¼ck
+    // Liefert das Bild einer Gruppe zurück
     public void getGroupPicture(){
 
     }
 
-    // Liefret das Profilbild des Users zurÃ¼ck.
+    // Liefret das Profilbild des Users zurück.
     public void getUserProfilPicture(){
 
     }
 
-    // Liefert die ausgewÃ¤hlte Sprache.
+    // Liefert die ausgewählte Sprache.
     public void getLanguage(){
 
     }
 
-    // Setze die ausgewÃ¤hlte Sprache.
+    // Setze die ausgewählte Sprache.
     public void setLanguage(){
 
     }
@@ -203,12 +248,13 @@ public class Steuerung {
 
     }
 
-    // Setze die vom User gewÃ¤hlte Antwort.
+    // Setze die vom User gewählte Antwort.
     public void setSelectedAnswer(){
 
     }
 
-    //Nach Ende der Wette, kann der Admin die richtige Antwort setzen. Nur in Gruppen !
+    //Nach Ende der Wette, kann der Admin die richtige Antwort setzen. Nur in Gruppen!
+    //TODO für Fragen - Kann man Antwort setzte,z.B. wo gehen wir heute hin? damit wissen alle wohins geht
     public void setRightAnswer(){
 
     }
@@ -233,42 +279,46 @@ public class Steuerung {
 
     }
 
-    // Der Admin hat die MÃ¶glichkeit eine Frage zu lÃ¶schen.
+    // Der Admin hat die Möglichkeit eine Frage zu löschen.
+    // TODO abbrechen oder wikliches löschen?
     public void deleteBet(){
 
     }
 
-    // Verlassen einer Gruppe. Oder der Admin lÃ¶scht jemanden.
+    // Verlassen einer Gruppe. Oder der Admin löscht jemanden.
     public void deleteFromGroup(){
 
     }
 
-    // Die gesamte Gruppe lÃ¶schen. Kann nur der Admin der Gruppe.
+    // Die gesamte Gruppe löschen. Kann nur der Admin der Gruppe.
     public void deleteGroup(){
 
     }
 
-    // LÃ¶sche einen anderen User von der Freundesliste.
+    // Lösche einen anderen User von der Freundesliste.
     public void deleteFriend(){
 
     }
 
     // Suche in eigenen Gruppen.
+    //TODO Kriterien
     public void searchInMyGroups(){
 
     }
 
     // Suche in einer Gruppe nach einer Frage.
+        //TODO Kriterien
     public void searchInGroupForBet(){
 
     }
 
-    // Suche Ã¶ffentlich nach Fragen, die mit dem Wort/ Filter was zu tun haben (DE oder INT wird mitgeschickt).
+    // Suche öffentlich nach Fragen, die mit dem Wort/ Filter was zu tun haben (DE oder INT wird mitgeschickt).
+    //TODO Kriterien
     public void seachPublicQuestion(){
 
     }
 
-    // Der Admin kann eine Frage sofort beenden. Nur in Gruppen mÃ¶glich.
+    // Der Admin kann eine Frage sofort beenden. Nur in Gruppen möglich.
     public void finishQuestion(){
 
     }
