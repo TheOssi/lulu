@@ -35,7 +35,7 @@ public class GetRequest {
 			String hash[];
 			hash = parameters.get("HASH");
 
-			SessionManager.getInstance().createSession(hash[0]);
+			SessionManager.getInstance().createSession(hash[0],"blala");
 
 		}
 

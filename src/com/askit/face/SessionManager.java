@@ -13,7 +13,7 @@ import com.askit.queries.QueryManager;
 public class SessionManager implements Runnable {
 
 	private static SessionManager instance = new SessionManager();
-	private HashMap<String, Long> sessionMap;
+	private HashMap<String, MappedUserHash> sessionMap;
 	private final QueryManager queryManager;
 	private static Thread checkSessionsThread;
 
@@ -41,20 +41,30 @@ public class SessionManager implements Runnable {
 		}
 	}
 
-	public void createSession(final String hash) throws SQLException, DriverNotFoundException, WrongHashException {
-		if (checkHash(hash)) {
+	public void createSession(final String hash, final String username) throws SQLException, DriverNotFoundException, WrongHashException {
+		if (checkHash(hash, username)) {
 			final String sessionHash = createSessionHash();
 
 			if (!sessionMap.containsKey(sessionHash)) {
-				sessionMap.put(sessionHash, Calendar.getInstance().getTimeInMillis() + SESSIONTIME);
+				sessionMap.put(sessionHash, new MappedUserHash(username ,Calendar.getInstance().getTimeInMillis() + SESSIONTIME));
 			}
 		} else {
 			throw new WrongHashException("Wrong Hash");
 		}
 	}
+	
+	public void destroySessionsForUser(String username){
+		for (final Entry<String, MappedUserHash> entry : sessionMap.entrySet()) {
+			final String key = entry.getKey();
+			final String value = entry.getValue().getUsername();
+			if (value.equals(username) ) {
+				sessionMap.remove(key);
+			}
+		}
+	}
 
-	private boolean checkHash(final String hash) throws SQLException, DriverNotFoundException {
-		return queryManager.checkPhoneNumberHash(hash);
+	private boolean checkHash(final String hash, final String username) throws SQLException, DriverNotFoundException {
+		return queryManager.checkUser(username, hash);
 	}
 
 	private String createSessionHash() {
@@ -73,9 +83,9 @@ public class SessionManager implements Runnable {
 	public void run() {
 		while (true) {
 			if (!sessionMap.isEmpty()) {
-				for (final Entry<String, Long> entry : sessionMap.entrySet()) {
+				for (final Entry<String, MappedUserHash> entry : sessionMap.entrySet()) {
 					final String key = entry.getKey();
-					final Long value = entry.getValue();
+					final Long value = entry.getValue().getTime();
 					if (value <= Calendar.getInstance().getTimeInMillis()) {
 						sessionMap.remove(key);
 					}
