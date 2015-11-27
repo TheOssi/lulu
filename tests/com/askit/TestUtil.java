@@ -20,13 +20,13 @@ import com.askit.queries.SQLFactory;
 public class TestUtil {
 	private static final String DIR = Util.getRunntimeDirectory().getParent() + File.separator + "SQL" + File.separator;
 
-	public static void createUser(final String passwordHash) throws SQLException, DriverNotFoundException {
+	public static void createUser(final String username, final String passwordHash) throws SQLException, DriverNotFoundException {
 		final Connection writerConnection = ConnectionFactory.getInstance().getWriterConnection();
 		final String[] columns = new String[] { "passwordHash", "username", "accessionDate", "language" };
 		final String firstPart = SQLFactory.buildInsertStatement(Constants.SCHEMA_NAME, Constants.TABLE_USERS, columns);
 		final PreparedStatement statement = writerConnection.prepareStatement(firstPart + "?,?,? );");
 		statement.setString(1, passwordHash);
-		statement.setString(2, "TestUser");
+		statement.setString(2, username);
 		statement.setDate(3, new Date(System.currentTimeMillis()));
 		statement.setString(4, "DE");
 		statement.executeQuery();
