@@ -16,15 +16,22 @@ public class SessionManager implements Runnable {
 	private static final SessionManager INSTANCE = new SessionManager();
 	private static final long SESSIONTIME = 10 * 60 * 1000; // Min * 60 * 1000
 
-	private static Thread checkSessionsThread = new Thread(INSTANCE);
+	private static Thread checkSessionsThread ;
 	private final HashMap<String, MappedUserHash> sessionMap = new HashMap<String, MappedUserHash>();
 	private final QueryManager queryManager = new DatabaseQueryManager();;
 
 	private SessionManager() {
-		checkSessionsThread.start();
-	}
+		
 
+	}
+	public static void start(){
+		if(checkSessionsThread == null ||!(checkSessionsThread.isAlive())){
+		checkSessionsThread =  new Thread(INSTANCE);
+		checkSessionsThread.start();
+		}
+	}
 	public static synchronized SessionManager getInstance() {
+		start();
 		return INSTANCE;
 	}
 
@@ -38,12 +45,13 @@ public class SessionManager implements Runnable {
 		}
 	}
 
-	public void createSession(final String username, final String passwordHash) throws SQLException, DriverNotFoundException, WrongHashException,
+	public String createSession(final String username, final String passwordHash) throws SQLException, DriverNotFoundException, WrongHashException,
 			DuplicateHashException {
 		if (checkHash(username, passwordHash)) {
 			final String sessionHash = createSessionHash();
 			if (!sessionMap.containsKey(sessionHash)) {
 				sessionMap.put(sessionHash, new MappedUserHash(username, Calendar.getInstance().getTimeInMillis() + SESSIONTIME));
+				return sessionHash;
 			} else {
 				throw new DuplicateHashException("Hash already existing");
 			}
@@ -67,7 +75,8 @@ public class SessionManager implements Runnable {
 	}
 
 	private boolean checkHash(final String username, final String passwordHash) throws SQLException, DriverNotFoundException {
-		return queryManager.checkUser(username, passwordHash);
+		return true;
+		//return queryManager.checkUser(username, passwordHash);
 	}
 
 	private String createSessionHash() {
