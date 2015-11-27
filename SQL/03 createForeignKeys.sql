@@ -10,12 +10,12 @@ ALTER TABLE PrivateQuestions
 			ON DELETE SET NULL
 			ON UPDATE NO ACTION,
 	ADD CONSTRAINT fk_PrivateQuestions_selectedAnswerID
-		FOREIGN KEY ( rightAnswerID ) REFERENCES Answers ( answerID )
+		FOREIGN KEY ( selectedAnswerID ) REFERENCES AnswersPrivateQuestions ( answerID )
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION;
 			
-ALTER TABLE AnswersOfPrivateQuestions
-	ADD CONSTRAINT fk_AnswersOfPrivateQuestions_questionID
+ALTER TABLE AnswersPrivateQuestions
+	ADD CONSTRAINT fk_AnswersPrivateQuestions_questionID
 		FOREIGN KEY ( questionID ) REFERENCES PrivateQuestions ( questionID )
 			ON DELETE CASCADE
 			ON UPDATE NO ACTION;
@@ -30,13 +30,13 @@ ALTER TABLE PrivateQuestionsToUsers
 			ON DELETE CASCADE
 			ON UPDATE NO ACTION,
 	ADD CONSTRAINT fk_PrivateQuestionsToUsers_choosedAnswerID
-		FOREIGN KEY ( choosedAnswerID ) REFERENCES Answers( answerID )
+		FOREIGN KEY ( choosedAnswerID ) REFERENCES AnswersPrivateQuestions( answerID )
 			ON DELETE SET NULL
 			ON UPDATE NO ACTION;
 			
 ALTER TABLE Contacts
 	ADD CONSTRAINT fk_Contacs_userID
-		FOREIGN KEY ( groupID ) REFERENCES Users ( userID )
+		FOREIGN KEY ( userID ) REFERENCES Users ( userID )
 			ON DELETE CASCADE
 			ON UPDATE NO ACTION,
 	ADD CONSTRAINT fk_Contacs_contactID
@@ -88,8 +88,8 @@ ALTER TABLE PublicQuestions
 			ON DELETE SET NULL
 			ON UPDATE NO ACTION;
 			
-ALTER TABLE AnswersOfPublicQuestions
-	ADD CONSTRAINT fk_AnswersOfPublicQuestions_questionID
+ALTER TABLE AnswersPublicQuestions
+	ADD CONSTRAINT fk_AnswersPublicQuestions_questionID
 		FOREIGN KEY ( questionID ) REFERENCES PublicQuestions ( questionID )
 			ON DELETE CASCADE
 			ON UPDATE NO ACTION;
