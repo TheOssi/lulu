@@ -3,9 +3,7 @@ package com.askit;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
+import java.io.IOException;
 import java.sql.SQLException;
 
 import org.junit.After;
@@ -14,37 +12,36 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.askit.database.ConnectionFactory;
-import com.askit.database.Constants;
 import com.askit.exception.DriverNotFoundException;
+import com.askit.exception.DuplicateHashException;
 import com.askit.exception.WrongHashException;
 import com.askit.face.SessionManager;
-import com.askit.queries.SQLFactory;
 
 public class SessionManagerTest {
-	private static String[] hashes = new String[] { "ABCDEFG", "BCDEFGH", "CDEFGHI", "DEFGHIJ" };
+	private static String[] passwordHashes = new String[] { "ABCDEFG", "BCDEFGH", "CDEFGHI", "DEFGHIJ" };
+	private static String[] usernames = new String[] { "User1", "User2", "User3", "User4" };
 
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		// TODO setting up database
-		for (final String hash : hashes) {
-			TestUtil.createUser(hash);
+	public static void setUpBeforeClass() throws IOException, SQLException, DriverNotFoundException {
+		for (int i = 0; i < usernames.length; i++) {
+			TestUtil.createDatabase();
+			TestUtil.createUser(usernames[i], passwordHashes[i]);
 		}
 	}
 
 	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-		TestUtil.deleteAllUsers();
+	public static void tearDownAfterClass() throws SQLException, DriverNotFoundException {
+		TestUtil.deleteDatabase();
 	}
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		SessionManager.getInstance();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		SessionManager.deleteAllSessions();
+		SessionManager.getInstance().deleteAllSessions();
 	}
 
 	@Test
@@ -55,10 +52,10 @@ public class SessionManagerTest {
 	@Test
 	public void testCreateSessionSimple() {
 		try {
-			SessionManager.getInstance().createSession(hashes[0]);
-		} catch (SQLException | DriverNotFoundException | WrongHashException e) {
-			fail("a exception appeared: ");
+			SessionManager.getInstance().createSession(usernames[0], passwordHashes[0]);
+		} catch (SQLException | DriverNotFoundException | WrongHashException | DuplicateHashException e) {
 			e.printStackTrace();
+			fail("a exception appeared: " + e.getMessage());
 		}
 	}
 
@@ -70,28 +67,26 @@ public class SessionManagerTest {
 	@Test
 	public void testCreateSessionWithNullHash() {
 		try {
-			SessionManager.getInstance().createSession(null);
-		} catch (SQLException | DriverNotFoundException | WrongHashException e) {
-			// TODO Auto-generated catch block
+			SessionManager.getInstance().createSession(null, null);
+		} catch (SQLException | DriverNotFoundException | WrongHashException | DuplicateHashException e) {
 			e.printStackTrace();
+			fail("a exception appeared: " + e.getMessage());
 		}
 	}
 
 	@Test(expected = WrongHashException.class)
 	public void testCreateSessionWithFalseHash() throws WrongHashException {
 		try {
-			SessionManager.getInstance().createSession("THISISNOTAHASH");
-		} catch (SQLException | DriverNotFoundException e) {
-			fail("a exception appeared: ");
+			SessionManager.getInstance().createSession("THISISNOTAUSER", "THISISNOTAHASH");
+		} catch (SQLException | DriverNotFoundException | DuplicateHashException e) {
 			e.printStackTrace();
+			fail("a exception appeared: " + e.getMessage());
 		}
 	}
 
 	@Test
 	public void testTimeout() {
-		//nach 10 min neu anmelden
+		// nach 10 min neu anmelden
 	}
-
-	
 
 }
