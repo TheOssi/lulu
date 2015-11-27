@@ -20,7 +20,7 @@ CREATE TABLE PrivateQuestions (
     PRIMARY KEY ( questionID )
 );                 
 
-CREATE TABLE AnswersOfPrivateQuestions (
+CREATE TABLE AnswersPrivateQuestions (
 	answerID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
 	questionID INT UNSIGNED NOT NULL,
 	answer VARCHAR(100) NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE PrivateQuestionsToUsers (
 
 CREATE TABLE Contacts (
 	userID MEDIUMINT UNSIGNED NOT NULL,
-	contactID MEDIUMINT UNSIGEND NOT NULL,
+	contactID MEDIUMINT UNSIGNED NOT NULL,
 	PRIMARY KEY ( userID, contactID )
 );
 
@@ -98,7 +98,7 @@ CREATE TABLE PublicQuestions (
     PRIMARY KEY ( questionID )
 );                 
 
-CREATE TABLE AnswersOfPublicQuestions (
+CREATE TABLE AnswersPublicQuestions (
 	answerID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
 	questionID INT UNSIGNED NOT NULL,
 	answer VARCHAR(100) NOT NULL,

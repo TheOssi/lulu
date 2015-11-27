@@ -1,10 +1,9 @@
--- Trigger On Update on the answer table
-	-- this Trigger performs a test if all users have answerd a question; if this is true, the allAnswered falg will be set.
-	-- Also if the definitionOfEnd is 2 or 3, the bet will be flaged as finished
+USE APP;
+
 DELIMITER \\
 CREATE DEFINER = 'betAppAdmin'@'localhost'
-	TRIGGER tg_aUpdate_QuestionsToUsers_updateScores_checkAllAnswered_checkFinished
-	AFTER UPDATE ON questionsToUsers
+	TRIGGER tg_aUpdate_PrivateQuestionsToUsers_updateScores_checkFinished
+	AFTER UPDATE ON PrivateQuestionsToUsers
     FOR EACH ROW BEGIN
         DECLARE l_definitionOfEnd TINYINT unsigned;
         DECLARE l_countAllUser INT unsigned;
@@ -15,49 +14,33 @@ CREATE DEFINER = 'betAppAdmin'@'localhost'
 		DECLARE l_threshold INT UNSIGNED;
 		DECLARE	l_countOfUser INT UNSIGNED;
 		DECLARE l_hostID INT UNSIGNED;
+		DECLARE l_points INT UNSIGNED;
 		
 		IF NEW.choosedAnswerID <> NULL 
 		AND OLD.choosedAnswerID = NULL THEN
-			
-			-- Update global Score
-			UPDATE APP.Users 
-				SET globaleScore = ( globaleScore + 1 )
-			WHERE userID = NEW.userID;
+		
+			SELECT CAST( name AS UNSIGNED INTEGER ) FROM BetAppConstants 
+				WHERE name = "POINTS_QUESTION_ANS_PRIVATE"
+			INTO l_points;
             
 			-- Update Betgroup scores
 			UPDATE APP.GroupsToUsers
-				SET score = (score + 1)
-			WHERE groupID = (SELECT groupID FROM APP.Questions WHERE questionID = NEW.questionID) AND
+				SET score = (score + l_points1)
+			WHERE groupID = ( SELECT groupID FROM PrivateQuestions WHERE questionID = NEW.questionID) AND
 					userID = NEW.userID;
 			
-			--SELECT hostID
-			SELECT hostID FROM Questions
-				WHERE betID = NEW.questionsID
-			INTO l_hostID;
-					
-			-- Update global Score of host
-			UPDATE APP.Users 
-				SET globaleScore = ( globaleScore + 1 )
-			WHERE userID = hostID;
-           
-			-- Update Betgroup scores of host
-			UPDATE APP.GroupsToUsers
-				SET score = (score + 1)
-			WHERE groupID = ( SELECT groupID FROM Questions WHERE questionID = NEW.QuestionID ) AND
-				  userID = NEW.hostID;
-			
 			-- Count all Users whitch have allready answerd the questionID
-			SELECT Count(*) FROM APP.QuestionsToUsers 
+			SELECT Count(*) FROM APP.PrivateQuestionsToUsers 
 				WHERE questionID = NEW.questionID AND 
 					  choosedAnswerID <> 0
 				INTO l_countAllAnsweredUsers;
 			
 			-- Count all Users of this bet	
-			SELECT Count(*) FROM APP.QuestionsToUsers 
+			SELECT Count(*) FROM APP.PrivateQuestionsToUsers 
 				WHERE questionID = NEW.questionID INTO l_countAllUser;
 				
 			-- Select the definition of End
-			SELECT definitionOfEnd FROM APP.Questions WHERE questionID = NEW.questionID INTO l_definitionOfEnd;
+			SELECT definitionOfEnd FROM APP.PrivateQuestions WHERE questionID = NEW.questionID INTO l_definitionOfEnd;
 				
 			-- Select the sum of answered users if defOfEnd is 3 and set a Bool flag
 			IF l_definitionOfEnd = 3 THEN
@@ -66,16 +49,10 @@ CREATE DEFINER = 'betAppAdmin'@'localhost'
 					SET l_sumOfAnsweredUsersReached = true;
 				END IF;
 			END IF;
-			
-			-- If All Users have answerd, set this bet to all answered
-			IF l_countAllUser = l_countAllAnsweredUsers THEN
-				UPDATE APP.Questions SET allAnswered = 1 WHERE questionID = NEW.questionID;
-				SET l_allUsersHaveAnswered = true;
-			END IF;
 				
-			-- If this bet finished after all users have answered (2) or after a special time OR all aswered(3), finish this bet
+			-- If this bet finished after all users have answered (2) or all aswered(3), finish this bet
 			IF ( l_sumOfAnsweredUsersReached = true AND l_definitionOfEnd = 3 ) OR ( l_allUsersHaveAnswered = true AND l_definitionOfEnd = 2 ) THEN
-				UPDATE APP.Questions SET finished = 1 WHERE questionID = NEW.questionID;
+				UPDATE APP.PrivateQuestions SET finished = 1 WHERE questionID = NEW.questionID;
 			END IF;
 			
 		END IF;	
@@ -84,22 +61,87 @@ DELIMITER ;
 
 DELIMITER \\
 CREATE DEFINER = 'betAppAdmin'@'localhost'
-	TRIGGER tg_aInsert_Questions_updateScores
-	AFTER INSERT ON Questions
+	TRIGGER tg_aUpdate_PublicQuestionsToUsers_updateScores
+	AFTER UPDATE ON PublicQuestionsToUsers
     FOR EACH ROW BEGIN
+		DECLARE l_hostID INT UNSIGNED;
+		DECLARE l_pointsUser INT UNSIGNED;
+		DECLARE l_pointsHost INT UNSIGNED;
+
 		
-		-- Update global Score
-		UPDATE APP.Users 
-			SET globaleScore = ( globaleScore + 1 )
-		WHERE userID = NEW.hostID;
+		IF NEW.choosedAnswerID <> NULL 
+		AND OLD.choosedAnswerID = NULL THEN
+		
+			SELECT CAST( name AS UNSIGNED INTEGER ) FROM BetAppConstants 
+				WHERE name = "POINTS_QUESTION_ANS_PUBLIC"
+			INTO l_pointsUser;
+			
+			SELECT CAST( name AS UNSIGNED INTEGER ) FROM BetAppConstants 
+				WHERE name = "POINTS_QUESTION_ANS_HOST_PUBLIC"
+			INTO l_pointsHost;
+            
+			-- Update GlobalScore of user
+			UPDATE APP.Users
+				SET scoreOfGlobal = (scoreOfGlobal + l_pointsUser )
+			WHERE userID = NEW.userID;
+			
+			-- SELECT hostID
+			SELECT hostID FROM PublicQuestions
+				WHERE betID = NEW.questionID
+			INTO l_hostID;
+           
+			-- Update global score of host
+			UPDATE APP.User
+				SET score = (score + l_pointsHost ) 
+			WHERE userID = l_hostID;
+			
+		END IF;	
+END \\
+DELIMITER ;
+
+DELIMITER \\
+CREATE DEFINER = 'betAppAdmin'@'localhost'
+	TRIGGER tg_aInsert_PublicQuestions_updateScores
+	AFTER INSERT ON PublicQuestions
+    FOR EACH ROW BEGIN
+	DECLARE l_points INT UNSIGNED;
+	
+		SELECT CAST( name AS UNSIGNED INTEGER ) FROM BetAppConstants 
+			WHERE name = "POINTS_QUESTION_PUPLIC"
+		INTO l_points;
            
 		-- Update Betgroup scores
-		UPDATE APP.GroupsToUsers
-			SET score = (score + 1)
-		WHERE groupID = NEW.groupID AND
-			  userID = NEW.hostID;
+		UPDATE APP.Users
+			SET scoreOfGlobal = (scoreOfGlobal + l_points )
+		WHERE  userID = NEW.hostID;
 
 END \\
+DELIMITER ;
+
+DELIMITER \\
+CREATE DEFINER = 'betAppAdmin'@'localhost'
+	TRIGGER tg_aInsert_PrivateQuestions_updateScoresForRightAnswer
+	AFTER UPDATE ON PrivateQuestions
+    FOR EACH ROW BEGIN
+	DECLARE l_points INT UNSIGNED;
+	
+        IF NEW.selectedAnswerID <> NULL THEN
+		
+			SELECT CAST( name AS UNSIGNED INTEGER ) FROM BetAppConstants 
+				WHERE name = "POINTS_QUESTION_RIGHT_ANSWER_PRIVATE"
+			INTO l_points;
+			
+			-- Update Betgroup scores
+			UPDATE APP.GroupsToUsers
+				SET score = (score + l_points)
+			WHERE groupID = NEW.groupID AND
+				  userID = 
+					( SELECT userID FROM AnswersPrivateQuestions WHERE answerID = NEW.selectedAnswerID);
+			  
+		END IF;
+
+END \\
+DELIMITER ;
 
 
 
