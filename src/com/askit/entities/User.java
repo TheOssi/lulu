@@ -4,32 +4,37 @@ import java.util.Date;
 
 public class User {
 
-	private Long userID;
+	private final Long userID;
 	private final String passwordHash;
+	private final String phoneNumberHash;
 	private final String username;
-	private final String language;
 	private final Date accessionDate;
-	private String profilePictureURI;
-	private final int globaleScore;
+	private final String profilePictureURI;
+	private final String language;
+	private final int scoreOfGlobal;
 
-	public User(final String passwordHash, final String username, final Date accessionDate, final int globaleScore, final String language) {
+	public User(final Long userID, final String passwordHash, final String phoneNumberHash, final String username, final Date accessionDate,
+			final String profilePictureURI, final String language, final int scoreOfGlobal) {
+		this.userID = userID;
 		this.passwordHash = passwordHash;
+		this.phoneNumberHash = phoneNumberHash;
 		this.username = username;
 		this.accessionDate = accessionDate;
-		this.globaleScore = globaleScore;
+		this.profilePictureURI = profilePictureURI;
 		this.language = language;
-	}
-
-	public User(final String phoneNrHash, final String username, final int globaleScore, final String language) {
-		this(phoneNrHash, username, null, globaleScore, language);
+		this.scoreOfGlobal = scoreOfGlobal;
 	}
 
 	public Long getUserID() {
 		return userID;
 	}
 
-	public String getPhoneNrHash() {
+	public String getPasswordHash() {
 		return passwordHash;
+	}
+
+	public String getPhoneNumberHash() {
+		return phoneNumberHash;
 	}
 
 	public String getUsername() {
@@ -44,11 +49,12 @@ public class User {
 		return profilePictureURI;
 	}
 
-	public int getGlobaleScore() {
-		return globaleScore;
-	}
-
 	public String getLanguage() {
 		return language;
 	}
+
+	public int getScoreOfGlobal() {
+		return scoreOfGlobal;
+	}
+
 }
