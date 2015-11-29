@@ -24,8 +24,10 @@ public interface QueryManager {
 	 * Register a User
 	 *
 	 * @param user
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
 	 */
-	public void registerUser(User user);
+	public void registerUser(User user) throws SQLException, DriverNotFoundException;
 
 	/**
 	 * create a new Group
