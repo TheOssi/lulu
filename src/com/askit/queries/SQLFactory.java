@@ -15,7 +15,7 @@ public class SQLFactory {
 	/**
 	 * This method build the start of a SELECT Statement with the keyword
 	 * "WHERE", but without a condition
-	 * 
+	 *
 	 * @param schema
 	 *            Schema name
 	 * @param table
@@ -41,36 +41,42 @@ public class SQLFactory {
 	}
 
 	/**
-	 * This method build the start of a INSERT Statement for all columns with
-	 * the keyword "VALUES (", but without the values
-	 * 
+	 * This method build a String of a INSERT Statement for all columns as a
+	 * PreparedStatement
+	 *
+	 *
 	 * @param schema
 	 *            Schema name
 	 * @param table
 	 *            Table name
-	 * @return a INSERT Stament without the values
+	 * @return a INSERT Stament as a PreparedStatement
 	 */
-	public static String buildSimpleInsertStatement(final String schema, final String table) {
+	public static String buildSimpleInsertStatement(final String schema, final String table, final int columnNumber) {
 		final StringBuilder statement = new StringBuilder();
 		statement.append("INSERT INTO ");
 		statement.append(schema);
 		statement.append(".");
 		statement.append(table);
 		statement.append(" VALUES ( ");
+		for (int i = 0; i < columnNumber; i++) {
+			statement.append("?,");
+		}
+		statement.delete(statement.length() - 1, statement.length() + 1);
+		statement.append(");");
 		return statement.toString();
 	}
 
 	/**
-	 * This method build the start of a INSERT Statement for specified columns
-	 * with the keyword "VALUES (", but without the values
-	 * 
+	 * This method build a INSERT Statement for specified columns as a
+	 * PreparedStatement
+	 *
 	 * @param schema
 	 *            Schema name
 	 * @param table
 	 *            Table name
 	 * @param columns
 	 *            the columns in witch the values shoud be inserted
-	 * @return a INSERT Stament without the values
+	 * @return a INSERT Stament as a PreparedStatement
 	 */
 	public static String buildInsertStatement(final String schema, final String table, final String[] columns) {
 		final StringBuilder statement = new StringBuilder();
@@ -86,13 +92,18 @@ public class SQLFactory {
 		statement.delete(statement.length() - 1, statement.length() + 1);
 		statement.append(")");
 		statement.append(" VALUES ( ");
+		for (final String column : columns) {
+			statement.append("?,");
+		}
+		statement.delete(statement.length() - 1, statement.length() + 1);
+		statement.append(");");
 		return statement.toString();
 	}
 
 	/**
 	 * This method build the start of a DELETE Statement with the keyword
 	 * "WHERE", but without a condition
-	 * 
+	 *
 	 * @param schema
 	 *            Schema name
 	 * @param table
