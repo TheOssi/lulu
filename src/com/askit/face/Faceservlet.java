@@ -40,7 +40,7 @@ public class Faceservlet extends HttpServlet {
 	 *      response)
 	 */
 	@Override
-	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
 		// TODO Auto-generated method stub
 		// response.getWriter().append("Params").append(request.getParameter("BET")
 		// + "|" + request.getParameter("ID"));
@@ -48,17 +48,15 @@ public class Faceservlet extends HttpServlet {
 		final QueryManager qm = new DatabaseQueryManager();
 		
 
-		out.println("GET request handling");
-		out.println(request.getPathInfo());
-		out.println(request.getParameterMap());
+//		out.println("GET request handling");
+//		out.println(request.getPathInfo());
+//		out.println(request.getParameterMap());
 		try {
 			final GetRequest resourceValues = new GetRequest(request.getPathInfo(), request.getParameterMap(), out);
-			out.println("ID: " + resourceValues.getId());
+			
 		} catch (final ServletException e) {
-			response.setStatus(400);
-			response.resetBuffer();
-			e.printStackTrace();
-			out.println(e.toString());
+			JSONBuilder jb = new JSONBuilder();
+			out.print(jb.createJSON(e));
 		} catch (final WrongHashException e) {
 			JSONBuilder jb = new JSONBuilder();
 			out.print(jb.createJSON(e));
@@ -74,6 +72,7 @@ public class Faceservlet extends HttpServlet {
 			JSONBuilder jb = new JSONBuilder();
 			out.print(jb.createJSON(e));
 		}
+		
 		out.close();
 	}
 

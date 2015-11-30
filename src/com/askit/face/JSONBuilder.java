@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
@@ -22,19 +23,22 @@ public class JSONBuilder {
 	public String createJSON(final Object o) {
 
 		final JsonObject jo = new JsonObject(); 
-	
-		jo.add(o.getClass().getSimpleName(), gson.toJsonTree(o));
-		return removeNulls(gson.toJson(jo));
+		final JsonArray ja = new JsonArray();
+		ja.add(gson.toJsonTree(o));
+		jo.add(o.getClass().getSimpleName(), ja);
+		
+		return (gson.toJson(jo));
 	}
 
 	// Generate from Collection
 	public String createJSON(final Object[] objectArray) {
 		final JsonObject jo = new JsonObject();
 		final JsonObject innerJo = new JsonObject();
+		final JsonArray ja = new JsonArray();
 		for (Object currentObject : objectArray) {
-			innerJo.add(currentObject.getClass().getSimpleName() + currentObject.hashCode(), gson.toJsonTree(currentObject));
-			jo.add(currentObject.getClass().getSimpleName() + "Set", innerJo);
+			ja.add(gson.toJsonTree(currentObject));
 		}
+		jo.add(objectArray.getClass().getSimpleName().substring(0, objectArray.getClass().getSimpleName().length()-2), ja);
 		return gson.toJson(jo);
 	}
 	
