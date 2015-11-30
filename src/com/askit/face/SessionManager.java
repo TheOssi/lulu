@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.askit.exception.DriverNotFoundException;
 import com.askit.exception.DuplicateHashException;
@@ -17,21 +18,20 @@ public class SessionManager implements Runnable {
 	private static final long SESSIONTIME = 10 * 60 * 1000; // Min * 60 * 1000
 
 	private static Thread checkSessionsThread ;
-	private final HashMap<String, MappedUserHash> sessionMap = new HashMap<String, MappedUserHash>();
+	private final ConcurrentHashMap<String, MappedUserHash> sessionMap = new ConcurrentHashMap<String, MappedUserHash>();
 	private final QueryManager queryManager = new DatabaseQueryManager();;
 
 	private SessionManager() {
 		
 
 	}
-	public static void start(){
+	public void start(){
 		if(checkSessionsThread == null ||!(checkSessionsThread.isAlive())){
 		checkSessionsThread =  new Thread(INSTANCE);
 		checkSessionsThread.start();
 		}
 	}
 	public static synchronized SessionManager getInstance() {
-		start();
 		return INSTANCE;
 	}
 
@@ -47,6 +47,7 @@ public class SessionManager implements Runnable {
 
 	public String createSession(final String username, final String passwordHash) throws SQLException, DriverNotFoundException, WrongHashException,
 			DuplicateHashException {
+		start();
 		if (checkHash(username, passwordHash)) {
 			final String sessionHash = createSessionHash();
 			if (!sessionMap.containsKey(sessionHash)) {
@@ -80,7 +81,12 @@ public class SessionManager implements Runnable {
 	}
 
 	private String createSessionHash() {
-		return Calendar.getInstance().getTimeInMillis() + "a" + Calendar.getInstance().hashCode(); // TODO
+		long hash = Calendar.getInstance().getTimeInMillis();
+		String word = "HalloSaschaKaiIstBloed";
+		for (int i = 0; i < 11; i++) {
+		   hash = hash*31 + word.charAt(i);
+		}
+		return Long.toString(Math.abs(hash));//Calendar.getInstance().getTimeInMillis() + "a" + (Math.random()*10000); // TODO
 	}
 
 	public boolean isValidSessionHash(final String sessionHash) throws WrongHashException {
