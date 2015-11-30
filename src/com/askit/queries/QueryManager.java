@@ -33,47 +33,49 @@ public interface QueryManager {
 	 * create a new Group
 	 *
 	 * @param group
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
 	 */
-	public void createNewGroup(Group group);
+	public void createNewGroup(Group group) throws SQLException, DriverNotFoundException;
 
 	/**
 	 * add a user to a group
 	 *
 	 * @param groupID
 	 * @param userID
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
 	 */
-	public void addUserToGroup(long groupID, long userID);
+	public void addUserToGroup(long groupID, long userID) throws SQLException, DriverNotFoundException;
 
 	/**
 	 * add a contact to a user
 	 *
 	 * @param userIDOfUser
 	 * @param userIDofContact
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
 	 */
-	public void addContact(long userIDOfUser, long userIDofContact);
-
-	/**
-	 * add a user to a public question
-	 *
-	 * @param userID
-	 * @param questionID
-	 */
-	public void addUserToQuestion(long userID, long questionID);
+	public void addContact(long userIDOfUser, long userIDofContact) throws SQLException, DriverNotFoundException;
 
 	/**
 	 * add a user to a oneTimeQuestion
 	 *
 	 * @param userID
 	 * @param questionID
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
 	 */
-	public void addUserToOneTimeQuestion(long userID, long questionID);
+	public void addUserToOneTimeQuestion(long userID, long questionID) throws SQLException, DriverNotFoundException;
 
 	/**
 	 * crate a new public question
 	 *
 	 * @param question
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
 	 */
-	public void createPublicQuestion(PublicQuestion question);
+	public void createPublicQuestion(PublicQuestion question) throws SQLException, DriverNotFoundException;
 
 	/**
 	 *
@@ -81,14 +83,18 @@ public interface QueryManager {
 	 *
 	 * @param question
 	 * @param groupID
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
 	 */
-	public void createNewQuestionInGroup(PrivateQuestion question, long groupID);
+	public void createNewQuestionInGroup(PrivateQuestion question) throws SQLException, DriverNotFoundException;
 
 	/**
 	 * create a new oneTimeQuestion
 	 *
 	 * @param question
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
 	 */
-	public void createOneTimeQuestion(PrivateQuestion question);
+	public void createOneTimeQuestion(PrivateQuestion question) throws SQLException, DriverNotFoundException;
 
 }

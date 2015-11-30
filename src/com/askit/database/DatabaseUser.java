@@ -3,9 +3,9 @@ package com.askit.database;
 public enum DatabaseUser {
 
 	// TODO passes alter
-	READ_USER("betAppReader", "marciMarcMarc"),
-	WRITE_USER("betAppWriter", "felliFellFell"),
-	DELETE_USER("betAppDeleter", "lenkiLenkLenk");
+	READ_USER("appReader", "marciMarcMarc"),
+	WRITE_USER("appWriter", "felliFellFell"),
+	DELETE_USER("appDeleter", "lenkiLenkLenk");
 
 	private String password;
 	private String username;
