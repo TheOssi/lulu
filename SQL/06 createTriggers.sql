@@ -1,7 +1,7 @@
 USE APP;
 
 DELIMITER \\
-CREATE DEFINER = 'betAppAdmin'@'localhost'
+CREATE DEFINER = 'appAdmin'@'localhost'
 	TRIGGER tg_aUpdate_PrivateQuestionsToUsers_updateScores_checkFinished
 	AFTER UPDATE ON PrivateQuestionsToUsers
     FOR EACH ROW BEGIN
@@ -19,11 +19,11 @@ CREATE DEFINER = 'betAppAdmin'@'localhost'
 		IF NEW.choosedAnswerID <> NULL 
 		AND OLD.choosedAnswerID = NULL THEN
 		
-			SELECT CAST( name AS UNSIGNED INTEGER ) FROM BetAppConstants 
+			SELECT CAST( value AS UNSIGNED INTEGER ) FROM AppConstants 
 				WHERE name = "POINTS_QUESTION_ANS_PRIVATE"
 			INTO l_points;
             
-			-- Update Betgroup scores
+			-- Update group scores
 			UPDATE APP.GroupsToUsers
 				SET score = (score + l_points1)
 			WHERE groupID = ( SELECT groupID FROM PrivateQuestions WHERE questionID = NEW.questionID) AND
@@ -35,7 +35,7 @@ CREATE DEFINER = 'betAppAdmin'@'localhost'
 					  choosedAnswerID <> 0
 				INTO l_countAllAnsweredUsers;
 			
-			-- Count all Users of this bet	
+			-- Count all Users of this question	
 			SELECT Count(*) FROM APP.PrivateQuestionsToUsers 
 				WHERE questionID = NEW.questionID INTO l_countAllUser;
 				
@@ -50,7 +50,7 @@ CREATE DEFINER = 'betAppAdmin'@'localhost'
 				END IF;
 			END IF;
 				
-			-- If this bet finished after all users have answered (2) or all aswered(3), finish this bet
+			-- If this question finished after all users have answered (2) or all aswered(3), finish this question
 			IF ( l_sumOfAnsweredUsersReached = true AND l_definitionOfEnd = 3 ) OR ( l_allUsersHaveAnswered = true AND l_definitionOfEnd = 2 ) THEN
 				UPDATE APP.PrivateQuestions SET finished = 1 WHERE questionID = NEW.questionID;
 			END IF;
@@ -60,23 +60,19 @@ END \\
 DELIMITER ;
 
 DELIMITER \\
-CREATE DEFINER = 'betAppAdmin'@'localhost'
-	TRIGGER tg_aUpdate_PublicQuestionsToUsers_updateScores
-	AFTER UPDATE ON PublicQuestionsToUsers
+CREATE DEFINER = 'appAdmin'@'localhost'
+	TRIGGER trigger_afterUpdateOnPublicQuestionsToUser_updateScores
+	AFTER INSERT ON PublicQuestionsToUsers
     FOR EACH ROW BEGIN
 		DECLARE l_hostID INT UNSIGNED;
 		DECLARE l_pointsUser INT UNSIGNED;
 		DECLARE l_pointsHost INT UNSIGNED;
-
 		
-		IF NEW.choosedAnswerID <> NULL 
-		AND OLD.choosedAnswerID = NULL THEN
-		
-			SELECT CAST( name AS UNSIGNED INTEGER ) FROM BetAppConstants 
+			SELECT CAST( value AS UNSIGNED INTEGER ) FROM AppConstants 
 				WHERE name = "POINTS_QUESTION_ANS_PUBLIC"
 			INTO l_pointsUser;
 			
-			SELECT CAST( name AS UNSIGNED INTEGER ) FROM BetAppConstants 
+			SELECT CAST( value AS UNSIGNED INTEGER ) FROM AppConstants 
 				WHERE name = "POINTS_QUESTION_ANS_HOST_PUBLIC"
 			INTO l_pointsHost;
             
@@ -87,30 +83,29 @@ CREATE DEFINER = 'betAppAdmin'@'localhost'
 			
 			-- SELECT hostID
 			SELECT hostID FROM PublicQuestions
-				WHERE betID = NEW.questionID
+				WHERE questionID = NEW.questionID
 			INTO l_hostID;
            
 			-- Update global score of host
-			UPDATE APP.User
-				SET score = (score + l_pointsHost ) 
+			UPDATE APP.Users
+				SET scoreOfGlobal = (scoreOfGlobal + l_pointsHost ) 
 			WHERE userID = l_hostID;
 			
-		END IF;	
 END \\
 DELIMITER ;
 
 DELIMITER \\
-CREATE DEFINER = 'betAppAdmin'@'localhost'
-	TRIGGER tg_aInsert_PublicQuestions_updateScores
+CREATE DEFINER = 'appAdmin'@'localhost'
+	TRIGGER trigger_afterInsertOnPublicQuestions_updateScores
 	AFTER INSERT ON PublicQuestions
     FOR EACH ROW BEGIN
 	DECLARE l_points INT UNSIGNED;
 	
-		SELECT CAST( name AS UNSIGNED INTEGER ) FROM BetAppConstants 
+		SELECT CAST( value AS UNSIGNED INTEGER ) FROM AppConstants 
 			WHERE name = "POINTS_QUESTION_PUPLIC"
 		INTO l_points;
            
-		-- Update Betgroup scores
+		-- Update group scores
 		UPDATE APP.Users
 			SET scoreOfGlobal = (scoreOfGlobal + l_points )
 		WHERE  userID = NEW.hostID;
@@ -119,7 +114,7 @@ END \\
 DELIMITER ;
 
 DELIMITER \\
-CREATE DEFINER = 'betAppAdmin'@'localhost'
+CREATE DEFINER = 'appAdmin'@'localhost'
 	TRIGGER tg_aInsert_PrivateQuestions_updateScoresForRightAnswer
 	AFTER UPDATE ON PrivateQuestions
     FOR EACH ROW BEGIN
@@ -127,11 +122,11 @@ CREATE DEFINER = 'betAppAdmin'@'localhost'
 	
         IF NEW.selectedAnswerID <> NULL THEN
 		
-			SELECT CAST( name AS UNSIGNED INTEGER ) FROM BetAppConstants 
+			SELECT CAST( value AS UNSIGNED INTEGER ) FROM AppConstants 
 				WHERE name = "POINTS_QUESTION_RIGHT_ANSWER_PRIVATE"
 			INTO l_points;
 			
-			-- Update Betgroup scores
+			-- Update group scores
 			UPDATE APP.GroupsToUsers
 				SET score = (score + l_points)
 			WHERE groupID = NEW.groupID AND
@@ -142,7 +137,3 @@ CREATE DEFINER = 'betAppAdmin'@'localhost'
 
 END \\
 DELIMITER ;
-
-
-
-

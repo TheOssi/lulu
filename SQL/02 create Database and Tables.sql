@@ -13,16 +13,16 @@ CREATE TABLE PrivateQuestions (
     optionExtension BOOL NOT NULL,
     definitionOfEnd TINYINT UNSIGNED NOT NULL,
 	sumOfUsersToAnswer SMALLINT UNSIGNED,
-    finished BOOL NOT NULL DEFAULT 0,
-    selectedAnswerID INT UNSIGNED,
 	language VARCHAR(2) NOT NULL,
 	isBet BOOL NOT NULL,
+	selectedAnswerID INT UNSIGNED,
+    finished BOOL NOT NULL DEFAULT 0,
     PRIMARY KEY ( questionID )
 );                 
 
 CREATE TABLE AnswersPrivateQuestions (
 	answerID INT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT,
-	questionID INT UNSIGNED NOT NULL,
+	questionID INT UNSIGNED,
 	answer VARCHAR(100) NOT NULL,
 	PRIMARY KEY ( answerID )
 );
@@ -30,7 +30,7 @@ CREATE TABLE AnswersPrivateQuestions (
 CREATE TABLE PrivateQuestionsToUsers ( 
 	questionID INT UNSIGNED NOT NULL,
 	userID MEDIUMINT UNSIGNED NOT NULL,
-	choosedAnswerID INT UNSIGNED DEFAULT 0,
+	choosedAnswerID INT UNSIGNED,
 	PRIMARY KEY ( questionID, userID )
 );
 
@@ -92,9 +92,9 @@ CREATE TABLE PublicQuestions (
     pictureURI VARCHAR(100),
 	createDate DATETIME NOT NULL,
     endDate DATETIME,
+    language VARCHAR(2) NOT NULL,
     optionExtension BOOL NOT NULL,
     finished BOOL NOT NULL DEFAULT 0,
-	language VARCHAR(2) NOT NULL,
     PRIMARY KEY ( questionID )
 );                 
 
@@ -108,7 +108,7 @@ CREATE TABLE AnswersPublicQuestions (
 CREATE TABLE PublicQuestionsToUsers ( 
 	questionID INT UNSIGNED NOT NULL,
 	userID MEDIUMINT UNSIGNED NOT NULL,
-	choosedAnswerID INT UNSIGNED DEFAULT 0,
+	choosedAnswerID INT UNSIGNED NOT NULL,
 	PRIMARY KEY ( questionID, userID )
 );
 								

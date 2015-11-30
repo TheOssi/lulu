@@ -20,14 +20,14 @@ public class SQLFactory {
 	 *            Schema name
 	 * @param table
 	 *            Table name
-	 * @param colums
+	 * @param columns
 	 *            String array with to selecting columns
 	 * @return a SELECT Stament without the WHERE conditions
 	 */
-	public static String buildSelectStatement(final String schema, final String table, final String[] colums) {
+	public static String buildSelectStatement(final String schema, final String table, final String[] columns) {
 		final StringBuilder statement = new StringBuilder();
 		statement.append("SELECT ");
-		for (final String column : colums) {
+		for (final String column : columns) {
 			statement.append(column);
 			statement.append(",");
 		}
@@ -120,7 +120,4 @@ public class SQLFactory {
 		return statement.toString();
 	}
 
-	public static void main(final String[] args) {
-		System.out.println(buildInsertStatement("APP", "Question", new String[] { "a1", "a2" }));
-	}
 }
