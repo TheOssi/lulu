@@ -97,4 +97,21 @@ public interface QueryManager {
 	 */
 	public void createOneTimeQuestion(PrivateQuestion question) throws SQLException, DriverNotFoundException;
 
+	/*
+	 * Get Methods
+	 */
+	/**
+	 * returns public question in a special area of index sort by createDate and
+	 * questionID
+	 * 
+	 * @param startIndex
+	 *            the startindex; beginn is 1 (included)
+	 * @param quantity
+	 *            how much should be selected
+	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
+	 */
+	public PublicQuestion[] getPublicQuestions(int startIndex, int quantity) throws SQLException, DriverNotFoundException;
+
 }

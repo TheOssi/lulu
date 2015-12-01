@@ -5,6 +5,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.askit.database.ConnectionFactory;
 import com.askit.database.Constants;
@@ -26,7 +28,7 @@ public class DatabaseQueryManager implements QueryManager {
 			"pictureURI", "createDate", "endDate", "optionExtension", "definitionOfEnd", "sumOfUsersToAnswer", "language", "isBet",
 			"selectedAnswerID", "finished" };
 	private final static String[] COLUMNS_PUBLIC_QUESTION = new String[] { "publicQuestionID", "question", "additionalInformation", "hostID",
-			"pictureURI", "createDate", "endDate", "optionExtension", "language", "finished" };
+			"pictureURI", "createDate", "endDate", "language", "optionExtension", "finished" };
 	private final static String[] COLUMNS_ONE_TIME_QUESTION = Util.concatenateTwoArrays(Util.getFromToFromArray(COLUMNS_PRIVATE_QUESTION, 0, 3),
 			Util.getFromToFromArray(COLUMNS_PRIVATE_QUESTION, 5, COLUMNS_PRIVATE_QUESTION.length - 1));
 
@@ -159,6 +161,45 @@ public class DatabaseQueryManager implements QueryManager {
 		preparedStatement.setString(10, question.getLanguage());
 		preparedStatement.setBoolean(11, question.getIsBet());
 		preparedStatement.executeUpdate();
+	}
+
+	/*
+	 * GET METHODS
+	 */
+
+	@Override
+	public PublicQuestion[] getPublicQuestions(final int startIndex, final int quantity) throws SQLException, DriverNotFoundException {
+		final Connection connection = ConnectionFactory.getInstance().getReaderConnection();
+		final String statement = SQLFactory.buildStatementForAreaSelect(Constants.SCHEMA_NAME, Constants.TABLE_PUBLIC_QUESTIONS, "createDate DESC",
+				"createDate ASC", startIndex, quantity);
+		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		final ResultSet resultSet = preparedStatement.executeQuery();
+		final List<PublicQuestion> publicQuestions = new ArrayList<PublicQuestion>();
+		while (resultSet.next()) {
+			final Long questionID = resultSet.getLong(1);
+			final String question = resultSet.getString(2);
+			final String additionalInformation = resultSet.getString(3);
+			final Long hostID = resultSet.getLong(4);
+			final String pictureURI = resultSet.getString(5);
+			final Date createDate = resultSet.getDate(6);
+			final Date endDate = resultSet.getDate(7);
+			final String language = resultSet.getString(8);
+			final Boolean optionExtension = resultSet.getBoolean(9);
+			final Boolean finished = resultSet.getBoolean(10);
+			final PublicQuestion publicQuestion = new PublicQuestion(questionID, question, additionalInformation, hostID, pictureURI, createDate,
+					endDate, optionExtension, finished, language);
+			publicQuestions.add(publicQuestion);
+		}
+		return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
+
+	}
+
+	private int getSizeOfResultSet(final ResultSet resultSet) throws SQLException {
+		final int currentRow = resultSet.getRow();
+		resultSet.last();
+		final int lastRow = resultSet.getRow();
+		resultSet.absolute(currentRow);
+		return lastRow;
 	}
 
 }

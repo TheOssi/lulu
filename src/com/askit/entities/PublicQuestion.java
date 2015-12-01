@@ -9,7 +9,6 @@ public class PublicQuestion {
 	private final String additionalInformation;
 	private final Long hostID;
 	private final String pictureURI;
-	private final Long groupID;
 	private final Date createDate;
 	private final Date endDate;
 	private final Boolean optionExtension;
@@ -17,14 +16,13 @@ public class PublicQuestion {
 	private final String language;
 
 	public PublicQuestion(final Long questionID, final String question, final String additionalInformation, final Long hostID,
-			final String pictureURI, final Long groupID, final Date createDate, final Date endDate, final Boolean optionExtension,
-			final Boolean finished, final String language) {
+			final String pictureURI, final Date createDate, final Date endDate, final Boolean optionExtension, final Boolean finished,
+			final String language) {
 		this.questionID = questionID;
 		this.question = question;
 		this.additionalInformation = additionalInformation;
 		this.hostID = hostID;
 		this.pictureURI = pictureURI;
-		this.groupID = groupID;
 		this.createDate = createDate;
 		this.endDate = endDate;
 		this.optionExtension = optionExtension;
@@ -52,10 +50,6 @@ public class PublicQuestion {
 		return pictureURI;
 	}
 
-	public Long getGroupID() {
-		return groupID;
-	}
-
 	public Date getCreateDate() {
 		return createDate;
 	}
@@ -75,4 +69,12 @@ public class PublicQuestion {
 	public String getLanguage() {
 		return language;
 	}
+
+	@Override
+	public String toString() {
+		return "PublicQuestion [questionID=" + questionID + ", question=" + question + ", additionalInformation=" + additionalInformation
+				+ ", hostID=" + hostID + ", pictureURI=" + pictureURI + ", createDate=" + createDate + ", endDate=" + endDate + ", optionExtension="
+				+ optionExtension + ", finished=" + finished + ", language=" + language + "]";
+	}
+
 }

@@ -1,5 +1,6 @@
 package com.askit.queries;
 
+
 public class SQLFactory {
 
 	public static String buildSimpleSelectStatement(final String schema, final String table) {
@@ -117,6 +118,28 @@ public class SQLFactory {
 		statement.append(".");
 		statement.append(table);
 		statement.append(" WHERE ");
+		return statement.toString();
+	}
+
+	public static String buildStatementForAreaSelect(final String schema, final String table, final String orderByStatementReverse,
+			final String gorderByStatement, final int startIndex, final int quantity) {
+		final StringBuilder statement = new StringBuilder();
+		statement.append("SELECT * FROM ( ");
+		statement.append("SELECT * FROM ( ");
+		statement.append("SELECT * FROM ( ");
+		statement.append("SELECT * FROM ");
+		statement.append(schema);
+		statement.append(".");
+		statement.append(table);
+		statement.append(" AS A LIMIT ");
+		statement.append(String.valueOf(startIndex + quantity));
+		statement.append(" ) AS B ORDER BY ");
+		statement.append(orderByStatementReverse);
+		statement.append(" ) AS C LIMIT ");
+		statement.append(String.valueOf(quantity));
+		statement.append(" ) AS D ORDER BY ");
+		statement.append(gorderByStatement);
+		statement.append(";");
 		return statement.toString();
 	}
 

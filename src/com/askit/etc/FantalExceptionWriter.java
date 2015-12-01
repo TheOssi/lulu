@@ -10,11 +10,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.mail.MessagingException;
 
-public class ErrorHandler {
+public class FantalExceptionWriter {
 
 	// TODO is it thread safe
 
-	private static final ErrorHandler INSTANCE = new ErrorHandler();
+	private static final FantalExceptionWriter INSTANCE = new FantalExceptionWriter();
 	private static final String ERROR_LOG_FILE_NAME = "java_error_log";
 	private static final long TIMEOUT = 5 * 60 * 1000; // 5min
 	private static final File ERROR_FILE = new File(Util.getRunntimeDirectory(), ERROR_LOG_FILE_NAME);
@@ -22,7 +22,7 @@ public class ErrorHandler {
 	private final Thread checkThread;
 	private final Map<Exception, Long> exceptionMap = new ConcurrentHashMap<Exception, Long>();
 
-	private ErrorHandler() {
+	private FantalExceptionWriter() {
 		checkThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -46,7 +46,7 @@ public class ErrorHandler {
 	 * 
 	 * @return the instance of the errorHandler
 	 */
-	public static synchronized ErrorHandler getInstance() {
+	public static synchronized FantalExceptionWriter getInstance() {
 		return INSTANCE;
 	}
 
