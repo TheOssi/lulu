@@ -20,5 +20,5 @@ INSERT INTO APP.AppConstants VALUES (
 	"POINTS_QUESTION_ANS_PRIVATE",'1',"unsigned integer");
 	
 INSERT INTO APP.AppConstants VALUES (
-	"POINTS_QUESTION_RIGHT_ANSWER_PRIVATE",'5',"unsigned integer");
+	"POINTS_BET_RIGHT_ANSWER_PRIVATE",'5',"unsigned integer");
 

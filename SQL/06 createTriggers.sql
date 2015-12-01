@@ -2,7 +2,7 @@ USE APP;
 
 DELIMITER \\
 CREATE DEFINER = 'appAdmin'@'localhost'
-	TRIGGER tg_aUpdate_PrivateQuestionsToUsers_updateScores_checkFinished
+	TRIGGER trigger_afterUpdateOnPrivateQuestionsToUsers_updateScores_checkFinished
 	AFTER UPDATE ON PrivateQuestionsToUsers
     FOR EACH ROW BEGIN
         DECLARE l_definitionOfEnd TINYINT unsigned;
@@ -134,6 +134,5 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 					( SELECT userID FROM AnswersPrivateQuestions WHERE answerID = NEW.selectedAnswerID);
 			  
 		END IF;
-
 END \\
 DELIMITER ;
