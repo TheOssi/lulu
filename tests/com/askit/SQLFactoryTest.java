@@ -6,9 +6,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.askit.database.Constants;
-import com.askit.queries.SQLFactory;
-
 public class SQLFactoryTest {
 
 	@BeforeClass
@@ -29,8 +26,6 @@ public class SQLFactoryTest {
 
 	@Test
 	public void test() {
-		final String statement = SQLFactory.buildStatementForAreaSelect(Constants.SCHEMA_NAME, Constants.TABLE_PUBLIC_QUESTIONS, "createDate DESC",
-				"createDate ASC", 100, 10);
 	}
 
 }

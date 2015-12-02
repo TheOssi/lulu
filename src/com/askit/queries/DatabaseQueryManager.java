@@ -170,8 +170,8 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public PublicQuestion[] getPublicQuestions(final int startIndex, final int quantity) throws SQLException, DriverNotFoundException {
 		final Connection connection = ConnectionFactory.getInstance().getReaderConnection();
-		final String statement = SQLFactory.buildStatementForAreaSelect(Constants.SCHEMA_NAME, Constants.TABLE_PUBLIC_QUESTIONS, "createDate DESC",
-				"createDate ASC", startIndex, quantity);
+		final String statement = SQLFactory.buildStatementForAreaSelect(Constants.SCHEMA_NAME, Constants.TABLE_PUBLIC_QUESTIONS, "createDate ASC",
+				startIndex, quantity);
 		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
 		final ResultSet resultSet = preparedStatement.executeQuery();
 		final List<PublicQuestion> publicQuestions = new ArrayList<PublicQuestion>();
@@ -191,7 +191,6 @@ public class DatabaseQueryManager implements QueryManager {
 			publicQuestions.add(publicQuestion);
 		}
 		return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
-
 	}
 
 	private int getSizeOfResultSet(final ResultSet resultSet) throws SQLException {

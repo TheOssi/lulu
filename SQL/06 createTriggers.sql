@@ -2,7 +2,7 @@ USE APP;
 
 DELIMITER \\
 CREATE DEFINER = 'appAdmin'@'localhost'
-	TRIGGER trigger_afterUpdateOnPrivateQuestionsToUsers_updateScores_checkFinished
+	TRIGGER trigger_aUOnPrivateQuestionsToUsers_updateScores_checkFinished
 	AFTER UPDATE ON PrivateQuestionsToUsers
     FOR EACH ROW BEGIN
         DECLARE l_definitionOfEnd TINYINT unsigned;
