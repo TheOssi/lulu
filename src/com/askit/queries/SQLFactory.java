@@ -120,13 +120,9 @@ public class SQLFactory {
 		return statement.toString();
 	}
 
-	public static String buildStatementForAreaSelect(final String schema, final String table, final String gorderByStatement, final int startIndex,
-			final int quantity) {
+	public static String buildStatementForAreaSelect(final String begin, final String gorderByStatement, final int startIndex, final int quantity) {
 		final StringBuilder statement = new StringBuilder();
-		statement.append("SELECT * FROM ");
-		statement.append(schema);
-		statement.append(".");
-		statement.append(table);
+		statement.append(begin);
 		statement.append(" ORDER BY ");
 		statement.append(gorderByStatement);
 		statement.append(" LIMIT ");

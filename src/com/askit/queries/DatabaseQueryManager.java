@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.askit.database.ConnectionFactory;
 import com.askit.database.Constants;
+import com.askit.entities.Answer;
 import com.askit.entities.Group;
 import com.askit.entities.PrivateQuestion;
 import com.askit.entities.PublicQuestion;
@@ -141,7 +142,7 @@ public class DatabaseQueryManager implements QueryManager {
 		preparedStatement.setString(11, question.getLanguage());
 		preparedStatement.setBoolean(12, question.getIsBet());
 		preparedStatement.executeUpdate();
-		// TODO Question to User?
+		// TODO Question to User
 	}
 
 	@Override
@@ -164,21 +165,159 @@ public class DatabaseQueryManager implements QueryManager {
 		preparedStatement.executeUpdate();
 	}
 
+	@Override
+	public void addAnswerToQuestion(final long groupID, final String question) {
+		// TODO Auto-generated method stub
+
+	}
+
 	/*
 	 * GET METHODS
 	 */
 
 	@Override
-	public PublicQuestion[] getPublicQuestions(final int startIndex, final int quantity) throws SQLException, DriverNotFoundException,
-			ModellToObjectException {
+	public PublicQuestion[] getPublicQuestions(final int startIndex, final int quantity, final String language) throws SQLException,
+			DriverNotFoundException, ModellToObjectException {
 		final Connection connection = ConnectionFactory.getInstance().getReaderConnection();
-		final String statement = SQLFactory.buildStatementForAreaSelect(Constants.SCHEMA_NAME, Constants.TABLE_PUBLIC_QUESTIONS, "createDate ASC",
-				startIndex, quantity);
-		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		String statement = SQLFactory.buildSimpleSelectStatement(Constants.SCHEMA_NAME, Constants.TABLE_PUBLIC_QUESTIONS);
+		statement += " WHERE langauge = ? ";
+		final String finalStatement = SQLFactory.buildStatementForAreaSelect(statement, "createDate ASC", startIndex, quantity);
+		final PreparedStatement preparedStatement = connection.prepareStatement(finalStatement);
+		preparedStatement.setString(1, language);
 		final ResultSet resultSet = preparedStatement.executeQuery();
 		final List<PublicQuestion> publicQuestions = new ResultSetMapper<PublicQuestion>().mapRersultSetToObject(resultSet, PublicQuestion.class);
 		return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
 	}
+
+	@Override
+	public PublicQuestion getPublicQuesion(final long questionID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PrivateQuestion getPrivateQuestion(final long questionID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PrivateQuestion[] getQuestionsOfGroup(final long groupID, final int startIndex, final int quantity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User[] getUsersByUsername(final String searchPattern) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getUsername(final long userID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User[] getUsersOfPublicQuestion(final long questionID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User[] getUsersOfPrivateQuestion(final long questionID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User[] getUsersOfAnswerPrivateQuestion(final long questionID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User[] getUsersOfAnswerPublicQuestion(final long questionID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User[] getUsersOfGroup(final long groupID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Long getUserScoreOfGlobal(final long userID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Long getUserScoreInGroup(final long userID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getPhoneNumberHash(final long userID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Answer getSelectedAnswerInPublicQuestion(final long questionID, final long userID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Answer getSelectedAnswerInPrivateQuestion(final long questionID, final long userID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Long getRankingInGroup(final long userID, final long groupID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getPasswordHash(final long userID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getLanguage(final long userID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getProfilePictureURI(final long userID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getGroupPictureURI(final long groupID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PrivateQuestion[] getOldPrivateQuestions(final long groupID, final int startIndex, final int quantity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*
+	 * HELPER
+	 */
 
 	private int getSizeOfResultSet(final ResultSet resultSet) throws SQLException {
 		final int currentRow = resultSet.getRow();
