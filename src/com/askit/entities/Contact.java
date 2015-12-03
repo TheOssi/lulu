@@ -1,9 +1,18 @@
 package com.askit.entities;
 
+import com.thirdparty.entities.Column;
+import com.thirdparty.entities.Entity;
+
+@Entity
 public class Contact {
 
-	private final String userID;
-	private final String contactID;
+	@Column(name = "userID")
+	private String userID;
+	@Column(name = "contactID")
+	private String contactID;
+
+	public Contact() {
+	}
 
 	public Contact(final String userID, final String contactID) {
 		this.userID = userID;
@@ -16,6 +25,14 @@ public class Contact {
 
 	public String getContactID() {
 		return contactID;
+	}
+
+	public void setUserID(final String userID) {
+		this.userID = userID;
+	}
+
+	public void setContactID(final String contactID) {
+		this.contactID = contactID;
 	}
 
 }

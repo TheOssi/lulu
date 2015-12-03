@@ -5,7 +5,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.askit.database.ConnectionFactory;
@@ -16,6 +15,8 @@ import com.askit.entities.PublicQuestion;
 import com.askit.entities.User;
 import com.askit.etc.Util;
 import com.askit.exception.DriverNotFoundException;
+import com.askit.exception.ModellToObjectException;
+import com.thirdparty.modelToObject.ResultSetMapper;
 
 public class DatabaseQueryManager implements QueryManager {
 	public final static String[] COLUMNS_USERS = new String[] { "userID", "passwordhash", "phoneNumberHash", "username", "accessionDate",
@@ -168,28 +169,14 @@ public class DatabaseQueryManager implements QueryManager {
 	 */
 
 	@Override
-	public PublicQuestion[] getPublicQuestions(final int startIndex, final int quantity) throws SQLException, DriverNotFoundException {
+	public PublicQuestion[] getPublicQuestions(final int startIndex, final int quantity) throws SQLException, DriverNotFoundException,
+			ModellToObjectException {
 		final Connection connection = ConnectionFactory.getInstance().getReaderConnection();
 		final String statement = SQLFactory.buildStatementForAreaSelect(Constants.SCHEMA_NAME, Constants.TABLE_PUBLIC_QUESTIONS, "createDate ASC",
 				startIndex, quantity);
 		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
 		final ResultSet resultSet = preparedStatement.executeQuery();
-		final List<PublicQuestion> publicQuestions = new ArrayList<PublicQuestion>();
-		while (resultSet.next()) {
-			final Long questionID = resultSet.getLong(1);
-			final String question = resultSet.getString(2);
-			final String additionalInformation = resultSet.getString(3);
-			final Long hostID = resultSet.getLong(4);
-			final String pictureURI = resultSet.getString(5);
-			final Date createDate = resultSet.getDate(6);
-			final Date endDate = resultSet.getDate(7);
-			final String language = resultSet.getString(8);
-			final Boolean optionExtension = resultSet.getBoolean(9);
-			final Boolean finished = resultSet.getBoolean(10);
-			final PublicQuestion publicQuestion = new PublicQuestion(questionID, question, additionalInformation, hostID, pictureURI, createDate,
-					endDate, optionExtension, finished, language);
-			publicQuestions.add(publicQuestion);
-		}
+		final List<PublicQuestion> publicQuestions = new ResultSetMapper<PublicQuestion>().mapRersultSetToObject(resultSet, PublicQuestion.class);
 		return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
 	}
 

@@ -2,13 +2,26 @@ package com.askit.entities;
 
 import java.util.Date;
 
+import com.thirdparty.entities.Column;
+import com.thirdparty.entities.Entity;
+
+@Entity
 public class Group {
 
-	private final Long groupID;
-	private final Date createDate;
-	private final Long adminID;
-	private final String groupname;
-	private final String groupPictureURI;
+	@Column(name = "groupID")
+	private Long groupID;
+	@Column(name = "createDate")
+	private Date createDate;
+	@Column(name = "adminID")
+	private Long adminID;
+	@Column(name = "groupname")
+	private String groupname;
+	@Column(name = "groupPictureURI")
+	private String groupPictureURI;
+
+	public Group() {
+		this(null, null, null, null, null);
+	}
 
 	public Group(final Date createDate, final Long adminID, final String groupname, final String groupPictureURI) {
 		this(null, createDate, adminID, groupname, groupPictureURI);
@@ -41,4 +54,25 @@ public class Group {
 	public String getGroupPictureURI() {
 		return groupPictureURI;
 	}
+
+	public void setGroupID(final Long groupID) {
+		this.groupID = groupID;
+	}
+
+	public void setCreateDate(final Date createDate) {
+		this.createDate = createDate;
+	}
+
+	public void setAdminID(final Long adminID) {
+		this.adminID = adminID;
+	}
+
+	public void setGroupname(final String groupname) {
+		this.groupname = groupname;
+	}
+
+	public void setGroupPictureURI(final String groupPictureURI) {
+		this.groupPictureURI = groupPictureURI;
+	}
+
 }

@@ -8,7 +8,7 @@ INSERT INTO APP.AppConstants VALUES (
 	"DEF_END_SUM_ANS",'3',"unsigned integer");
 	
 INSERT INTO APP.AppConstants VALUES (
-	"POINTS_QUESTION_PUPLIC",'5',"unsigned integer");
+	"POINTS_QUESTION_PUPLIC",'10',"unsigned integer");
 	
 INSERT INTO APP.AppConstants VALUES (
 	"POINTS_QUESTION_ANS_PUBLIC",'1',"unsigned integer");
