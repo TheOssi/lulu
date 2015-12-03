@@ -2,18 +2,35 @@ package com.askit.entities;
 
 import java.util.Date;
 
+import com.thirdparty.entities.Column;
+import com.thirdparty.entities.Entity;
+
+@Entity
 public class PublicQuestion {
 
-	private final Long questionID;
-	private final String question;
-	private final String additionalInformation;
-	private final Long hostID;
-	private final String pictureURI;
-	private final Date createDate;
-	private final Date endDate;
-	private final Boolean optionExtension;
-	private final Boolean finished;
-	private final String language;
+	@Column(name = "questionID")
+	private Long questionID;
+	@Column(name = "question")
+	private String question;
+	@Column(name = "additionalInformation")
+	private String additionalInformation;
+	@Column(name = "hostID")
+	private Long hostID;
+	@Column(name = "pictureURI")
+	private String pictureURI;
+	@Column(name = "createDate")
+	private Date createDate;
+	@Column(name = "endDate")
+	private Date endDate;
+	@Column(name = "optionExtension")
+	private Boolean optionExtension;
+	@Column(name = "finished")
+	private Boolean finished;
+	@Column(name = "language")
+	private String language;
+
+	public PublicQuestion() {
+	}
 
 	public PublicQuestion(final Long questionID, final String question, final String additionalInformation, final Long hostID,
 			final String pictureURI, final Date createDate, final Date endDate, final Boolean optionExtension, final Boolean finished,
@@ -68,6 +85,46 @@ public class PublicQuestion {
 
 	public String getLanguage() {
 		return language;
+	}
+
+	public void setQuestionID(final Long questionID) {
+		this.questionID = questionID;
+	}
+
+	public void setQuestion(final String question) {
+		this.question = question;
+	}
+
+	public void setAdditionalInformation(final String additionalInformation) {
+		this.additionalInformation = additionalInformation;
+	}
+
+	public void setHostID(final Long hostID) {
+		this.hostID = hostID;
+	}
+
+	public void setPictureURI(final String pictureURI) {
+		this.pictureURI = pictureURI;
+	}
+
+	public void setCreateDate(final Date createDate) {
+		this.createDate = createDate;
+	}
+
+	public void setEndDate(final Date endDate) {
+		this.endDate = endDate;
+	}
+
+	public void setOptionExtension(final Boolean optionExtension) {
+		this.optionExtension = optionExtension;
+	}
+
+	public void setFinished(final Boolean finished) {
+		this.finished = finished;
+	}
+
+	public void setLanguage(final String language) {
+		this.language = language;
 	}
 
 	@Override

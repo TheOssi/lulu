@@ -2,13 +2,25 @@ package com.askit.entities;
 
 import java.util.Date;
 
+import com.thirdparty.entities.Column;
+import com.thirdparty.entities.Entity;
+
+@Entity
 public class Message {
 
-	private final Long messageID;
-	private final Long groupID;
-	private final Long userID;
-	private final String message;
-	private final Date date;
+	@Column(name = "messageID")
+	private Long messageID;
+	@Column(name = "groupID")
+	private Long groupID;
+	@Column(name = "userID")
+	private Long userID;
+	@Column(name = "message")
+	private String message;
+	@Column(name = "date")
+	private Date date;
+
+	public Message() {
+	}
 
 	public Message(final Long groupID, final Long userID, final String message, final Date date) {
 		this(null, groupID, userID, message, date);
@@ -41,4 +53,25 @@ public class Message {
 	public Date getDate() {
 		return date;
 	}
+
+	public void setMessageID(final Long messageID) {
+		this.messageID = messageID;
+	}
+
+	public void setGroupID(final Long groupID) {
+		this.groupID = groupID;
+	}
+
+	public void setUserID(final Long userID) {
+		this.userID = userID;
+	}
+
+	public void setMessage(final String message) {
+		this.message = message;
+	}
+
+	public void setDate(final Date date) {
+		this.date = date;
+	}
+
 }

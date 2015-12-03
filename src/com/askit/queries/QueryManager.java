@@ -7,6 +7,7 @@ import com.askit.entities.PrivateQuestion;
 import com.askit.entities.PublicQuestion;
 import com.askit.entities.User;
 import com.askit.exception.DriverNotFoundException;
+import com.askit.exception.ModellToObjectException;
 
 public interface QueryManager {
 
@@ -105,13 +106,14 @@ public interface QueryManager {
 	 * questionID
 	 * 
 	 * @param startIndex
-	 *            the startindex; beginn is 1 (included)
+	 *            the startindex; beginn is 0 (excluded)
 	 * @param quantity
-	 *            how much should be selected
+	 *            how much public Questions should be selected
 	 * @return
 	 * @throws DriverNotFoundException
 	 * @throws SQLException
+	 * @throws ModellToObjectException
 	 */
-	public PublicQuestion[] getPublicQuestions(int startIndex, int quantity) throws SQLException, DriverNotFoundException;
+	public PublicQuestion[] getPublicQuestions(int startIndex, int quantity) throws SQLException, DriverNotFoundException, ModellToObjectException;
 
 }
