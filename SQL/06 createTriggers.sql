@@ -1,5 +1,8 @@
 USE APP;
 
+-- if abfrage überarbeiten
+-- all answered setzen im trigger
+
 DELIMITER \\
 CREATE DEFINER = 'appAdmin'@'localhost'
 	TRIGGER trigger_aUOnPrivateQuestionsToUsers_updateScores_checkFinished
@@ -16,8 +19,8 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 		DECLARE l_hostID INT UNSIGNED;
 		DECLARE l_points INT UNSIGNED;
 		
-		IF NEW.choosedAnswerID <> NULL 
-		AND OLD.choosedAnswerID = NULL THEN
+		-- IF NEW.choosedAnswerID IS NOT NULL
+		-- AND OLD.choosedAnswerID = NULL THEN<
 		
 			SELECT CAST( value AS UNSIGNED INTEGER ) FROM AppConstants 
 				WHERE name = "POINTS_QUESTION_ANS_PRIVATE"
@@ -25,7 +28,7 @@ CREATE DEFINER = 'appAdmin'@'localhost'
             
 			-- Update group scores
 			UPDATE APP.GroupsToUsers
-				SET score = (score + l_points1)
+				SET score = (score + l_points)
 			WHERE groupID = ( SELECT groupID FROM PrivateQuestions WHERE questionID = NEW.questionID) AND
 					userID = NEW.userID;
 			
@@ -44,7 +47,7 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 				
 			-- Select the sum of answered users if defOfEnd is 3 and set a Bool flag
 			IF l_definitionOfEnd = 3 THEN
-				SELECT sumOfUsersToAnswer FROM APP.Questions WHERE questionID = NEW.questionID INTO l_sumOfToAnsweredUsers;
+				SELECT sumOfUsersToAnswer FROM APP.PrivateQuestions WHERE questionID = NEW.questionID INTO l_sumOfToAnsweredUsers;
 				IF l_sumOfToAnsweredUsers = l_countAllAnsweredUsers THEN
 					SET l_sumOfAnsweredUsersReached = true;
 				END IF;
@@ -55,7 +58,7 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 				UPDATE APP.PrivateQuestions SET finished = 1 WHERE questionID = NEW.questionID;
 			END IF;
 			
-		END IF;	
+		-- END IF;	
 END \\
 DELIMITER ;
 

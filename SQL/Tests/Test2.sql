@@ -1,12 +1,5 @@
 -- Test for Trigger 'trigger_afterUpdateOnPrivateQuestionsToUsers_updateScores_checkFinished'
 
--- Fälle
-	-- DOE = 1 -> nichts passiert
-    -- DOE = 2 & allA -> finsih
-    -- DOE = 2 !& allA -> nichts passiert
-    -- DOE = 3 & SOUTA -> finish
-    -- DOE = 3 !& SOUTA -> nichts passiert
-
 USE APP;
 
 -- Create Users
@@ -48,32 +41,35 @@ VALUES (2,3,default);
 
 -- Create Private Questions
 INSERT INTO `app`.`privatequestions`
-VALUES (1,'THISISAQUESTIOpublicquestionsprivatequestionsN','THISISAADDINFO',1,1,'',NOW(),NOW(),0,1,null,'DE',false,null,defprivatequestionsault);
+VALUES (1,'THISISAQUESTION','THISISAADDINFO',1,1,'',NOW(),NOW(),0,1,null,'DE',false,null,false);
 
 INSERT INTO `app`.`privatequestions`
-VALUES (2,'THISISAQUESTION','THISISAADDINFO',2,1,'',NOW(),NOW(),0,2,null,'DE',false,null,defprivatequestionsault);
+VALUES (2,'THISISAQUESTION','THISISAADDINFO',2,1,'',NOW(),NOW(),0,2,null,'DE',false,null,false);
 
 INSERT INTO `app`.`privatequestions`
-VALUES (3,'THISISAQUESTION','THISISAADDINFO',3,1,'',NOW(),NOW(),0,2,null,'DE',false,null,defprivatequestionsault);
+VALUES (3,'THISISAQUESTION','THISISAADDINFO',3,1,'',NOW(),NOW(),0,2,null,'DE',false,null,false);
 
 INSERT INTO `app`.`privatequestions`
-VALUES (4,'THISISAQUESTION','THISISAADDINFO',1,2,'',NOW(),NOW(),0,3privatequestions,3,'DE',false,null,defprivatequestionsault);
+VALUES (4,'THISISAQUESTION','THISISAADDINFO',1,2,'',NOW(),NOW(),0,3,2,'DE',false,null,false);
 
 INSERT INTO `app`.`privatequestions`
-VALUES (5,'THISISAQUESTION','THISISAADDINFO',1,2,'',NOW(),NOW(),0,3,null,'DE',false,2,defprivatequestionsault);
+VALUES (5,'THISISAQUESTION','THISISAADDINFO',1,2,'',NOW(),NOW(),0,3,2,'DE',false,null,false);
 
 -- Create Answers Private Questions
 INSERT INTO `app`.`answersprivatequestions`
 VALUES(1,1,'THISISAANSWER');
 
 INSERT INTO `app`.`answersprivatequestions`
-VALUES(2,1,'THISISAANSWER');
+VALUES(2,2,'THISISAANSWER');
 
 INSERT INTO `app`.`answersprivatequestions`
-VALUES(3,2,'THISISAANSWER');
+VALUES(3,3,'THISISAANSWER');
 
 INSERT INTO `app`.`answersprivatequestions`
-VALUES(4,2,'THISISAANSWER');
+VALUES(4,4,'THISISAANSWER');
+
+INSERT INTO `app`.`answersprivatequestions`
+VALUES(5,5,'THISISAANSWER');
 
 -- Create Private Questions To Users
 INSERT INTO `app`.`privatequestionstousers`
@@ -124,14 +120,29 @@ VALUES(5,3,null);
 
 
 -- Update Private Questions To Users ( Answer to Bets )
+-- q1 
+UPDATE app.privatequestionstousers SET choosedAnswerID = 1 WHERE questionID = 1 AND userID = 1;
+UPDATE app.privatequestionstousers SET choosedAnswerID = 1 WHERE questionID = 1 AND userID = 2;
+UPDATE app.privatequestionstousers SET choosedAnswerID = 1 WHERE questionID = 1 AND userID = 3;
+-- q2 
+UPDATE app.privatequestionstousers SET choosedAnswerID = 2 WHERE questionID = 2 AND userID = 1;
+UPDATE app.privatequestionstousers SET choosedAnswerID = 2 WHERE questionID = 2 AND userID = 2;
+-- q3
+UPDATE app.privatequestionstousers SET choosedAnswerID = 3 WHERE questionID = 3 AND userID = 1;
+UPDATE app.privatequestionstousers SET choosedAnswerID = 3 WHERE questionID = 3 AND userID = 2;
+UPDATE app.privatequestionstousers SET choosedAnswerID = 3 WHERE questionID = 3 AND userID = 3;
+-- q4
+UPDATE app.privatequestionstousers SET choosedAnswerID = 4 WHERE questionID = 4 AND userID = 1;
+-- q5
+UPDATE app.privatequestionstousers SET choosedAnswerID = 5 WHERE questionID = 5 AND userID = 1;
+UPDATE app.privatequestionstousers SET choosedAnswerID = 5 WHERE questionID = 5 AND userID = 2;
 
 
 -- Question 1,2,4 : not finished
 -- Question 3,5 : finished
 
 -- Scores
-	-- User 1: GS-0 	G1-3x1-3 (Q1 & Q2 Q3)		G2-?x1-
-    -- User 2: GS-0 	G1-3x1-3  (Q1 & Q2 & Q3)	G2-?x1-
-    -- User 3: GS-0 	G1-2x1-2  (Q1 & Q3)			G2-?x1-
-
--- 
+	-- User 1: GS-0 	G1-3	G2-2
+    -- User 2: GS-0 	G1-3	G2-1
+    -- User 3: GS-0 	G1-2  	G2-0
+    

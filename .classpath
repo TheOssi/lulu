@@ -32,5 +32,10 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/BetTest/lib/javadoc/commons-logging-1.2-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/commons-lang3-3.4.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/BetTest/lib/javadoc/commons-lang3-3.4-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
