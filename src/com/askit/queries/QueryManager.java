@@ -14,6 +14,8 @@ import com.askit.exception.ModellToObjectException;
 
 public interface QueryManager {
 
+	// TODO question abbrechen
+
 	/*
 	 * Private Methods
 	 */
@@ -102,7 +104,7 @@ public interface QueryManager {
 	public void createOneTimeQuestion(PrivateQuestion question) throws SQLException, DriverNotFoundException;
 
 	/**
-	 * 
+	 *
 	 * @param answer
 	 * @throws DriverNotFoundException
 	 * @throws SQLException
@@ -110,7 +112,7 @@ public interface QueryManager {
 	public void addAnswerToPublicQuestion(Answer answer) throws SQLException, DriverNotFoundException;
 
 	/**
-	 * 
+	 *
 	 * @param answer
 	 * @throws DriverNotFoundException
 	 * @throws SQLException
@@ -274,7 +276,7 @@ public interface QueryManager {
 
 	/**
 	 * returns the place in the Ranking of a user in a group
-	 * 
+	 *
 	 * @param userID
 	 * @param groupID
 	 * @return
@@ -292,19 +294,19 @@ public interface QueryManager {
 	public String getPasswordHash(long userID) throws SQLException, DriverNotFoundException;
 
 	/**
-	 * 
+	 *
 	 *
 	 * @param userID
 	 * @return
 	 * @throws DriverNotFoundException
 	 * @throws SQLException
-	 * 
+	 *
 	 */
 	public String getLanguage(long userID) throws SQLException, DriverNotFoundException;
 
 	/**
 	 * get the profilePictureURI a user
-	 * 
+	 *
 	 * @param userID
 	 * @return
 	 * @throws DriverNotFoundException
@@ -321,7 +323,7 @@ public interface QueryManager {
 	public String getGroupPictureURI(long groupID);
 
 	/**
-	 * 
+	 *
 	 *
 	 * @param groupID
 	 * @param startIndex
@@ -331,21 +333,21 @@ public interface QueryManager {
 	public PrivateQuestion[] getOldPrivateQuestions(long groupID, int startIndex, int quantity);
 
 	/**
-	 * 
+	 *
 	 * @param questionID
 	 * @return
 	 */
 	public Answer[] getAnswersOfPublicQuestionAndCount(long questionID);
 
 	/**
-	 * 
+	 *
 	 * @param questionID
 	 * @return
 	 */
 	public Answer[] getAnswersOfPrivateQuestionAndCount(long questionID);
 
 	/**
-	 * 
+	 *
 	 * @param userID
 	 * @param startIndex
 	 * @param quantity
@@ -354,7 +356,7 @@ public interface QueryManager {
 	public PublicQuestion[] getActivePublicQuestionsOfUser(long userID, int startIndex, int quantity);
 
 	/**
-	 * 
+	 *
 	 * @param userID
 	 * @param startIndex
 	 * @param quantity
@@ -363,7 +365,7 @@ public interface QueryManager {
 	public PrivateQuestion[] getActivePrivateQuestionsOfUser(long userID, int startIndex, int quantity);
 
 	/**
-	 * 
+	 *
 	 * @param userID
 	 * @param startIndex
 	 * @param quantity
@@ -372,7 +374,7 @@ public interface QueryManager {
 	public PublicQuestion[] getOldPublicQuestionsOfUser(long userID, int startIndex, int quantity);
 
 	/**
-	 * 
+	 *
 	 * @param userID
 	 * @param startIndex
 	 * @param quantity
@@ -381,16 +383,71 @@ public interface QueryManager {
 	public PrivateQuestion[] getOldPrivateQuestionsOfUser(long userID, int startIndex, int quantity);
 
 	/**
-	 * 
+	 *
 	 * @param userID
 	 * @return
 	 */
 	public Pair<Group, Integer>[] getAllGroupScoresAndGlobalScoreOfUser(long userID);
 
+	/**
+	 *
+	 * @param groupID
+	 * @return
+	 */
 	public Pair<User, Integer>[] getUsersOfGroupsWithScore(long groupID);
 
 	/*
 	 * Set Methods
 	 */
+
+	public void setLanguage(long userID, String newLanguage);
+
+	public void setProfilPictureOfUser(long userID, String newProfilePictureURI);
+
+	public void setGroupPicture(long groupID, String newGroupPictureURI);
+
+	public void setPasswordHash(long userID, String newPasswordHash);
+
+	public void setSelectedAnswerOfPublicQuestion(long userID, long questionID, long answerID);
+
+	public void setSelectedAnswerOfPrivateQuestion(long userID, long questionID, long answerID);
+
+	public void setSelectedAnswerOfPrivateQuestion(long questionID, long answerID);
+
+	public void setGroupAdmin(long groupID, long newAdmminID);
+
+	public void setPhoneNumberHash(long userID, String newPhoneNumberHash);
+
+	public void setGroupName(long userID, String newGroupName);
+
+	public void setUsername(long userID, String newUsername);
+
+	/*
+	 * delete Methods
+	 */
+
+	public void deletePrivateQuestion(long questionID);
+
+	public void deleteUserFromGroup(long groupID, long userID);
+
+	public void deleteGroup(long groupID);
+
+	public void deleteContact(long userID, long contactID);
+
+	/*
+	 * search Methods
+	 */
+
+	public Group[] searchForGroup(long userID, String nameSearchPattern);
+
+	public PrivateQuestion[] searchForPrivateQuestionInGroup(long groupID, String groupnameSearchPattern);
+
+	public PublicQuestion[] searchForPublicQuestion(String nameSearchPattern);
+
+	/*
+	 * other
+	 */
+
+	public void finishPrivateQuestion(long questionID);
 
 }

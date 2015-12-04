@@ -413,4 +413,118 @@ public class DatabaseQueryManager implements QueryManager {
 		return null;
 	}
 
+	@Override
+	public void setLanguage(final long userID, final String newLanguage) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setProfilPictureOfUser(final long userID, final String newProfilePictureURI) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setGroupPicture(final long groupID, final String newGroupPictureURI) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setPasswordHash(final long userID, final String newPasswordHash) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setSelectedAnswerOfPublicQuestion(final long userID, final long questionID, final long answerID) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setSelectedAnswerOfPrivateQuestion(final long userID, final long questionID, final long answerID) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setSelectedAnswerOfPrivateQuestion(final long questionID, final long answerID) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setGroupAdmin(final long groupID, final long newAdmminID) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setPhoneNumberHash(final long userID, final String newPhoneNumberHash) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setGroupName(final long userID, final String newGroupName) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setUsername(final long userID, final String newUsername) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void deletePrivateQuestion(final long questionID) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void deleteUserFromGroup(final long groupID, final long userID) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void deleteGroup(final long groupID) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void deleteContact(final long userID, final long contactID) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public Group[] searchForGroup(final long userID, final String nameSearchPattern) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PrivateQuestion[] searchForPrivateQuestionInGroup(final long groupID, final String groupnameSearchPattern) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PublicQuestion[] searchForPublicQuestion(final String nameSearchPattern) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void finishPrivateQuestion(final long questionID) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

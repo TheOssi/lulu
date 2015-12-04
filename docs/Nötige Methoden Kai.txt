@@ -90,9 +90,7 @@
 		public User[] getUsersOfAnswerPrivateQuestion(long questionID);
 		/USERS?QUESTIONID=%QUESTIONID%&ANSWERID=%ANSWERID%&PUBLIC=TRUE
 		public User[] getUsersOfAnswerPublicQuestion(long questionID);
-		/USERS?QUESTIONID=%QUESTIONID%&ANSWERID=%ANSWERID%
-		//TODO sascha
-    
+		/USERS?QUESTIONID=%QUESTIONID%&ANSWERID=%ANSWERID%    
 
     // Liefert alle Nutzernamen der Gruppe.
     //inkl Bild
@@ -181,94 +179,76 @@
 
     // Setze die ausgewählte Sprache.
     public void setLanguage()
-
-    
+		public void setLanguage
 
     // Setze ein neues Bild als Profilbild.
     public void setUserProfilPicture()
-
-    
+		public void setProfilPictureOfUser    
 
     // Setze ein neues Bild als Gruppenbild.
     public void setGroupPicture()
-
     
-
     // Setzt ein neues Passwort.
-    public void setPassword()
-
+	public void setPassword	
+		public void setPasswordHash
     
-
+    // Setze die vom User gewählte Antwort. 
+    public void setSelectedPublicAnswer()
+    	public void setSelectedAnswerOfPublicQuestion
+    		
     // Setze die vom User gewählte Antwort.
-    public void setSelectedAnswer()
-
+    public void setSelectedPrivateAnswer()
+		public void setSelectedAnswerOfPrivateQuestion
     
-
     //Nach Ende der Wette, kann der Admin die richtige Antwort setzen. Nur in Gruppen!
     public void setRightAnswer()
-
-    
+		public void setSelectedAnswerOfPrivateQuestion
 
     // Setze einen anderen User der Gruppe als Admin.
     public void setGroupAdmin()
-
+		public void setGroupAdmin()
     
-
     // Setze eine neue Handynummer
     public void setPhoneNumber()
-
-    
-
+   		public void setPhoneNumberHash
+   		
     // Setze den Namen einer Gruppe.
-    public void setGroupName()
-
-    
-
+    public void setGroupName()   
+		public void setGroupName
+		
     // Setze einen neuen Usernamen
     public void setUsername()
-
+		 public void setUsername
     
-
     // Der Admin hat die Möglichkeit eine Frage zu löschen.
-    public void deleteBet()
-
-    
+    public void deleteQuestion()
+   		public void deletePrivateQuestion 	
 
     // Verlassen einer Gruppe. Oder der Admin löscht jemanden.
     public void deleteFromGroup()
-
+		 public void deleteUserFromGroup
     
-
     // Die gesamte Gruppe löschen. Kann nur der Admin der Gruppe.
     public void deleteGroup()
-
-    
+		public void deleteGroup
 
     // Lösche einen anderen User von der Freundesliste.
     public void deleteFriend()
-
+		public void deleteContact
     
-
     // Suche in eigenen Gruppen.
-    //Nach Name
     public void searchInMyGroups()
-
+		public Group[] searchForGroup
     
-
     // Suche in einer Gruppe nach einer Frage.
-    // Name
     public void searchInGroupForBet()
-
+		public PrivateQuestion[] searchForPrivateQuestionInGroup
     
-
     // Suche öffentlich nach Fragen, die mit dem Wort/ Filter was zu tun haben (DE oder INT wird mitgeschickt).
-    //Name
     public void seachPublicQuestion()
-
+		public PublicQuestion[] searchForPublicQuestion
     
-
     // Der Admin kann eine Frage sofort beenden. Nur in Gruppen möglich.
     public void finishQuestion()
-
+		public void finishPrivateQuestion
     
-
