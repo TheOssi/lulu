@@ -15,26 +15,23 @@ import com.thirdparty.entities.Column;
 import com.thirdparty.entities.Entity;
 
 public class ResultSetMapper<T> {
-	public List<T> mapRersultSetToObject(final ResultSet resultSet, final Class<T> outputClass) throws ModellToObjectException {
+
+	public List<T> mapResultSetToObject(final ResultSet resultSet, final Class<T> outputClass) throws ModellToObjectException {
 		final List<T> outputList = new ArrayList<T>();
+
 		try {
 			if (resultSet != null) {
-				// check if outputClass has 'Entity' annotation
 				if (outputClass.isAnnotationPresent(Entity.class)) {
-					// get the resultset metadata
-					final ResultSetMetaData rsmd = resultSet.getMetaData();
-					// get all the attributes of outputClass
+					final ResultSetMetaData metaData = resultSet.getMetaData();
 					final Field[] fields = outputClass.getDeclaredFields();
+
 					while (resultSet.next()) {
-						final T bean = (T) outputClass.newInstance();
-						for (int iterator = 0; iterator < rsmd.getColumnCount(); iterator++) {
-							// getting the SQL column name
-							final String columnName = rsmd.getColumnName(iterator + 1);
-							// reading the value of the SQL column
+						final T bean = outputClass.newInstance();
+
+						for (int iterator = 0; iterator < metaData.getColumnCount(); iterator++) {
+							final String columnName = metaData.getColumnName(iterator + 1);
 							final Object columnValue = resultSet.getObject(iterator + 1);
-							// iterating over outputClass attributes to check if
-							// any attribute has 'Column' annotation with
-							// matching 'name' value
+
 							for (final Field field : fields) {
 								if (field.isAnnotationPresent(Column.class)) {
 									final Column column = field.getAnnotation(Column.class);
@@ -44,6 +41,7 @@ public class ResultSetMapper<T> {
 									}
 								}
 							}
+
 						}
 						outputList.add(bean);
 					}

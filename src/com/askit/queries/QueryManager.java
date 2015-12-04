@@ -2,6 +2,8 @@ package com.askit.queries;
 
 import java.sql.SQLException;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.askit.entities.Answer;
 import com.askit.entities.Group;
 import com.askit.entities.PrivateQuestion;
@@ -100,12 +102,20 @@ public interface QueryManager {
 	public void createOneTimeQuestion(PrivateQuestion question) throws SQLException, DriverNotFoundException;
 
 	/**
-	 * add answer to a question
-	 *
-	 * @param groupID
-	 * @param question
+	 * 
+	 * @param answer
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
 	 */
-	public void addAnswerToQuestion(long groupID, String question);
+	public void addAnswerToPublicQuestion(Answer answer) throws SQLException, DriverNotFoundException;
+
+	/**
+	 * 
+	 * @param answer
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
+	 */
+	public void addAnswerToPrivateQuestion(Answer answer) throws SQLException, DriverNotFoundException;
 
 	/*
 	 * Get Methods
@@ -134,16 +144,22 @@ public interface QueryManager {
 	 *
 	 * @return
 	 * @param questionID
+	 * @throws ModellToObjectException
+	 * @throws SQLException
+	 * @throws DriverNotFoundException
 	 */
-	public PublicQuestion getPublicQuesion(long questionID);
+	public PublicQuestion getPublicQuesion(long questionID) throws ModellToObjectException, SQLException, DriverNotFoundException;
 
 	/**
 	 * return a specific PrivateQuestion
 	 *
 	 * @param questionID
 	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
+	 * @throws ModellToObjectException
 	 */
-	public PrivateQuestion getPrivateQuestion(long questionID);
+	public PrivateQuestion getPrivateQuestion(long questionID) throws ModellToObjectException, SQLException, DriverNotFoundException;
 
 	/**
 	 * returns all questions of a group within a puffer
@@ -160,16 +176,21 @@ public interface QueryManager {
 	 *
 	 * @param searchPattern
 	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
+	 * @throws ModellToObjectException
 	 */
-	public User[] getUsersByUsername(String searchPattern);
+	public User[] getUsersByUsername(String searchPattern) throws ModellToObjectException, SQLException, DriverNotFoundException;
 
 	/**
 	 * returns the username of a user
 	 *
 	 * @param userID
 	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
 	 */
-	public String getUsername(long userID);
+	public String getUsername(long userID) throws SQLException, DriverNotFoundException;
 
 	/**
 	 * returns all users of a PublicQuestion
@@ -192,7 +213,7 @@ public interface QueryManager {
 	 * @param questionID
 	 * @return
 	 */
-	public User[] getUsersOfAnswerPrivateQuestion(long questionID);
+	public User[] getUsersOfAnswerPrivateQuestion(long questionID, long answerID);
 
 	/**
 	 *
@@ -200,7 +221,7 @@ public interface QueryManager {
 	 * @param questionID
 	 * @return
 	 */
-	public User[] getUsersOfAnswerPublicQuestion(long questionID);
+	public User[] getUsersOfAnswerPublicQuestion(long questionID, long answerID);
 
 	/**
 	 * returns the users of a group
@@ -214,8 +235,10 @@ public interface QueryManager {
 	 *
 	 * @param userID
 	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
 	 */
-	public Long getUserScoreOfGlobal(long userID);
+	public Long getUserScoreOfGlobal(long userID) throws SQLException, DriverNotFoundException;
 
 	/**
 	 *
@@ -228,8 +251,10 @@ public interface QueryManager {
 	 *
 	 * @param userID
 	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
 	 */
-	public String getPhoneNumberHash(long userID);
+	public String getPhoneNumberHash(long userID) throws SQLException, DriverNotFoundException;
 
 	/**
 	 *
@@ -248,7 +273,8 @@ public interface QueryManager {
 	public Answer getSelectedAnswerInPrivateQuestion(long questionID, long userID);
 
 	/**
-	 *
+	 * returns the place in the Ranking of a user in a group
+	 * 
 	 * @param userID
 	 * @param groupID
 	 * @return
@@ -256,30 +282,38 @@ public interface QueryManager {
 	public Long getRankingInGroup(long userID, long groupID);
 
 	/**
-	 * returns the place in the Ranking of a user in a group
-	 *
-	 * @param userID
-	 * @return
-	 */
-	public String getPasswordHash(long userID);
-
-	/**
 	 * returns the passwordHash of a user
 	 *
 	 * @param userID
 	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
 	 */
-	public String getLanguage(long userID);
+	public String getPasswordHash(long userID) throws SQLException, DriverNotFoundException;
 
 	/**
+	 * 
 	 *
 	 * @param userID
 	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
+	 * 
 	 */
-	public String getProfilePictureURI(long userID);
+	public String getLanguage(long userID) throws SQLException, DriverNotFoundException;
 
 	/**
 	 * get the profilePictureURI a user
+	 * 
+	 * @param userID
+	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
+	 */
+	public String getProfilePictureURI(long userID) throws SQLException, DriverNotFoundException;
+
+	/**
+	 * get the groupPicture
 	 *
 	 * @param groupID
 	 * @return
@@ -287,7 +321,7 @@ public interface QueryManager {
 	public String getGroupPictureURI(long groupID);
 
 	/**
-	 * get the groupPicture
+	 * 
 	 *
 	 * @param groupID
 	 * @param startIndex
@@ -295,6 +329,65 @@ public interface QueryManager {
 	 * @return
 	 */
 	public PrivateQuestion[] getOldPrivateQuestions(long groupID, int startIndex, int quantity);
+
+	/**
+	 * 
+	 * @param questionID
+	 * @return
+	 */
+	public Answer[] getAnswersOfPublicQuestionAndCount(long questionID);
+
+	/**
+	 * 
+	 * @param questionID
+	 * @return
+	 */
+	public Answer[] getAnswersOfPrivateQuestionAndCount(long questionID);
+
+	/**
+	 * 
+	 * @param userID
+	 * @param startIndex
+	 * @param quantity
+	 * @return
+	 */
+	public PublicQuestion[] getActivePublicQuestionsOfUser(long userID, int startIndex, int quantity);
+
+	/**
+	 * 
+	 * @param userID
+	 * @param startIndex
+	 * @param quantity
+	 * @return
+	 */
+	public PrivateQuestion[] getActivePrivateQuestionsOfUser(long userID, int startIndex, int quantity);
+
+	/**
+	 * 
+	 * @param userID
+	 * @param startIndex
+	 * @param quantity
+	 * @return
+	 */
+	public PublicQuestion[] getOldPublicQuestionsOfUser(long userID, int startIndex, int quantity);
+
+	/**
+	 * 
+	 * @param userID
+	 * @param startIndex
+	 * @param quantity
+	 * @return
+	 */
+	public PrivateQuestion[] getOldPrivateQuestionsOfUser(long userID, int startIndex, int quantity);
+
+	/**
+	 * 
+	 * @param userID
+	 * @return
+	 */
+	public Pair<Group, Integer>[] getAllGroupScoresAndGlobalScoreOfUser(long userID);
+
+	public Pair<User, Integer>[] getUsersOfGroupsWithScore(long groupID);
 
 	/*
 	 * Set Methods

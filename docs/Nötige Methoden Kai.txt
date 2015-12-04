@@ -2,7 +2,6 @@
     public void addUser()
 		public void registerUser()   
     
-    
     //Einen Nutzer einloggen
     public void login() 
    		// TODO Max 
@@ -11,167 +10,149 @@
      public void logout
      	// TODO Max
      
-     
-
     // Füge eine Gruppe hinzu
     public void addGroup()
 		public void createNewGroup
     
-
     // Einen Benutzer zu einer Gruppe hinzufügen.
     public void addUserToGroup()
 		public void addUserToGroup
     
-
     // Füge einen anderen User zu der Freundesliste hinzu.
     public void addNewFriend()
 		public void addContact
     
-
     // Füge eine Benutzer zu einer öffentlchen Frage hinzu.
     public void addUserToQuestion()
-    
     
     //Fügt einen Nutezr zu einer OTQ hinzu (Flag für Wette)
     addUserToOneTimeQuestion
 		public void addUserToOneTimeQuestion	
 
-
     // Füge eine öffentliche Wette oder Frage hinzu. (Attribut wo (DE oder INT) wird mitgeschickt).
     public void addPublicQuestion() 
 		public void createPublicQuestion
     
-
     //Füge eine Frage in einer Gruppe hinzu
     //Falg für Wette
     public void addQuestionInGroup()
    		public void createNewQuestionInGroup 
-
 
     // Erstelle eine private Frage. (Wird nur unter Aktiv angezeigt)
     //Flag für Wette
     public void addOneTimeQuestion()
 		public void createOneTimeQuestion
     
-
-    // Füge zu der Frage eine mögliche Antwort hinzu.
-    public void addAnswer()
-		public void addAnswerToQuestion
+    // Füge zu der Ö Frage eine mögliche Antwort hinzu.
+    public void addPublicAnswer()
+		public void addAnswerToPublicQuestion
+		
+	// Füge zu der P Frage eine mögliche Antwort hinzu.	
+	public void addPrivateAnswer
+		public void addAnswerToPrivateQuestion
     
-
-    //Liefert eine Frage mit allen dazugehörigen Daten zurück.
-    public void getQuestion()
-		public PublicQuestion getPublicQuesion()
+    //Liefert eine privet Frage mit allen dazugehörigen Daten zurück.
+    public void getPrivateQuestion()
 		public PrivateQuestion getPrivateQuestion()
+		
+	//Liefert eine öffentliche Frage mit allen dazugehörigen Daten zurück.
+	public void getPublicQuesion()
+		public PublicQuestion getPublicQuesion()
     
-
     // Liefert alle Fragen einer Gruppe zurück und deren Metdaten.
     public void getGroupQuestion()
 		public PrivateQuestion[] getQuestionsOfGroup	
 
     // Liefert eine Liste aller Fragen im Public Bereich (DE oder INT wird mitgeschickt).
-    //Puffer
     public void getPublicQuestions()
 		public PublicQuestion[] getPublicQuestions
     
-
     // Dem Server wird ein UserName übergeben und es sollen alle ausgegeben werden, die in Frage kommen.
     public void getUserWithName()
 		public User[] getUsersByUsername
     
-
     // Liefert den Nutzernamen eines Benutzers zurück.
     public void getUserName()
 		public String getUsername
     
+	// Liefert alle Nutzernamen einer öffentlichen Frage zurück.	
+	public void getAllUserNamesPublicQuestion
+		public User[] getUsersOfPublicQuestion
+		
+	// Liefert alle Nutzernamen einer private Frage zurück.		
+	public void getAllUserNamesPrivateQuestion
+    	public User[] getUsersOfPrivateQuestion
 
-    // Liefert alle Nutzernamen einer Frage zurück.
-    //inkl BIld
-    public void getAllUserNamesQuestion()
-		public User[] getUsersOfPublicQuestion(long questionID);
-		public User[] getUsersOfPrivateQuestion(long questionID);
-		//TODO sascha
-    
-
-    //Liefert die Nutzernamen, die eine bestimmte Antwort ausgewählt haben.
-    //inkl Bild
-    public void getUserNamesAnswer()
-		public User[] getUsersOfAnswerPrivateQuestion(long questionID);
-		public User[] getUsersOfAnswerPublicQuestion(long questionID);
-		//TODO sascha
-    
+   	//Liefert die Nutzernamen, die eine bestimmte Antwort einer öffentlichen Frage ausgewählt haben.
+	public void getUserNamesPublicAnswer
+		public User[] getUsersOfAnswerPublicQuestion	
+		
+	//Liefert die Nutzernamen, die eine bestimmte Antwort einer privaten Frage ausgewählt haben.
+	public void getUserNamesPrivateAnswer
+		public User[] getUsersOfAnswerPrivateQuestion
 
     // Liefert alle Nutzernamen der Gruppe.
-    //inkl Bild
     public void getGroupUserNames()
 		public User[] getUsersOfGroup
     
-
     // Liefert den globalen Score eines Benutzers zurück.
     public void getUserGlobalScore()
 		public Long getUserScoreOfGlobal
-    
 
     // Liefert den Score eines Benutzers einer Gruppe zurück.
     public void getUserGroupScore()
 		public Long getUserScoreInGroup
-    
 
     // Liefert eine Liste mit allen GruppenNamen in denen der User ist und seiner Punktzahl.
     // Es soll auch GlobalScore zurückgegeben werden.
     public void getUSerAllGroupsAndScores()
-		//TODO rückgabe
-    
+		public Pair<Group,Integer>[] getAllGroupScoresAndGlobalScoreOfUser;
 
     // Liefert alle Nutzer und deren Gruppen Score zurück. Sortiert nach dem Score.
     public void getGroupScore()
-		//TODO rückgabe
-    
+		public Pair<User,Integer>[] getUsersOfGroupsWithScore() 
 
     // Liefert die Handynummer vom User.
     public void getPhoneNumber()
-		public String getPhoneNumberHash
+		public String getPhoneNumberHash   
     
-
-    // Liefert die ausgewählte Antwort vom User zurück.
-    public void getSelectedAnswer() 
+	// Liefert die ausgewählte Antwort einer Ö Frage vom User zurück.
+	public void getSelectedPublicAnswer
 		public Answer getSelectedAnswerInPublicQuestion	
-		public Answer getSelectedAnswerInPrivateQuestion
-		//TODO sascha
-    
+		
+	// Liefert die ausgewählte Antwort einer P Frage vom User zurück
+	public void getSelectedPrivateAnswer
+		public Answer getSelectedAnswerInPrivateQuestion    
 
-    // Gibt alle möglichen Antworten zurück und die Anzahl, wie oft eine Antwort angeklickt worden ist.
-    public void getAllAnswersAndCount()
-		//TODO PublicQuestion & PrivateQuestions
+    // Gibt alle möglichen Antworten einer ÖF zurück und die Anzahl, wie oft eine Antwort angeklickt worden ist.
+    public void getAllPublicAnswersAndCount
+    	public Answer[] getAnswersOfPublicQuestionAndCount
     
-
+    // Gibt alle möglichen Antworten einer PF zurück und die Anzahl, wie oft eine Antwort angeklickt worden ist.
+	public void getAllPrivateAnswersAndCount
+		public Answer[] getAnswersOfPrivateQuestionAndCount
+   
     // Liefert den Platz in der Gruppe zurück.
     public void getRankingInGroup()
 		public Long getRankingInGroup
-    
-
+   
     // Liefert den Hash vom Passwort
     public void getPassword()
-		public String getPasswordHash
-    
+		public String getPasswordHash  
 
     // Liefert alle aktive Fragen des Benutzers zurück.
-    //Puffer
     public void getAktivQuestions()
-		//TODO PublicQuestion & PrivateQuestions
-    
+  		public PublicQuestion[] getActivePublicQuestionsOfUser
+		public PrivateQuestion[] getActivePrivateQuestionsOfUser 
 
     // Liefert alle vergangene Fragen des Benutzers zurück.
-    // Puffer
     public void getArchivQuestions()
-		//TODO PublicQuestion & PrivateQuestions
+    	public PublicQuestion[] getOldPublicQuestionsOfUser
+		public PrivateQuestion[] getOldPrivateQuestionsOfUser
     
-
     // Liefert alle vergangenen Fragen einer Gruppe zurück.
-    //Puffer
     public void getArchivQuestionsGroup()
 		public PrivateQuestion[] getOldPrivateQuestions
-    
     
     // Liefert das Bild einer Gruppe zurück
     public void getGroupPicture()
@@ -187,8 +168,6 @@
     public void getLanguage()
 		public String getLanguage
     
-
-
 
     // Setze die ausgewählte Sprache.
     public void setLanguage()
