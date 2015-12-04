@@ -222,7 +222,7 @@ public interface QueryManager {
 	 * @param userID
 	 * @return
 	 */
-	public Long getUserScoreInGroup(long userID);
+	public Long getUserScoreInGroup(long userID, long groupID);
 
 	/**
 	 *
