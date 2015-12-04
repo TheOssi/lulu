@@ -27,11 +27,19 @@ public class Constants {
 	public static final String TABLE_NOTIFICATIONS = "Notifications";
 	public static final String TABLE_NOTIFICATIONS_USERS = "NotificationsToUsers";
 	public static final String TABLE_NOTIFICATIONS_PARAMETERS = "NotificationsParameters";
-	
+
+	/*
+	 * Parameters Constants
+	 */
+
 	public static final String PARAMETERS_GROUPID = "GROUPID";
 	public static final String PARAMETERS_SEARCH = "SEARCH";
 	public static final String PARAMETERS_PUBLIC = "PUBLIC";
 	public static final String PARAMETERS_QUESTIONID = "QUESTIONID";
 	public static final String PARAMETERS_SESSIONHASH = "SESSIONHASH";
-    public static final String PARAMETERS_ANSWERID = "ANSWERID";
+	public static final String PARAMETERS_ANSWERID = "ANSWERID";
+	public static final String PARAMETERS_STARTINDEX = "START";
+	public static final String PARAMETERS_QUANTITY = "QUANTITY";
+	public static final String PARAMETERS_LANGUAGE = "LANGUAGE";
+
 }
