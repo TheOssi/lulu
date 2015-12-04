@@ -89,7 +89,7 @@ public class Faceservlet extends HttpServlet {
 	@Override
 	protected void doPut(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-
+		response.getWriter().print("Put");
 	}
 
 	@Override

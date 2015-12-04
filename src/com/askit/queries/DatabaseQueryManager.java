@@ -256,7 +256,7 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	@Override
-	public Long getUserScoreInGroup(final long userID) {
+	public Long getUserScoreInGroup(final long userID, final long groupID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
