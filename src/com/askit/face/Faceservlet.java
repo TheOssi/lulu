@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.askit.exception.DriverNotFoundException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
+import com.askit.exception.ModellToObjectException;
 import com.askit.exception.WrongHashException;
 import com.askit.face.innerclasses.GetRequest;
 import com.askit.queries.DatabaseQueryManager;
@@ -71,6 +72,9 @@ public class Faceservlet extends HttpServlet {
 		catch(final MissingParametersException e){
 			JSONBuilder jb = new JSONBuilder();
 			out.print(jb.createJSON(e));
+		}
+		catch(final ModellToObjectException e){
+			//TODO
 		}
 		
 		out.close();

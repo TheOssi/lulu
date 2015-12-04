@@ -41,5 +41,6 @@ public class Constants {
 	public static final String PARAMETERS_STARTINDEX = "START";
 	public static final String PARAMETERS_QUANTITY = "QUANTITY";
 	public static final String PARAMETERS_LANGUAGE = "LANGUAGE";
-
+	public static final String PARAMETERS_USERID = "USERID";
+	public static final String PARAMETERS_ACTIVE = "ACTIVE";
 }

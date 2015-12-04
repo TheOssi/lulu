@@ -33,6 +33,9 @@ public class GetRequest {
 	private final Pattern regExGroupPattern = Pattern.compile("/GROUP/([0-9]*)|/GROUP");
 	private final Pattern regExGroupsPattern = Pattern.compile("/GROUPS");
 
+	private final Pattern regExAnswerPattern = Pattern.compile("/ANSWER/([0-9]*)|/ANSWER");
+	private final Pattern regExAnswersPattern = Pattern.compile("/ANSWERS");
+
 	private final Pattern regExUserPattern = Pattern.compile("/USER/([0-9]*)|/USER");
 	private final Pattern regExUserScorePattern = Pattern.compile("/USER/SCORE/([0-9]*)");
 	private final Pattern regExUsersPattern = Pattern.compile("/USERS");
@@ -124,11 +127,11 @@ public class GetRequest {
 			// Public Flag --> true when "TRUE" , FALSE --> when not set
 			matcher = regExUsersPattern.matcher(pathInfo);
 			if (matcher.find()) {
-				String groupID = parameters.get(Constants.PARAMETERS_GROUPID)[0];
-				String searchPattern = parameters.get(Constants.PARAMETERS_SEARCH)[0];
-				Long questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
-				Long answerID = Long.parseLong(parameters.get(Constants.PARAMETERS_ANSWERID)[0]);
-				boolean isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
+				final String groupID = parameters.get(Constants.PARAMETERS_GROUPID)[0];
+				final String searchPattern = parameters.get(Constants.PARAMETERS_SEARCH)[0];
+				final Long questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
+				final Long answerID = Long.parseLong(parameters.get(Constants.PARAMETERS_ANSWERID)[0]);
+				final boolean isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
 				User[] users = null;
 
 				if (!groupID.isEmpty() || !searchPattern.isEmpty() || questionID != null) {
@@ -141,9 +144,9 @@ public class GetRequest {
 					} else if (questionID != null && answerID == null && !isPublic) {
 						users = qm.getUsersOfPrivateQuestion(questionID);
 					} else if (questionID != null && answerID != null && !isPublic) {
-						users = qm.getUsersOfAnswerPrivateQuestion(questionID,answerID);
+						users = qm.getUsersOfAnswerPrivateQuestion(questionID, answerID);
 					} else if (questionID != null && answerID != null && isPublic) {
-						users = qm.getUsersOfAnswerPublicQuestion(questionID,answerID);
+						users = qm.getUsersOfAnswerPublicQuestion(questionID, answerID);
 					}
 
 					out.println(jb.createJSON(users));
@@ -156,34 +159,85 @@ public class GetRequest {
 		// Question
 		matcher = regExQuestionPattern.matcher(pathInfo);
 		if (matcher.find()) {
+			id = Integer.parseInt(matcher.group(1));
+			boolean isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
+			if (id != null && !isPublic) {
+				out.println(jb.createJSON(qm.getPrivateQuestion(id)));
+
+			} else {
+				throw new MissingParametersException("Missing ID in Parameters");
+			}
 			return;
 		}
 		// Questions
-		matcher = regExQuestionPattern.matcher(pathInfo);
+		matcher = regExQuestionsPattern.matcher(pathInfo);
 		if (matcher.find()) {
-			Long groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
-			String searchPattern = parameters.get(Constants.PARAMETERS_SEARCH)[0];
-			Long questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
-			Long answerID = Long.parseLong(parameters.get(Constants.PARAMETERS_ANSWERID)[0]);
-			boolean isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
-			int startIndex = Integer.parseInt(parameters.get(Constants.PARAMETERS_STARTINDEX)[0]);
-			int quantity = Integer.parseInt(parameters.get(Constants.PARAMETERS_QUANTITY)[0]);
-			String language = parameters.get(Constants.PARAMETERS_LANGUAGE)[0];
+			final Long groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
+			final Long questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
+			final Long userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
+			final boolean isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
+			final boolean isExpired = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_ACTIVE)[0]);
+			final int startIndex = Integer.parseInt(parameters.get(Constants.PARAMETERS_STARTINDEX)[0]);
+			final int quantity = Integer.parseInt(parameters.get(Constants.PARAMETERS_QUANTITY)[0]);
+			final String language = parameters.get(Constants.PARAMETERS_LANGUAGE)[0];
 
-			PublicQuestion[] publicQuestions = null;
-			PrivateQuestion[] privateQuestions = null;
-			if (questionID == null && groupID != null && !isPublic && startIndex != 0 && quantity != 0){
-				privateQuestions = qm.getQuestionsOfGroup(groupID, startIndex, quantity);
-			}else if(questionID == null &&  groupID == null && isPublic && startIndex != 0 && quantity != 0 && language != null){
-				publicQuestions = qm.getPublicQuestions(startIndex, quantity, language);
-			}else if(questionID == null && groupID !=null &&!isPublic && startIndex != 0 && quantity != 0){
-				qm.getOldPrivateQuestions(groupID, startIndex, quantity);
-			}	
-			else if(questionID!=null && groupID == null &&!isPublic){
-				out.println(jb.createJSON(qm.getPrivateQuestion(questionID)));
+			if (isPublic) {
+				PublicQuestion[] publicQuestions;
+				if (userID == null && quantity != 0 && language != null) {
+					publicQuestions = qm.getPublicQuestions(startIndex, quantity, language);
+				} else if (userID != null && quantity != 0 && !isExpired) {
+					publicQuestions = qm.getActivePublicQuestionsOfUser(userID, startIndex, quantity);
+				} else if (userID != null && quantity != 0 && isExpired) {
+					publicQuestions = qm.getOldPublicQuestionsOfUser(userID, startIndex, quantity);
+				} else {
+					throw new MissingParametersException("No or not enough Parameters specified");
+				}
+				out.println(jb.createJSON(publicQuestions));
+			} else {
+				PrivateQuestion[] privateQuestions = null;
+				if (questionID == null && groupID != null && startIndex != 0 && quantity != 0) {
+					privateQuestions = qm.getQuestionsOfGroup(groupID, startIndex, quantity);
+				} else if (questionID == null && groupID != null && startIndex != 0 && quantity != 0 && isExpired) {
+					privateQuestions = qm.getOldPrivateQuestions(groupID, startIndex, quantity);
+				} else if (questionID != null && groupID == null && quantity == 0 && userID == null) {
+					out.println(jb.createJSON(qm.getPrivateQuestion(questionID)));
+				} else if (questionID == null && groupID == null && !isExpired && userID != null && startIndex != 0
+						&& quantity != 0) {
+					privateQuestions = qm.getActivePrivateQuestionsOfUser(userID, startIndex, quantity);
+				} else if (questionID == null && groupID == null && isExpired && userID != null && startIndex != 0
+						&& quantity != 0) {
+					privateQuestions = qm.getOldPrivateQuestionsOfUser(userID, startIndex, quantity);
+				} else {
+					throw new MissingParametersException("No or not enough Parameters specified");
+				}
+				out.println(jb.createJSON(privateQuestions));
 			}
-			
-			
+			return;
+		}
+		// Answer
+		matcher = regExAnswerPattern.matcher(pathInfo);
+		if (matcher.find()) {
+			return;
+		}
+		// Answers
+		matcher = regExAnswersPattern.matcher(pathInfo);
+		if (matcher.find()) {
+			final Long questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
+			final Long userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
+			final boolean isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
+			Answer[] answers;
+
+			if (questionID != null && userID == null && !isPublic) {
+				answers = qm.getAnswersOfPrivateQuestionAndCount(questionID);
+			} else if (questionID != null && userID == null && !isPublic) {
+				answers = qm.getAnswersOfPublicQuestionAndCount(questionID);
+			} else if (questionID != null && userID != null && !isPublic) {
+				answers = new Answer[1];
+				answers[0] = qm.getSelectedAnswerInPrivateQuestion(questionID, userID);
+			} else {
+				throw new MissingParametersException("No or not enough Parameters specified");
+			}
+
 			return;
 		}
 
