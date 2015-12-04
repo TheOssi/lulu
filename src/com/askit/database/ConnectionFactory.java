@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import com.askit.etc.Constants;
 import com.askit.exception.DriverNotFoundException;
 
 public class ConnectionFactory {
