@@ -133,4 +133,40 @@ public class SQLFactory {
 		return statement.toString();
 	}
 
+	public static String buildBeginOSimpleInstertStatement(final String schema, final String table) {
+		final StringBuilder statement = new StringBuilder();
+		statement.append("INSERT INTO ");
+		statement.append(schema);
+		statement.append(".");
+		statement.append(table);
+		statement.append(" VALUES ( ");
+		return statement.toString();
+	}
+
+	public static String buildBeginOfInsertStatement(final String schema, final String table, final String[] columns) {
+		final StringBuilder statement = new StringBuilder();
+		statement.append("INSERT INTO ");
+		statement.append(schema);
+		statement.append(".");
+		statement.append(table);
+		statement.append("(");
+		for (final String column : columns) {
+			statement.append(column);
+			statement.append(",");
+		}
+		statement.delete(statement.length() - 1, statement.length() + 1);
+		statement.append(")");
+		statement.append(" VALUES ( ");
+		return statement.toString();
+	}
+
+	public static String buildBeginOfUpdateStatement(final String schema, final String table) {
+		final StringBuilder statement = new StringBuilder();
+		statement.append("UPDATE  ");
+		statement.append(schema);
+		statement.append(".");
+		statement.append(table);
+		statement.append("SET ");
+		return statement.toString();
+	}
 }

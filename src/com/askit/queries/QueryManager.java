@@ -400,13 +400,13 @@ public interface QueryManager {
 	 * Set Methods
 	 */
 
-	public void setLanguage(long userID, String newLanguage);
+	public void setLanguage(long userID, String newLanguage) throws SQLException, DriverNotFoundException;
 
-	public void setProfilPictureOfUser(long userID, String newProfilePictureURI);
+	public void setProfilPictureOfUser(long userID, String newProfilePictureURI) throws SQLException, DriverNotFoundException;
 
 	public void setGroupPicture(long groupID, String newGroupPictureURI);
 
-	public void setPasswordHash(long userID, String newPasswordHash);
+	public void setPasswordHash(long userID, String newPasswordHash) throws SQLException, DriverNotFoundException;
 
 	public void setSelectedAnswerOfPublicQuestion(long userID, long questionID, long answerID);
 
@@ -416,11 +416,11 @@ public interface QueryManager {
 
 	public void setGroupAdmin(long groupID, long newAdmminID);
 
-	public void setPhoneNumberHash(long userID, String newPhoneNumberHash);
+	public void setPhoneNumberHash(long userID, String newPhoneNumberHash) throws SQLException, DriverNotFoundException;
 
 	public void setGroupName(long userID, String newGroupName);
 
-	public void setUsername(long userID, String newUsername);
+	public void setUsername(long userID, String newUsername) throws SQLException, DriverNotFoundException;
 
 	/*
 	 * delete Methods
