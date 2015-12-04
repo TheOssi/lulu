@@ -27,8 +27,8 @@ import com.askit.queries.DatabaseQueryManager;
 import com.askit.queries.QueryManager;
 
 public class GetRequest {
-	private final Pattern regExBetPattern = Pattern.compile("/QUESTION/([0-9]*)|/QUESTION");
-	private final Pattern regExBetsPattern = Pattern.compile("/QUESTION");
+	private final Pattern regExQuestionPattern = Pattern.compile("/QUESTION/([0-9]*)|/QUESTION");
+	private final Pattern regExQuestionsPattern = Pattern.compile("/QUESTION");
 
 	private final Pattern regExGroupPattern = Pattern.compile("/GROUP/([0-9]*)|/GROUP");
 	private final Pattern regExGroupsPattern = Pattern.compile("/GROUPS");
@@ -44,7 +44,7 @@ public class GetRequest {
 	@SuppressWarnings("unused")
 	public GetRequest(final String pathInfo, final Map<String, String[]> parameters, final PrintWriter out)
 			throws ServletException, SQLException, DriverNotFoundException, WrongHashException, DuplicateHashException,
-			MissingParametersException {
+			MissingParametersException, ModellToObjectException {
 
 		Matcher matcher;
 		QueryManager qm = new DatabaseQueryManager();
@@ -64,9 +64,20 @@ public class GetRequest {
 
 		if (SessionManager.getInstance().isValidSessionHash(shash[0])) {
 
+			// SINGLE GROUP
 			matcher = regExGroupPattern.matcher(pathInfo);
 			if (matcher.find()) {
 				id = Integer.parseInt(matcher.group(1));
+
+				out.println(jb.createJSON(new Group(new Long(id), Calendar.getInstance().getTime(), new Long(1337),
+						"KaiIstGay", "/bla/blubber/fasel")));
+
+				return;
+			}
+
+			// ENTITYSET GROUP
+			matcher = regExGroupsPattern.matcher(pathInfo);
+			if (matcher.find()) {
 
 				out.println(jb.createJSON(new Group(new Long(id), Calendar.getInstance().getTime(), new Long(1337),
 						"KaiIstGay", "/bla/blubber/fasel")));
@@ -117,23 +128,22 @@ public class GetRequest {
 				String searchPattern = parameters.get(Constants.PARAMETERS_SEARCH)[0];
 				Long questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
 				Long answerID = Long.parseLong(parameters.get(Constants.PARAMETERS_ANSWERID)[0]);
-
 				boolean isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
 				User[] users = null;
+
 				if (!groupID.isEmpty() || !searchPattern.isEmpty() || questionID != null) {
-					if (!groupID.isEmpty()) {
+					if (!groupID.isEmpty() && searchPattern.isEmpty() && questionID == null) {
 						users = qm.getUsersOfGroup(Long.parseLong(groupID));
-					} else if (!searchPattern.isEmpty()) {
-						qm.getUsersByUsername(searchPattern);
-					} else if (questionID != null && isPublic) {
-						qm.getUsersOfPublicQuestion(questionID);
-					} else if (questionID != null) {
-						qm.getUsersOfPrivateQuestion(questionID);
-					} else if (questionID != null && answerID != null) {
-						qm.getUsersOfAnswerPrivateQuestion(questionID);
-					}
+					} else if (!searchPattern.isEmpty() && groupID.isEmpty()) {
+						users = qm.getUsersByUsername(searchPattern);
+					} else if (questionID != null && answerID == null && isPublic) {
+						users = qm.getUsersOfPublicQuestion(questionID);
+					} else if (questionID != null && answerID == null && !isPublic) {
+						users = qm.getUsersOfPrivateQuestion(questionID);
+					} else if (questionID != null && answerID != null && !isPublic) {
+						users = qm.getUsersOfAnswerPrivateQuestion(questionID,answerID);
 					} else if (questionID != null && answerID != null && isPublic) {
-						qm.getUsersOfAnswerPublicQuestion(questionID);
+						users = qm.getUsersOfAnswerPublicQuestion(questionID,answerID);
 					}
 
 					out.println(jb.createJSON(users));
@@ -142,15 +152,43 @@ public class GetRequest {
 				}
 				return;
 			}
-
-			matcher = regExBetsPattern.matcher(pathInfo);
-			if (matcher.find()) {
-				return;
-			}
-
-			throw new ServletException("Invalid URI");
 		}
-	
+		// Question
+		matcher = regExQuestionPattern.matcher(pathInfo);
+		if (matcher.find()) {
+			return;
+		}
+		// Questions
+		matcher = regExQuestionPattern.matcher(pathInfo);
+		if (matcher.find()) {
+			Long groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
+			String searchPattern = parameters.get(Constants.PARAMETERS_SEARCH)[0];
+			Long questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
+			Long answerID = Long.parseLong(parameters.get(Constants.PARAMETERS_ANSWERID)[0]);
+			boolean isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
+			int startIndex = Integer.parseInt(parameters.get(Constants.PARAMETERS_STARTINDEX)[0]);
+			int quantity = Integer.parseInt(parameters.get(Constants.PARAMETERS_QUANTITY)[0]);
+			String language = parameters.get(Constants.PARAMETERS_LANGUAGE)[0];
+
+			PublicQuestion[] publicQuestions = null;
+			PrivateQuestion[] privateQuestions = null;
+			if (questionID == null && groupID != null && !isPublic && startIndex != 0 && quantity != 0){
+				privateQuestions = qm.getQuestionsOfGroup(groupID, startIndex, quantity);
+			}else if(questionID == null &&  groupID == null && isPublic && startIndex != 0 && quantity != 0 && language != null){
+				publicQuestions = qm.getPublicQuestions(startIndex, quantity, language);
+			}else if(questionID == null && groupID !=null &&!isPublic && startIndex != 0 && quantity != 0){
+				qm.getOldPrivateQuestions(groupID, startIndex, quantity);
+			}	
+			else if(questionID!=null && groupID == null &&!isPublic){
+				out.println(jb.createJSON(qm.getPrivateQuestion(questionID)));
+			}
+			
+			
+			return;
+		}
+
+		throw new ServletException("Invalid URI");
+	}
 
 	public Integer getId() {
 		return id;
