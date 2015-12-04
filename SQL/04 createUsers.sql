@@ -5,7 +5,7 @@ CREATE USER 'appReader'@'localhost' IDENTIFIED BY 'marciMarcMarc';
 GRANT SELECT ON APP.* TO 'appReader'@'localhost';
 
 CREATE USER 'appWriter'@'localhost' IDENTIFIED BY 'felliFellFell';
-GRANT INSERT,UPDATE ON APP.* TO 'appWriter'@'localhost';
+GRANT SELECT,INSERT,UPDATE ON APP.* TO 'appWriter'@'localhost';
 
 CREATE USER 'appDeleter'@'localhost' IDENTIFIED BY 'lenkiLenkLenk';
 GRANT DELETE ON APP.Users TO 'appDeleter'@'localhost';
