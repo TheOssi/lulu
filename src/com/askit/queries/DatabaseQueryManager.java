@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.askit.database.ConnectionFactory;
-import com.askit.database.Constants;
+import com.askit.Constants;
 import com.askit.entities.Answer;
 import com.askit.entities.Group;
 import com.askit.entities.PrivateQuestion;

@@ -15,6 +15,7 @@ import com.askit.entities.Group;
 import com.askit.entities.PrivateQuestion;
 import com.askit.entities.PublicQuestion;
 import com.askit.entities.User;
+import com.askit.etc.Constants;
 import com.askit.exception.DriverNotFoundException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
@@ -47,7 +48,7 @@ public class GetRequest {
 
 		Matcher matcher;
 		QueryManager qm = new DatabaseQueryManager();
-		String shash[] = parameters.get("SESSIONHASH");
+		String shash[] = parameters.get(Constants.PARAMETERS_SESSIONHASH);
 		JSONBuilder jb = new JSONBuilder();
 		matcher = regExSessionPattern.matcher(pathInfo);
 		if (matcher.find()) {
@@ -90,7 +91,7 @@ public class GetRequest {
 			// /USER/SCORE/ID + GROUPID=ID Pattern returns Global or Group Score
 			matcher = regExUserScorePattern.matcher(pathInfo);
 			if (matcher.find()) {
-				Long groupID = Long.parseLong(parameters.get("GROUPID")[0]);
+				Long groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
 				Long userscore;
 				id = Integer.parseInt(matcher.group(1));
 				if (id != null) {
@@ -112,10 +113,12 @@ public class GetRequest {
 			// Public Flag --> true when "TRUE" , FALSE --> when not set
 			matcher = regExUsersPattern.matcher(pathInfo);
 			if (matcher.find()) {
-				String groupID = parameters.get("GROUPID")[0];
-				String searchPattern = parameters.get("SEARCH")[0];
-				Long questionID = Long.parseLong(parameters.get("QUESTIONID")[0]);
-				boolean isPublic = Boolean.parseBoolean(parameters.get("PUBLIC")[0]);
+				String groupID = parameters.get(Constants.PARAMETERS_GROUPID)[0];
+				String searchPattern = parameters.get(Constants.PARAMETERS_SEARCH)[0];
+				Long questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
+				Long answerID = Long.parseLong(parameters.get(Constants.PARAMETERS_ANSWERID)[0]);
+
+				boolean isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
 				User[] users = null;
 				if (!groupID.isEmpty() || !searchPattern.isEmpty() || questionID != null) {
 					if (!groupID.isEmpty()) {
@@ -123,11 +126,16 @@ public class GetRequest {
 					} else if (!searchPattern.isEmpty()) {
 						qm.getUsersByUsername(searchPattern);
 					} else if (questionID != null && isPublic) {
-						qm.getUsersOfAnswerPublicQuestion(questionID);
+						qm.getUsersOfPublicQuestion(questionID);
 					} else if (questionID != null) {
 						qm.getUsersOfPrivateQuestion(questionID);
+					} else if (questionID != null && answerID != null) {
+						qm.getUsersOfAnswerPrivateQuestion(questionID);
 					}
-					
+					} else if (questionID != null && answerID != null && isPublic) {
+						qm.getUsersOfAnswerPublicQuestion(questionID);
+					}
+
 					out.println(jb.createJSON(users));
 				} else {
 					throw new MissingParametersException("No Parameters specified.");
@@ -142,7 +150,7 @@ public class GetRequest {
 
 			throw new ServletException("Invalid URI");
 		}
-	}
+	
 
 	public Integer getId() {
 		return id;
