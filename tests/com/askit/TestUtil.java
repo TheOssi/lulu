@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 import com.askit.database.ConnectionFactory;
-import com.askit.database.Constants;
+import com.askit.etc.Constants;
 import com.askit.etc.Util;
 import com.askit.exception.DriverNotFoundException;
 import com.askit.queries.SQLFactory;
