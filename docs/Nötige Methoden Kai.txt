@@ -24,6 +24,7 @@
     
     // Füge eine Benutzer zu einer öffentlchen Frage hinzu.
     public void addUserToQuestion()
+    	public void addUserToPublicQuestion
     
     //Fügt einen Nutezr zu einer OTQ hinzu (Flag für Wette)
     addUserToOneTimeQuestion
