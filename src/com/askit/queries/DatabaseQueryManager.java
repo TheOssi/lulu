@@ -537,4 +537,10 @@ public class DatabaseQueryManager implements QueryManager {
 		preparedStatement.executeUpdate();
 	}
 
+	@Override
+	public void addUserToPublicQuestion(final long questionID, final long userID) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

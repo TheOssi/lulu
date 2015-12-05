@@ -119,6 +119,13 @@ public interface QueryManager {
 	 */
 	public void addAnswerToPrivateQuestion(Answer answer) throws SQLException, DriverNotFoundException;
 
+	/**
+	 *
+	 * @param questionID
+	 * @param userID
+	 */
+	public void addUserToPublicQuestion(long questionID, long userID);
+
 	/*
 	 * Get Methods
 	 */
