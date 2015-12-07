@@ -1,8 +1,5 @@
 USE APP;
 
--- if abfrage überarbeiten
--- all answered setzen im trigger
-
 DELIMITER \\
 CREATE DEFINER = 'appAdmin'@'localhost'
 	TRIGGER trigger_aUOnPrivateQuestionsToUsers_updateScores_checkFinished
@@ -19,8 +16,8 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 		DECLARE l_hostID INT UNSIGNED;
 		DECLARE l_points INT UNSIGNED;
 		
-		-- IF NEW.choosedAnswerID IS NOT NULL
-		-- AND OLD.choosedAnswerID = NULL THEN<
+		IF NEW.choosedAnswerID IS NOT NULL
+		AND OLD.choosedAnswerID IS NULL THEN
 		
 			SELECT CAST( value AS UNSIGNED INTEGER ) FROM AppConstants 
 				WHERE name = "POINTS_QUESTION_ANS_PRIVATE"
@@ -41,6 +38,10 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 			-- Count all Users of this question	
 			SELECT Count(*) FROM APP.PrivateQuestionsToUsers 
 				WHERE questionID = NEW.questionID INTO l_countAllUser;
+                
+			IF l_countAllUser = l_countAllAnsweredUsers THEN
+				SET l_allUsersHaveAnswered = true;
+			END IF;
 				
 			-- Select the definition of End
 			SELECT definitionOfEnd FROM APP.PrivateQuestions WHERE questionID = NEW.questionID INTO l_definitionOfEnd;
@@ -58,7 +59,7 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 				UPDATE APP.PrivateQuestions SET finished = 1 WHERE questionID = NEW.questionID;
 			END IF;
 			
-		-- END IF;	
+		END IF;	
 END \\
 DELIMITER ;
 
@@ -123,18 +124,21 @@ CREATE DEFINER = 'appAdmin'@'localhost'
     FOR EACH ROW BEGIN
 	DECLARE l_points INT UNSIGNED;
 	
-        IF NEW.selectedAnswerID <> NULL THEN
+        IF NEW.selectedAnswerID IS NOT NULL 
+        AND NEW.isBet IS TRUE THEN
 		
 			SELECT CAST( value AS UNSIGNED INTEGER ) FROM AppConstants 
-				WHERE name = "POINTS_QUESTION_RIGHT_ANSWER_PRIVATE"
+				WHERE name = "POINTS_BET_RIGHT_ANSWER_PRIVATE"
 			INTO l_points;
 			
 			-- Update group scores
-			UPDATE APP.GroupsToUsers
+			UPDATE APP.GroupsToUsers G
+				INNER JOIN APP.PrivateQuestionsToUsers P ON
+					choosedAnswerID = NEW.selectedAnswerID
+                    AND questionID = NEW.questionID
 				SET score = (score + l_points)
-			WHERE groupID = NEW.groupID AND
-				  userID = 
-					( SELECT userID FROM AnswersPrivateQuestions WHERE answerID = NEW.selectedAnswerID);
+			WHERE G.groupID = NEW.groupID AND
+				  G.userID = P.userID;
 			  
 		END IF;
 END \\

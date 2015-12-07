@@ -10,7 +10,7 @@ INSERT INTO `app`.`users`
 VALUES (2,'THISISAHASH2','THISISANOTHERHASH2','UNAME2',NOW(),0,'','DE');
 
 INSERT INTO `app`.`users`
-VALUES (3,'THISISAHASH3','THISISANOTHERHASH3','UNAME3',NOW(),4,'','DE');
+VALUES (3,'THISISAHASH3','THISISANOTHERHASH3','UNAME3',NOW(),0,'','DE');
 
 -- Create Groups
 INSERT INTO `app`.`groups`
@@ -27,7 +27,7 @@ INSERT INTO `app`.`groupstousers`
 VALUES (2,1,default);
 
 INSERT INTO `app`.`groupstousers`
-VALUES (1,2,default);
+VALUES (1,2,3);
 
 INSERT INTO `app`.`groupstousers`
 VALUES (2,2,default);
@@ -36,28 +36,30 @@ INSERT INTO `app`.`groupstousers`
 VALUES (1,3,default);
 
 INSERT INTO `app`.`groupstousers`
-VALUES (2,3,default);
+VALUES (2,3,7);
 
 
 -- Create Private Questions
 INSERT INTO `app`.`privatequestions`
-VALUES (1,'THISISAQUESTION','THISISAADDINFO',1,1,'',NOW(),NOW(),0,1,null,'DE',false,null,false);
+VALUES (1,'THISISAQUESTION','THISISAADDINFO',1,1,'',NOW(),NOW(),0,1,null,'DE',true,null,false);
 
 INSERT INTO `app`.`privatequestions`
-VALUES (2,'THISISAQUESTION','THISISAADDINFO',2,1,'',NOW(),NOW(),0,2,null,'DE',false,null,false);
+VALUES (2,'THISISAQUESTION','THISISAADDINFO',2,1,'',NOW(),NOW(),0,2,null,'DE',true,null,false);
 
 INSERT INTO `app`.`privatequestions`
 VALUES (3,'THISISAQUESTION','THISISAADDINFO',3,1,'',NOW(),NOW(),0,2,null,'DE',false,null,false);
 
 INSERT INTO `app`.`privatequestions`
-VALUES (4,'THISISAQUESTION','THISISAADDINFO',1,2,'',NOW(),NOW(),0,3,2,'DE',false,null,false);
+VALUES (4,'THISISAQUESTION','THISISAADDINFO',1,2,'',NOW(),NOW(),0,3,2,'DE',true,null,false);
 
 INSERT INTO `app`.`privatequestions`
-VALUES (5,'THISISAQUESTION','THISISAADDINFO',1,2,'',NOW(),NOW(),0,3,2,'DE',false,null,false);
+VALUES (5,'THISISAQUESTION','THISISAADDINFO',1,2,'',NOW(),NOW(),0,3,2,'DE',true,null,false);
 
 -- Create Answers Private Questions
 INSERT INTO `app`.`answersprivatequestions`
 VALUES(1,1,'THISISAANSWER');
+INSERT INTO `app`.`answersprivatequestions`
+VALUES(6,2,'THISISAANSWER');
 
 INSERT INTO `app`.`answersprivatequestions`
 VALUES(2,2,'THISISAANSWER');
@@ -143,6 +145,16 @@ UPDATE app.privatequestionstousers SET choosedAnswerID = 5 WHERE questionID = 5 
 
 -- Scores
 	-- User 1: GS-0 	G1-3	G2-2
-    -- User 2: GS-0 	G1-3	G2-1
-    -- User 3: GS-0 	G1-2  	G2-0
+    -- User 2: GS-0 	G1-6	G2-1
+    -- User 3: GS-0 	G1-2  	G2-7
+    
+UPDATE privatequestions SET selectedAnswerID = 1 WHERE questionID = 1;
+UPDATE privatequestions SET selectedAnswerID = 6 WHERE questionID = 2;
+UPDATE privatequestions SET selectedAnswerID = 5 WHERE questionID = 5;
+
+-- Scores
+	-- User 1: 		GS-0 	G1-8	G2-7
+    -- User 2: 		GS-0 	G1-11	G2-6
+    -- User 3: 		GS-0 	G1-7  	G2-7
+
     

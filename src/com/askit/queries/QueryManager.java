@@ -411,7 +411,7 @@ public interface QueryManager {
 
 	public void setProfilPictureOfUser(long userID, String newProfilePictureURI) throws SQLException, DriverNotFoundException;
 
-	public void setGroupPicture(long groupID, String newGroupPictureURI);
+	public void setGroupPicture(long groupID, String newGroupPictureURI) throws SQLException, DriverNotFoundException;
 
 	public void setPasswordHash(long userID, String newPasswordHash) throws SQLException, DriverNotFoundException;
 
