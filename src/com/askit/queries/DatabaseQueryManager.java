@@ -364,9 +364,13 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	@Override
-	public void setGroupPicture(final long groupID, final String newGroupPictureURI) {
-		// TODO Auto-generated method stub
-
+	public void setGroupPicture(final long groupID, final String newGroupPictureURI) throws SQLException, DriverNotFoundException {
+		String statement = SQLFactory.buildBeginOfUpdateStatement(SCHEMA, Constants.TABLE_GROUPS_TO_USERS);
+		statement += " " + COLUMNS_GROUPS[4] + " = ? WHERE " + COLUMNS_GROUPS[0] + " = ?;";
+		final PreparedStatement preparedStatement = ConnectionFactory.getInstance().getWriterConnection().prepareStatement(statement);
+		preparedStatement.setLong(1, groupID);
+		preparedStatement.setString(2, newGroupPictureURI);
+		preparedStatement.executeUpdate();
 	}
 
 	@Override
