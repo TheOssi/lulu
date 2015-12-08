@@ -122,7 +122,8 @@ CREATE TABLE Notifications (
 CREATE TABLE NotificationsParameters ( 
 	parameterID INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	notificationID INT UNSIGNED NOT NULL,
-	parameterText VARCHAR(100) NOT NULL,
+    parameterDescription VARCHAR(100) NOT NULL,
+	parameterData VARCHAR(100) NOT NULL,
 	PRIMARY KEY ( parameterID )
 );
 
