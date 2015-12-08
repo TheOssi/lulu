@@ -1,5 +1,8 @@
 USE APP;
 
+-- Trigger AFTER UPDATE ON PrivateQuestionsToUser
+-- If the choosenAnswer is set, the scores will updated
+-- Also if the confition for the end is reached, the question will marked as finished
 DELIMITER \\
 CREATE DEFINER = 'appAdmin'@'localhost'
 	TRIGGER trigger_aUOnPrivateQuestionsToUsers_updateScores_checkFinished
@@ -63,9 +66,11 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 END \\
 DELIMITER ;
 
+-- Trigger AFTER UPDATE ON PublicQuestionsToUsers
+-- If a user participate a public question the scores will be updateded
 DELIMITER \\
 CREATE DEFINER = 'appAdmin'@'localhost'
-	TRIGGER trigger_afterUpdateOnPublicQuestionsToUser_updateScores
+	TRIGGER trigger_aUPublicQuestionsToUser_updateScores
 	AFTER INSERT ON PublicQuestionsToUsers
     FOR EACH ROW BEGIN
 		DECLARE l_hostID INT UNSIGNED;
@@ -98,6 +103,8 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 END \\
 DELIMITER ;
 
+-- Trigger AFTER INSERT ON PublicQuestions
+-- If somebody creates a new public question, the score will be increased
 DELIMITER \\
 CREATE DEFINER = 'appAdmin'@'localhost'
 	TRIGGER trigger_afterInsertOnPublicQuestions_updateScores
@@ -119,10 +126,15 @@ DELIMITER ;
 
 DELIMITER \\
 CREATE DEFINER = 'appAdmin'@'localhost'
-	TRIGGER tg_aInsert_PrivateQuestions_updateScoresForRightAnswer
+	TRIGGER tg_aInsert_PrivateQuestions_updateScoresForRightAnswer_not
 	AFTER UPDATE ON PrivateQuestions
     FOR EACH ROW BEGIN
 	DECLARE l_points INT UNSIGNED;
+    DECLARE l_code_lost VARCHAR(4);
+	DECLARE l_code_win VARCHAR(4);
+    DECLARE l_code VARCHAR(4);
+    DECLARE l_notificationID INT UNSIGNED;
+    
 	
         IF NEW.selectedAnswerID IS NOT NULL 
         AND NEW.isBet IS TRUE THEN
@@ -139,7 +151,145 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 				SET score = (score + l_points)
 			WHERE G.groupID = NEW.groupID AND
 				  G.userID = P.userID;
-			  
+			
+            -- SELECT code for notification
+			SELECT value FROM APP.AppConstants 
+				WHERE name = "NOT_BET_WIN"
+			INTO l_code_win;
+            SELECT value FROM APP.AppConstants 
+				WHERE name = "NOT_BET_LOST"
+			INTO l_code_lost;
+    
+			-- INSERT notification for win
+			INSERT INTO APP.notifications VALUES (default, l_code_win);
+    
+			-- Get notification ID for win
+			SELECT MAX(notificationID) FROM APP.notifications INTO l_notificationID;
+    
+			-- Connect notification and user
+			INSERT INTO APP.notificationstousers 
+				SELECT P.userID,l_notificationID FROM APP.PrivateQuestionsToUsers P
+					WHERE choosedAnswerID = NEW.selectedAnswerID
+                    AND questionID = NEW.questionID;
+            
+			-- Add parameter for win
+			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'questionID',NEW.questionID);
+			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'question',NEW.question);
+			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupID',NEW.groupID);
+			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupname',( SELECT groupname FROM groups WHERE groupID = NEW.groupID ));
+            
+            -- INSERT notification for lost
+			INSERT INTO APP.notifications VALUES (default, l_code_lost);
+    
+			-- Get notification ID for lost
+			SELECT MAX(notificationID) FROM APP.notifications INTO l_notificationID;
+    
+			-- Connect notification and user for lost
+			INSERT INTO APP.notificationstousers 
+				SELECT P.userID,l_notificationID FROM APP.PrivateQuestionsToUsers P
+					WHERE choosedAnswerID != NEW.selectedAnswerID
+                    AND questionID = NEW.questionID;
+            
+			-- Add parameter for lost
+			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'questionID',NEW.questionID);
+			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'question',NEW.question);
+			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupID',NEW.groupID);
+			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupname',( SELECT groupname FROM groups WHERE groupID = NEW.groupID ));
+            
+            -- Frage zuende (auch für wetten?)
+            -- richtige Antort setzten
+            
+                  
 		END IF;
+        
+        IF NEW.finished IS true AND
+        OLD.finished IS false THEN
+        
+			-- SELECT code for notification
+			SELECT value FROM APP.AppConstants 
+				WHERE name = "NOT_BET_FIN"
+			INTO l_code_win;
+            
+			-- INSERT notification
+			INSERT INTO APP.notifications VALUES (default, l_code_lost);
+    
+			-- Get notification ID
+			SELECT MAX(notificationID) FROM APP.notifications INTO l_notificationID;
+    
+			-- Connect notification and user
+			INSERT INTO APP.notificationstousers 
+				SELECT P.userID,l_notificationID FROM APP.GroupsToUsers P
+					WHERE choosedAnswerID != NEW.selectedAnswerID
+                    AND questionID = NEW.questionID;
+            
+			-- Add parameter for lost
+			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'questionID',NEW.questionID);
+        
+        END IF;
 END \\
 DELIMITER ;
+
+DELIMITER \\
+CREATE DEFINER = 'appAdmin'@'localhost' 
+	TRIGGER tg_aInsertGroupsToUsers_not
+    AFTER INSERT ON GroupsToUsers
+    FOR EACH ROW BEGIN
+    DECLARE l_code VARCHAR(4);
+    DECLARE l_notificationID INT UNSIGNED;
+    
+	SELECT value FROM AppConstants 
+		WHERE name = "NOT_ADD_TO_GROUP"
+	INTO l_code;
+    
+    -- INSERT notification
+    INSERT INTO APP.notifications VALUES (default, l_code);
+    
+    -- Get notification ID
+    SELECT MAX(questionID) FROM APP.privatequestions INTO l_notificationID;
+    
+    -- Connect notification and user
+    INSERT INTO APP.notificationstousers VALUES (NEW.userID,l_notificationID);
+    
+    -- Add parametrs
+    INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupID',NEW.groupID);
+	INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupname',( SELECT groupname FROM groups WHERE groupID = NEW.groupID ));
+END \\
+DELIMITER ;
+
+
+DELIMITER \\
+CREATE DEFINER = 'appAdmin'@'localhost' 
+	TRIGGER tg_aInsertMessages_not
+    AFTER INSERT ON Messages
+    FOR EACH ROW BEGIN
+	DECLARE l_code VARCHAR(4);
+    DECLARE l_notificationID INT UNSIGNED;
+    
+    SELECT value FROM APP.AppConstants 
+		WHERE name = "NOT_NEW_MESS"
+	INTO l_code;
+    
+    -- INSERT notification
+    INSERT INTO APP.notifications VALUES (default, l_code);
+    
+    -- Get notification ID
+    SELECT MAX(notificationID) FROM APP.notifications INTO l_notificationID;
+    
+	-- Connect notification and user
+    INSERT INTO APP.notificationstousers SELECT G.userID,l_notificationID FROM APP.groupstousers G WHERE groupID = NEW.groupID;
+    
+    -- Add parameter
+	INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupID',NEW.groupID);
+    INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupname',( SELECT groupname FROM groups WHERE groupID = NEW.groupID ));
+
+END \\
+DELIMITER ;
+
+DELIMITER \\
+CREATE DEFINER = 'appAdmin'@'localhost' 
+	TRIGGER tg_aInsertPrivateQuestions_not
+    AFTER INSERT ON PrivateQuestions
+    FOR EACH ROW BEGIN
+    END \\
+DELIMITER ;
+
