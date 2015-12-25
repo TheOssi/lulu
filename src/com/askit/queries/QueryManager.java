@@ -436,17 +436,17 @@ public interface QueryManager {
 
 	public void setPasswordHash(long userID, String newPasswordHash) throws SQLException, DriverNotFoundException;
 
-	public void setSelectedAnswerOfPublicQuestion(long userID, long questionID, long answerID);
+	public void setChoosedAnswerOfPrivateQuestion(long userID, long questionID, long answerID) throws SQLException, DriverNotFoundException;
 
-	public void setSelectedAnswerOfPrivateQuestion(long userID, long questionID, long answerID);
+	public void setChoosedAnswerOfPublicQuestion(long userID, long questionID, long answerID) throws SQLException, DriverNotFoundException;
 
-	public void setSelectedAnswerOfPrivateQuestion(long questionID, long answerID);
+	public void setSelectedAnswerOfPrivateQuestion(long questionID, long answerID) throws SQLException, DriverNotFoundException;
 
-	public void setGroupAdmin(long groupID, long newAdmminID);
+	public void setGroupAdmin(long groupID, long newAdmminID) throws SQLException, DriverNotFoundException;
 
 	public void setPhoneNumberHash(long userID, String newPhoneNumberHash) throws SQLException, DriverNotFoundException;
 
-	public void setGroupName(long userID, String newGroupName);
+	public void setGroupName(long groupID, String newGroupName) throws SQLException, DriverNotFoundException;
 
 	public void setUsername(long userID, String newUsername) throws SQLException, DriverNotFoundException;
 
@@ -454,28 +454,29 @@ public interface QueryManager {
 	 * delete Methods
 	 */
 
-	public void deletePrivateQuestion(long questionID);
+	public void deletePrivateQuestion(long questionID) throws SQLException, DriverNotFoundException;
 
-	public void deleteUserFromGroup(long groupID, long userID);
+	public void deleteUserFromGroup(long groupID, long userID) throws SQLException, DriverNotFoundException;
 
-	public void deleteGroup(long groupID);
+	public void deleteGroup(long groupID) throws SQLException, DriverNotFoundException;
 
-	public void deleteContact(long userID, long contactID);
+	public void deleteContact(long userID, long contactID) throws SQLException, DriverNotFoundException;
 
 	/*
 	 * search Methods
 	 */
 
-	public Group[] searchForGroup(long userID, String nameSearchPattern);
+	public Group[] searchForGroup(long userID, String nameSearchPattern) throws SQLException, DriverNotFoundException;
 
-	public PrivateQuestion[] searchForPrivateQuestionInGroup(long groupID, String groupnameSearchPattern);
+	public PrivateQuestion[] searchForPrivateQuestionInGroup(long groupID, String groupnameSearchPattern) throws SQLException,
+			DriverNotFoundException;
 
-	public PublicQuestion[] searchForPublicQuestion(String nameSearchPattern);
+	public PublicQuestion[] searchForPublicQuestion(String nameSearchPattern) throws SQLException, DriverNotFoundException;
 
 	/*
 	 * other
 	 */
 
-	public void finishPrivateQuestion(long questionID);
+	public void finishPrivateQuestion(long questionID) throws SQLException, DriverNotFoundException;
 
 }

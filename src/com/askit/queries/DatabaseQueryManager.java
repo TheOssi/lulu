@@ -1,5 +1,9 @@
 package com.askit.queries;
 
+//TODO bessers handling für columns
+//TODO SQLFactory überall benutzen
+//TODO notifications
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -387,27 +391,38 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	@Override
-	public void setSelectedAnswerOfPublicQuestion(final long userID, final long questionID, final long answerID) {
-		// TODO Auto-generated method stub
+	public void setChoosedAnswerOfPublicQuestion(final long userID, final long questionID, final long answerID) {
+		// klären ob gleichzeit mit add
 
 	}
 
 	@Override
-	public void setSelectedAnswerOfPrivateQuestion(final long userID, final long questionID, final long answerID) {
-		// TODO Auto-generated method stub
-
+	public void setChoosedAnswerOfPrivateQuestion(final long userID, final long questionID, final long answerID) throws SQLException,
+			DriverNotFoundException {
+		final String statement = "UPDATE PrivateQuestionToUsers SET choosedAnswerID = ? WHERE userID = ? AND questionID = ?;";
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+		preparedStatement.setLong(1, answerID);
+		preparedStatement.setLong(2, userID);
+		preparedStatement.setLong(3, questionID);
+		preparedStatement.executeUpdate();
 	}
 
 	@Override
-	public void setSelectedAnswerOfPrivateQuestion(final long questionID, final long answerID) {
-		// TODO Auto-generated method stub
-
+	public void setSelectedAnswerOfPrivateQuestion(final long questionID, final long answerID) throws SQLException, DriverNotFoundException {
+		final String statement = "UPDATE PrivateQuestion SET selectedAnswerID = ? WHERE questionID = ?;";
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+		preparedStatement.setLong(1, answerID);
+		preparedStatement.setLong(2, questionID);
+		preparedStatement.executeUpdate();
 	}
 
 	@Override
-	public void setGroupAdmin(final long groupID, final long newAdmminID) {
-		// TODO Auto-generated method stub
-
+	public void setGroupAdmin(final long groupID, final long newAdmminID) throws SQLException, DriverNotFoundException {
+		final String statement = "UPDATE Groups SET adminID = ? WHERE groupID = ?;";
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+		preparedStatement.setLong(1, newAdmminID);
+		preparedStatement.setLong(2, groupID);
+		preparedStatement.executeUpdate();
 	}
 
 	@Override
@@ -416,9 +431,12 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	@Override
-	public void setGroupName(final long userID, final String newGroupName) {
-		// TODO Auto-generated method stub
-
+	public void setGroupName(final long groupID, final String newGroupName) throws SQLException, DriverNotFoundException {
+		final String statement = "UPDATE Groups SET groupName = ? WHERE groupID = ?;";
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+		preparedStatement.setString(1, newGroupName);
+		preparedStatement.setLong(2, groupID);
+		preparedStatement.executeUpdate();
 	}
 
 	@Override
@@ -427,57 +445,74 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	@Override
-	public void deletePrivateQuestion(final long questionID) {
-		// TODO Auto-generated method stub
-
+	public void deletePrivateQuestion(final long questionID) throws SQLException, DriverNotFoundException {
+		String statement = SQLFactory.buildDeleteStatement(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS);
+		statement += "questionID = ?;";
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+		preparedStatement.setLong(1, questionID);
+		preparedStatement.executeUpdate();
 	}
 
 	@Override
-	public void deleteUserFromGroup(final long groupID, final long userID) {
-		// TODO Auto-generated method stub
-
+	public void deleteUserFromGroup(final long groupID, final long userID) throws SQLException, DriverNotFoundException {
+		String statement = SQLFactory.buildDeleteStatement(SCHEMA, Constants.TABLE_GROUPS_TO_USERS);
+		statement += "groupID = ? AND userID = ?;";
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+		preparedStatement.setLong(1, groupID);
+		preparedStatement.setLong(2, userID);
+		preparedStatement.executeUpdate();
 	}
 
 	@Override
-	public void deleteGroup(final long groupID) {
-		// TODO Auto-generated method stub
-
+	public void deleteGroup(final long groupID) throws SQLException, DriverNotFoundException {
+		String statement = SQLFactory.buildDeleteStatement(SCHEMA, Constants.TABLE_GROUPS);
+		statement += "groupID = ?;";
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+		preparedStatement.setLong(1, groupID);
+		preparedStatement.executeUpdate();
 	}
 
 	@Override
-	public void deleteContact(final long userID, final long contactID) {
-		// TODO Auto-generated method stub
-
+	public void deleteContact(final long userID, final long contactID) throws SQLException, DriverNotFoundException {
+		String statement = SQLFactory.buildDeleteStatement(SCHEMA, Constants.TABLE_CONTACTS);
+		statement += "userID = ? AND contactID = ?;";
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+		preparedStatement.setLong(1, userID);
+		preparedStatement.setLong(2, userID);
+		preparedStatement.executeUpdate();
 	}
 
 	@Override
-	public Group[] searchForGroup(final long userID, final String nameSearchPattern) {
+	public Group[] searchForGroup(final long userID, final String nameSearchPattern) throws SQLException, DriverNotFoundException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public PrivateQuestion[] searchForPrivateQuestionInGroup(final long groupID, final String groupnameSearchPattern) {
+	public PrivateQuestion[] searchForPrivateQuestionInGroup(final long groupID, final String groupnameSearchPattern) throws SQLException,
+			DriverNotFoundException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public PublicQuestion[] searchForPublicQuestion(final String nameSearchPattern) {
+	public PublicQuestion[] searchForPublicQuestion(final String nameSearchPattern) throws SQLException, DriverNotFoundException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void finishPrivateQuestion(final long questionID) {
-		// TODO Auto-generated method stub
-
+	public void finishPrivateQuestion(final long questionID) throws SQLException, DriverNotFoundException {
+		final String statement = "UPDATE PrivateQuestion SET finish = ? WHERE questionID = ?;";
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+		preparedStatement.setBoolean(1, true);
+		preparedStatement.setLong(2, questionID);
+		preparedStatement.executeUpdate();
 	}
 
 	@Override
 	public void addUserToPublicQuestion(final long questionID, final long userID) {
 		// TODO Auto-generated method stub
-
 	}
 
 	/*
