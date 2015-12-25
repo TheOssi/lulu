@@ -52,8 +52,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public void registerUser(final User user) throws SQLException, DriverNotFoundException {
 		final String[] columns = Util.getFromToFromArray(COLUMNS_USERS, 2, 7);
 		final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_USERS, columns);
-		final Connection connection = ConnectionFactory.getInstance().getWriterConnection();
-		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 		preparedStatement.setString(1, user.getPasswordHash());
 		preparedStatement.setString(2, user.getPhoneNumberHash());
 		preparedStatement.setString(3, user.getUsername());
@@ -67,8 +66,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public void createNewGroup(final Group group) throws SQLException, DriverNotFoundException {
 		final String[] columns = Util.getFromToFromArray(COLUMNS_GROUPS, 1, 4);
 		final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_GROUPS, columns);
-		final Connection connection = ConnectionFactory.getInstance().getWriterConnection();
-		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 		preparedStatement.setDate(1, new Date(System.currentTimeMillis()));
 		preparedStatement.setLong(2, group.getAdminID());
 		preparedStatement.setString(3, group.getGroupname());
@@ -81,8 +79,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public void addUserToGroup(final long groupID, final long userID) throws SQLException, DriverNotFoundException {
 		final String[] columns = Util.getFromToFromArray(COLUMNS_GROUPS_TO_USER, 0, 1);
 		final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_GROUPS_TO_USERS, columns);
-		final Connection connection = ConnectionFactory.getInstance().getWriterConnection();
-		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 		preparedStatement.setLong(1, groupID);
 		preparedStatement.setLong(2, userID);
 		preparedStatement.executeUpdate();
@@ -91,8 +88,7 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public void addContact(final long userIDOfUser, final long userIDofContact) throws SQLException, DriverNotFoundException {
 		final String statement = SQLFactory.buildSimpleInsertStatement(SCHEMA, Constants.TABLE_CONTACTS, 2);
-		final Connection connection = ConnectionFactory.getInstance().getWriterConnection();
-		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 		preparedStatement.setLong(1, userIDOfUser);
 		preparedStatement.setLong(2, userIDofContact);
 		preparedStatement.executeUpdate();
@@ -102,8 +98,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public void addUserToOneTimeQuestion(final long userID, final long questionID) throws SQLException, DriverNotFoundException {
 		final String[] columns = Util.getFromToFromArray(COLUMNS_PRIVATE_QUESTION_TO_USERS, 0, 1);
 		final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS_TO_USERS, columns);
-		final Connection connection = ConnectionFactory.getInstance().getWriterConnection();
-		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 		preparedStatement.setLong(1, userID);
 		preparedStatement.setLong(2, questionID);
 		preparedStatement.executeUpdate();
@@ -114,8 +109,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public void createPublicQuestion(final PublicQuestion question) throws SQLException, DriverNotFoundException {
 		final String[] columns = Util.getFromToFromArray(COLUMNS_PUBLIC_QUESTION, 1, 8);
 		final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS, columns);
-		final Connection connection = ConnectionFactory.getInstance().getWriterConnection();
-		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 		preparedStatement.setString(1, question.getQuestion());
 		preparedStatement.setString(2, question.getAdditionalInformation());
 		preparedStatement.setLong(3, question.getHostID());
@@ -155,11 +149,10 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public PublicQuestion[] getPublicQuestions(final int startIndex, final int quantity, final String language) throws SQLException,
 			DriverNotFoundException, ModellToObjectException {
-		final Connection connection = ConnectionFactory.getInstance().getReaderConnection();
 		String statement = SQLFactory.buildSimpleSelectStatement(SCHEMA, Constants.TABLE_PUBLIC_QUESTIONS);
 		statement += " WHERE langauge = ? ";
 		final String finalStatement = SQLFactory.buildStatementForAreaSelect(statement, "createDate ASC", startIndex, quantity);
-		final PreparedStatement preparedStatement = connection.prepareStatement(finalStatement);
+		final PreparedStatement preparedStatement = getReaderPreparedStatement(finalStatement);
 		preparedStatement.setString(1, language);
 		final ResultSet resultSet = preparedStatement.executeQuery();
 		final List<PublicQuestion> publicQuestions = new ResultSetMapper<PublicQuestion>().mapResultSetToObject(resultSet, PublicQuestion.class);
@@ -168,10 +161,9 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public PublicQuestion getPublicQuesion(final long questionID) throws ModellToObjectException, SQLException, DriverNotFoundException {
-		final Connection connection = ConnectionFactory.getInstance().getReaderConnection();
 		String statement = SQLFactory.buildSimpleSelectStatement(SCHEMA, Constants.TABLE_PUBLIC_QUESTIONS);
 		statement += " WHERE questionID = ?";
-		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 		preparedStatement.setLong(1, questionID);
 		final ResultSet resultSet = preparedStatement.executeQuery();
 		final List<PublicQuestion> publicQuestions = new ResultSetMapper<PublicQuestion>().mapResultSetToObject(resultSet, PublicQuestion.class);
@@ -180,10 +172,9 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public PrivateQuestion getPrivateQuestion(final long questionID) throws ModellToObjectException, SQLException, DriverNotFoundException {
-		final Connection connection = ConnectionFactory.getInstance().getReaderConnection();
 		String statement = SQLFactory.buildSimpleSelectStatement(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS);
 		statement += " WHERE questionID = ?";
-		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 		preparedStatement.setLong(1, questionID);
 		final ResultSet resultSet = preparedStatement.executeQuery();
 		final List<PrivateQuestion> privateQuestions = new ResultSetMapper<PrivateQuestion>().mapResultSetToObject(resultSet, PrivateQuestion.class);
@@ -191,23 +182,27 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	@Override
-	public PrivateQuestion[] getQuestionsOfGroup(final long groupID, final int startIndex, final int quantity) {
-		// TODO Auto-generated method stub
-		return null;
+	public PrivateQuestion[] getQuestionsOfGroup(final long groupID, final int startIndex, final int quantity) throws SQLException,
+			ModellToObjectException, DriverNotFoundException {
+		String statement = SQLFactory.buildSimpleSelectStatement(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS);
+		statement += " WHERE groupID = ?";
+		statement = SQLFactory.buildStatementForAreaSelect(statement, "createDate ASC", startIndex, quantity);
+		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+		preparedStatement.setLong(1, groupID);
+		final ResultSet resultSet = preparedStatement.executeQuery();
+		final List<PrivateQuestion> privateQuestions = new ResultSetMapper<PrivateQuestion>().mapResultSetToObject(resultSet, PrivateQuestion.class);
+		return privateQuestions.toArray(new PrivateQuestion[privateQuestions.size()]);
 	}
 
 	@Override
 	public User[] getUsersByUsername(String searchPattern) throws ModellToObjectException, SQLException, DriverNotFoundException {
-		final Connection connection = ConnectionFactory.getInstance().getReaderConnection();
 		final String[] columns = new String[] { COLUMNS_USERS[0], COLUMNS_USERS[3], COLUMNS_USERS[4] };
 		String statement = SQLFactory.buildSelectStatement(SCHEMA, Constants.TABLE_USERS, columns);
 		searchPattern += "%";
 		statement += " WHERE username LIKE ?";
-		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 		preparedStatement.setString(1, searchPattern);
-		final ResultSet resultSet = preparedStatement.executeQuery();
-		final List<User> users = new ResultSetMapper<User>().mapResultSetToObject(resultSet, User.class);
-		return users.toArray(new User[users.size()]);
+		return getUserArrayFromReaderPreparedStatement(preparedStatement);
 	}
 
 	@Override
@@ -216,33 +211,43 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	@Override
-	public User[] getUsersOfPublicQuestion(final long questionID) {
-		// TODO Auto-generated method stub
-		return null;
+	public User[] getUsersOfPublicQuestion(final long questionID) throws SQLException, ModellToObjectException, DriverNotFoundException {
+		final String statement = "SELECT U.* FROM Users U JOIN PublicQuestionsToUsers P ON questionID = ? AND P.userID = U.userID";
+		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+		preparedStatement.setLong(1, questionID);
+		return getUserArrayFromReaderPreparedStatement(preparedStatement);
 	}
 
 	@Override
-	public User[] getUsersOfPrivateQuestion(final long questionID) {
-		// TODO Auto-generated method stub
-		return null;
+	public User[] getUsersOfPrivateQuestion(final long questionID) throws SQLException, ModellToObjectException, DriverNotFoundException {
+		final String statement = "SELECT U.* FROM Users U JOIN PrivateQuestionsToUsers P ON questionID = ? AND P.userID = U.userID;";
+		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+		preparedStatement.setLong(1, questionID);
+		return getUserArrayFromReaderPreparedStatement(preparedStatement);
 	}
 
 	@Override
-	public User[] getUsersOfAnswerPrivateQuestion(final long questionID, final long answerID) {
-		// TODO Auto-generated method stub
-		return null;
+	public User[] getUsersOfAnswerPrivateQuestion(final long answerID) throws SQLException, ModellToObjectException, DriverNotFoundException {
+		final String statement = "SELECT U.* FROM Users U JOIN PrivateQuestionsToUsers P ON choosedAnswerID = ? AND P.userID = U.userID;";
+		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+		preparedStatement.setLong(1, answerID);
+		return getUserArrayFromReaderPreparedStatement(preparedStatement);
 	}
 
 	@Override
-	public User[] getUsersOfAnswerPublicQuestion(final long questionID, final long answerID) {
-		// TODO Auto-generated method stub
-		return null;
+	public User[] getUsersOfAnswerPublicQuestion(final long answerID) throws SQLException, ModellToObjectException, DriverNotFoundException {
+		final String statement = "SELECT U.* FROM Users U JOIN PublicQuestionsToUsers P ON choosedAnswerID = ? AND P.userID = U.userID;";
+		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+		preparedStatement.setLong(1, answerID);
+		return getUserArrayFromReaderPreparedStatement(preparedStatement);
 	}
 
 	@Override
-	public User[] getUsersOfGroup(final long groupID) {
-		// TODO Auto-generated method stub
-		return null;
+	public User[] getUsersOfGroup(final long groupID) throws SQLException, ModellToObjectException, DriverNotFoundException {
+		final String statement = "SELECT U.* FROM Users U JOIN GroupsToUsers G ON groupID = ? AND G.userID = U.userID;";
+		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+		preparedStatement.setLong(1, groupID);
+		return getUserArrayFromReaderPreparedStatement(preparedStatement);
 	}
 
 	@Override
@@ -251,9 +256,12 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	@Override
-	public Long getUserScoreInGroup(final long userID, final long groupID) {
-		// TODO Auto-generated method stub
-		return null;
+	public Long getUserScoreInGroup(final long userID, final long groupID) throws SQLException, DriverNotFoundException {
+		final String statement = "SELECT score FROM GroupsToUsers WHERE groupID = ? AND userID = ?;";
+		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+		preparedStatement.setLong(1, groupID);
+		preparedStatement.setLong(2, userID);
+		return preparedStatement.executeQuery().getLong(1);
 	}
 
 	@Override
@@ -367,7 +375,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public void setGroupPicture(final long groupID, final String newGroupPictureURI) throws SQLException, DriverNotFoundException {
 		String statement = SQLFactory.buildBeginOfUpdateStatement(SCHEMA, Constants.TABLE_GROUPS_TO_USERS);
 		statement += " " + COLUMNS_GROUPS[4] + " = ? WHERE " + COLUMNS_GROUPS[0] + " = ?;";
-		final PreparedStatement preparedStatement = ConnectionFactory.getInstance().getWriterConnection().prepareStatement(statement);
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 		preparedStatement.setLong(1, groupID);
 		preparedStatement.setString(2, newGroupPictureURI);
 		preparedStatement.executeUpdate();
@@ -466,6 +474,12 @@ public class DatabaseQueryManager implements QueryManager {
 
 	}
 
+	@Override
+	public void addUserToPublicQuestion(final long questionID, final long userID) {
+		// TODO Auto-generated method stub
+
+	}
+
 	/*
 	 * Helper Methods
 	 */
@@ -473,8 +487,7 @@ public class DatabaseQueryManager implements QueryManager {
 	private void updateUserAttributes(final long userID, final String column, final String newValue) throws SQLException, DriverNotFoundException {
 		String statement = SQLFactory.buildBeginOfUpdateStatement(SCHEMA, Constants.TABLE_USERS);
 		statement += " " + column + " = ? WHERE " + COLUMNS_USERS[0] + " = ?";
-		final Connection connection = ConnectionFactory.getInstance().getWriterConnection();
-		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 		preparedStatement.setString(1, newValue);
 		preparedStatement.setLong(2, userID);
 		preparedStatement.executeUpdate();
@@ -482,10 +495,9 @@ public class DatabaseQueryManager implements QueryManager {
 
 	private String getUserAttribute(final String column, final long userID) throws SQLException, DriverNotFoundException {
 		final String[] columns = new String[] { column };
-		final Connection connection = ConnectionFactory.getInstance().getReaderConnection();
 		String statement = SQLFactory.buildSelectStatement(SCHEMA, Constants.TABLE_USERS, columns);
 		statement += " WHERE userID = ?";
-		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 		preparedStatement.setLong(1, userID);
 		final ResultSet resultSet = preparedStatement.executeQuery();
 		return resultSet.getString(1);
@@ -493,8 +505,7 @@ public class DatabaseQueryManager implements QueryManager {
 
 	private void addAnswerToAnswerTable(final Answer answer, final String table) throws SQLException, DriverNotFoundException {
 		final String statement = SQLFactory.buildSimpleInsertStatement(SCHEMA, table, 3);
-		final Connection connection = ConnectionFactory.getInstance().getWriterConnection();
-		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 		preparedStatement.setLong(1, answer.getAnswerID());
 		preparedStatement.setLong(2, answer.getQuestionID());
 		preparedStatement.setString(3, answer.getAnswer());
@@ -504,8 +515,7 @@ public class DatabaseQueryManager implements QueryManager {
 	private void createNewQuestion(final PrivateQuestion question, final boolean isOneTime) throws SQLException, DriverNotFoundException {
 		final String[] columns = Util.getFromToFromArray(COLUMNS_PRIVATE_QUESTION, 1, 12);
 		final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS, columns);
-		final Connection connection = ConnectionFactory.getInstance().getWriterConnection();
-		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 		preparedStatement.setString(1, question.getQuestion());
 		preparedStatement.setString(2, question.getAdditionalInformation());
 		preparedStatement.setLong(3, question.getHostID());
@@ -534,17 +544,27 @@ public class DatabaseQueryManager implements QueryManager {
 		String statement = SQLFactory.buildBeginOfInsertStatement(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS_TO_USERS, new String[] {
 				COLUMNS_PRIVATE_QUESTION_TO_USERS[0], COLUMNS_PRIVATE_QUESTION_TO_USERS[1] });
 		statement += "?, " + innerSelect + " );";
-		final Connection connection = ConnectionFactory.getInstance().getWriterConnection();
-		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 		preparedStatement.setLong(1, questionID);
 		preparedStatement.setLong(2, groupID);
 		preparedStatement.executeUpdate();
 	}
 
-	@Override
-	public void addUserToPublicQuestion(final long questionID, final long userID) {
-		// TODO Auto-generated method stub
-
+	private PreparedStatement getReaderPreparedStatement(final String statement) throws SQLException, DriverNotFoundException {
+		final Connection connection = ConnectionFactory.getInstance().getReaderConnection();
+		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		return preparedStatement;
 	}
 
+	private PreparedStatement getWriterPreparedStatement(final String statement) throws SQLException, DriverNotFoundException {
+		final Connection connection = ConnectionFactory.getInstance().getWriterConnection();
+		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		return preparedStatement;
+	}
+
+	private User[] getUserArrayFromReaderPreparedStatement(final PreparedStatement preparedStatement) throws SQLException, ModellToObjectException {
+		final ResultSet resultSet = preparedStatement.executeQuery();
+		final List<User> users = new ResultSetMapper<User>().mapResultSetToObject(resultSet, User.class);
+		return users.toArray(new User[users.size()]);
+	}
 }

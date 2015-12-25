@@ -27,12 +27,10 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 			INTO l_points;
 			
             -- Update group scores, for OTQ this will not happen
-			IF NEW.groupID IS NOT NULL THEN
-				UPDATE APP.GroupsToUsers
-					SET score = (score + l_points)
-				WHERE groupID = ( SELECT groupID FROM PrivateQuestions WHERE questionID = NEW.questionID) AND
-						userID = NEW.userID;
-			END IF;
+			UPDATE APP.GroupsToUsers
+				SET score = (score + l_points)
+			WHERE groupID = ( SELECT groupID FROM PrivateQuestions WHERE questionID = NEW.questionID) AND
+				userID = NEW.userID;
 			
 			-- Count all Users whitch have allready answerd the questionID
 			SELECT Count(*) FROM APP.PrivateQuestionsToUsers 
@@ -204,7 +202,7 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 		END IF;
         
         IF NEW.finished IS TRUE AND
-        OLD.finished IS AND FALSE 
+        OLD.finished IS FALSE AND
         NEW.isBet IS FALSE THEN
         
 			-- SELECT code for notification that question is finished
@@ -233,7 +231,7 @@ CREATE DEFINER = 'appAdmin'@'localhost'
         END IF;
         
         IF NEW.finished IS TRUE AND
-        OLD.finished IS AND FALSE 
+        OLD.finished IS FALSE AND
         NEW.isBet IS TRUE THEN
         
         -- SELECT code for notification that question is finished
