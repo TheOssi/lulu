@@ -177,8 +177,12 @@ public interface QueryManager {
 	 * @param startIndex
 	 * @param quantity
 	 * @return
+	 * @throws SQLException
+	 * @throws ModellToObjectException
+	 * @throws DriverNotFoundException
 	 */
-	public PrivateQuestion[] getQuestionsOfGroup(long groupID, int startIndex, int quantity);
+	public PrivateQuestion[] getQuestionsOfGroup(long groupID, int startIndex, int quantity) throws SQLException, ModellToObjectException,
+			DriverNotFoundException;
 
 	/**
 	 * search by username
@@ -206,39 +210,54 @@ public interface QueryManager {
 	 *
 	 * @param questionID
 	 * @return
+	 * @throws SQLException
+	 * @throws ModellToObjectException
+	 * @throws DriverNotFoundException
 	 */
-	public User[] getUsersOfPublicQuestion(long questionID);
+	public User[] getUsersOfPublicQuestion(long questionID) throws SQLException, ModellToObjectException, DriverNotFoundException;
 
 	/**
 	 * returns all users of a PrivateQuestion
 	 *
 	 * @param questionID
 	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws ModellToObjectException
+	 * @throws SQLException
 	 */
-	public User[] getUsersOfPrivateQuestion(long questionID);
+	public User[] getUsersOfPrivateQuestion(long questionID) throws SQLException, ModellToObjectException, DriverNotFoundException;
 
 	/**
 	 *
 	 * @param questionID
 	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws ModellToObjectException
+	 * @throws SQLException
 	 */
-	public User[] getUsersOfAnswerPrivateQuestion(long questionID, long answerID);
+	public User[] getUsersOfAnswerPrivateQuestion(long answerID) throws SQLException, ModellToObjectException, DriverNotFoundException;
 
 	/**
 	 *
 	 *
 	 * @param questionID
 	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws ModellToObjectException
+	 * @throws SQLException
 	 */
-	public User[] getUsersOfAnswerPublicQuestion(long questionID, long answerID);
+	public User[] getUsersOfAnswerPublicQuestion(long answerID) throws SQLException, ModellToObjectException, DriverNotFoundException;
 
 	/**
 	 * returns the users of a group
 	 *
 	 * @param groupID
 	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws ModellToObjectException
+	 * @throws SQLException
 	 */
-	public User[] getUsersOfGroup(long groupID);
+	public User[] getUsersOfGroup(long groupID) throws SQLException, ModellToObjectException, DriverNotFoundException;
 
 	/**
 	 *
@@ -253,8 +272,10 @@ public interface QueryManager {
 	 *
 	 * @param userID
 	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
 	 */
-	public Long getUserScoreInGroup(long userID, long groupID);
+	public Long getUserScoreInGroup(long userID, long groupID) throws SQLException, DriverNotFoundException;
 
 	/**
 	 *
