@@ -14,8 +14,6 @@ import com.askit.exception.ModellToObjectException;
 
 public interface QueryManager {
 
-	// TODO question abbrechen
-
 	/*
 	 * Private Methods
 	 */
@@ -291,16 +289,33 @@ public interface QueryManager {
 	 * @param questionID
 	 * @param userID
 	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws ModellToObjectException
+	 * @throws SQLException
 	 */
-	public Answer getSelectedAnswerInPublicQuestion(long questionID, long userID);
+	public Answer getChoseAnswerInPublicQuestion(long questionID, long userID) throws SQLException, ModellToObjectException, DriverNotFoundException;
 
 	/**
 	 *
 	 * @param questionID
 	 * @param userID
 	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws ModellToObjectException
+	 * @throws SQLException
 	 */
-	public Answer getSelectedAnswerInPrivateQuestion(long questionID, long userID);
+	public Answer getChoseAnswerInPrivateQuestion(long questionID, long userID) throws SQLException, ModellToObjectException, DriverNotFoundException;
+
+	/**
+	 *
+	 * @param questionID
+	 * @param userID
+	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws ModellToObjectException
+	 * @throws SQLException
+	 */
+	public Answer getSelectedAnswerInPrivateQuestion(long questionID) throws SQLException, ModellToObjectException, DriverNotFoundException;
 
 	/**
 	 * returns the place in the Ranking of a user in a group
@@ -308,8 +323,10 @@ public interface QueryManager {
 	 * @param userID
 	 * @param groupID
 	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
 	 */
-	public Long getRankingInGroup(long userID, long groupID);
+	public Long getRankingInGroup(long userID, long groupID) throws SQLException, DriverNotFoundException;
 
 	/**
 	 * returns the passwordHash of a user
@@ -347,8 +364,20 @@ public interface QueryManager {
 	 *
 	 * @param groupID
 	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
 	 */
-	public String getGroupPictureURI(long groupID);
+	public String getGroupPictureURI(long groupID) throws SQLException, DriverNotFoundException;
+
+	/**
+	 * get the group name
+	 *
+	 * @param groupID
+	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
+	 */
+	public String getGroupName(long groupID) throws SQLException, DriverNotFoundException;
 
 	/**
 	 *
@@ -364,15 +393,23 @@ public interface QueryManager {
 	 *
 	 * @param questionID
 	 * @return
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
+	 * @throws ModellToObjectException
 	 */
-	public Answer[] getAnswersOfPublicQuestionAndCount(long questionID);
+	public Pair<Answer, Integer>[] getAnswersOfPublicQuestionAndCount(long questionID) throws SQLException, DriverNotFoundException,
+			ModellToObjectException;
 
 	/**
 	 *
 	 * @param questionID
 	 * @return
+	 * @throws ModellToObjectException
+	 * @throws DriverNotFoundException
+	 * @throws SQLException
 	 */
-	public Answer[] getAnswersOfPrivateQuestionAndCount(long questionID);
+	public Pair<Answer, Integer>[] getAnswersOfPrivateQuestionAndCount(long questionID) throws SQLException, DriverNotFoundException,
+			ModellToObjectException;
 
 	/**
 	 *
@@ -380,8 +417,12 @@ public interface QueryManager {
 	 * @param startIndex
 	 * @param quantity
 	 * @return
+	 * @throws SQLException
+	 * @throws ModellToObjectException
+	 * @throws DriverNotFoundException
 	 */
-	public PublicQuestion[] getActivePublicQuestionsOfUser(long userID, int startIndex, int quantity);
+	public PublicQuestion[] getActivePublicQuestionsOfUser(long userID, int startIndex, int quantity) throws DriverNotFoundException,
+			ModellToObjectException, SQLException;
 
 	/**
 	 *
@@ -389,8 +430,12 @@ public interface QueryManager {
 	 * @param startIndex
 	 * @param quantity
 	 * @return
+	 * @throws SQLException
+	 * @throws ModellToObjectException
+	 * @throws DriverNotFoundException
 	 */
-	public PrivateQuestion[] getActivePrivateQuestionsOfUser(long userID, int startIndex, int quantity);
+	public PrivateQuestion[] getActivePrivateQuestionsOfUser(long userID, int startIndex, int quantity) throws DriverNotFoundException,
+			ModellToObjectException, SQLException;
 
 	/**
 	 *
@@ -398,8 +443,12 @@ public interface QueryManager {
 	 * @param startIndex
 	 * @param quantity
 	 * @return
+	 * @throws SQLException
+	 * @throws ModellToObjectException
+	 * @throws DriverNotFoundException
 	 */
-	public PublicQuestion[] getOldPublicQuestionsOfUser(long userID, int startIndex, int quantity);
+	public PublicQuestion[] getOldPublicQuestionsOfUser(long userID, int startIndex, int quantity) throws DriverNotFoundException,
+			ModellToObjectException, SQLException;
 
 	/**
 	 *
@@ -407,8 +456,12 @@ public interface QueryManager {
 	 * @param startIndex
 	 * @param quantity
 	 * @return
+	 * @throws SQLException
+	 * @throws ModellToObjectException
+	 * @throws DriverNotFoundException
 	 */
-	public PrivateQuestion[] getOldPrivateQuestionsOfUser(long userID, int startIndex, int quantity);
+	public PrivateQuestion[] getOldPrivateQuestionsOfUser(long userID, int startIndex, int quantity) throws DriverNotFoundException,
+			ModellToObjectException, SQLException;
 
 	/**
 	 *
@@ -468,8 +521,7 @@ public interface QueryManager {
 
 	public Group[] searchForGroup(long userID, String nameSearchPattern) throws SQLException, DriverNotFoundException;
 
-	public PrivateQuestion[] searchForPrivateQuestionInGroup(long groupID, String groupnameSearchPattern) throws SQLException,
-			DriverNotFoundException;
+	public PrivateQuestion[] searchForPrivateQuestionInGroup(long groupID, String questionSearchPattern) throws SQLException, DriverNotFoundException;
 
 	public PublicQuestion[] searchForPublicQuestion(String nameSearchPattern) throws SQLException, DriverNotFoundException;
 

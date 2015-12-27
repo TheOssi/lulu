@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Array;
 import java.net.URISyntaxException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import com.askit.database.ConnectionFactory;
 
@@ -12,7 +14,7 @@ public class Util {
 
 	/**
 	 * This method will help to select the current execution path
-	 * 
+	 *
 	 * @return the current runntime directory
 	 */
 	public static File getRunntimeDirectory() {
@@ -28,7 +30,7 @@ public class Util {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param exception
 	 * @return the exception text
 	 */
@@ -48,6 +50,14 @@ public class Util {
 		System.arraycopy(arrayOne, 0, finalArray, 0, arrayOneLenght);
 		System.arraycopy(arrayTwo, 0, finalArray, arrayOneLenght, arrayTwoLenght);
 		return finalArray;
+	}
+
+	public static int getSizeOfResultSet(final ResultSet resultSet) throws SQLException {
+		final int currentRow = resultSet.getRow();
+		resultSet.last();
+		final int size = resultSet.getRow();
+		resultSet.absolute(currentRow);
+		return size;
 	}
 
 	public static String[] getFromToFromArray(final String[] array, final int from, final int to) {
