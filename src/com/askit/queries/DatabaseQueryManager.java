@@ -3,14 +3,20 @@ package com.askit.queries;
 //TODO bessers handling für columns
 //TODO SQLFactory überall benutzen
 //TODO notifications
+// TODO question abbrechen
+// TODO is host/admin
+//TODO langu beachten
+//TODO grop by
 
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.askit.database.ConnectionFactory;
@@ -51,6 +57,10 @@ public class DatabaseQueryManager implements QueryManager {
 		final ResultSet result = statement.executeQuery();
 		return result.next();
 	}
+
+	// ================================================================================
+	// ADD METHODS
+	// ================================================================================
 
 	@Override
 	public void registerUser(final User user) throws SQLException, DriverNotFoundException {
@@ -106,7 +116,6 @@ public class DatabaseQueryManager implements QueryManager {
 		preparedStatement.setLong(1, userID);
 		preparedStatement.setLong(2, questionID);
 		preparedStatement.executeUpdate();
-
 	}
 
 	@Override
@@ -146,9 +155,9 @@ public class DatabaseQueryManager implements QueryManager {
 		addAnswerToAnswerTable(answer, Constants.TABLE_ANSWERS_PRIVATE_QUESTIONS);
 	}
 
-	/*
-	 * GET METHODS
-	 */
+	// ================================================================================
+	// GET METHODS
+	// ================================================================================
 
 	@Override
 	public PublicQuestion[] getPublicQuestions(final int startIndex, final int quantity, final String language) throws SQLException,
@@ -274,21 +283,39 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	@Override
-	public Answer getSelectedAnswerInPublicQuestion(final long questionID, final long userID) {
-		// TODO Auto-generated method stub
-		return null;
+	public Answer getChoseAnswerInPublicQuestion(final long questionID, final long userID) throws SQLException, ModellToObjectException,
+			DriverNotFoundException {
+		return getChoseAnswer(questionID, userID, SCHEMA, Constants.TABLE_PUBLIC_QUESTIONS_TO_USERS);
 	}
 
 	@Override
-	public Answer getSelectedAnswerInPrivateQuestion(final long questionID, final long userID) {
-		// TODO Auto-generated method stub
-		return null;
+	public Answer getChoseAnswerInPrivateQuestion(final long questionID, final long userID) throws SQLException, ModellToObjectException,
+			DriverNotFoundException {
+		return getChoseAnswer(questionID, userID, SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS_TO_USERS);
 	}
 
 	@Override
-	public Long getRankingInGroup(final long userID, final long groupID) {
-		// TODO Auto-generated method stub
-		return null;
+	public Answer getSelectedAnswerInPrivateQuestion(final long questionID) throws SQLException, ModellToObjectException, DriverNotFoundException {
+		final String statement = "SELECT * FROM AnswersPrivateQuestions WHERE answerID = ( SELECT selectedAnswerID FROM PrivateQuestions WHERE questionID = ? );";
+		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+		preparedStatement.setLong(1, questionID);
+		return mapSingleAnswerToObject(preparedStatement);
+	}
+
+	@Override
+	public Long getRankingInGroup(final long userID, final long groupID) throws SQLException, DriverNotFoundException {
+		final String statement = "SELECT * FROM GroupsToUsers WHERE groupID = ? ORDER BY score ASC;";
+		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+		preparedStatement.setLong(1, groupID);
+		final ResultSet resultSet = preparedStatement.executeQuery();
+		final int resultSetSize = Util.getSizeOfResultSet(resultSet);
+		long placeInRaking = 0;
+		for (int place = 1; place <= resultSetSize; place++) {
+			if (resultSet.getLong("userID") == userID) {
+				placeInRaking = place;
+			}
+		}
+		return new Long(placeInRaking);
 	}
 
 	@Override
@@ -307,51 +334,56 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	@Override
-	public String getGroupPictureURI(final long groupID) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getGroupPictureURI(final long groupID) throws SQLException, DriverNotFoundException {
+		return getGroupAttribute("groupPictureURI", groupID);
+	}
+
+	@Override
+	public String getGroupName(final long groupID) throws SQLException, DriverNotFoundException {
+		return getGroupAttribute("groupname", groupID);
 	}
 
 	@Override
 	public PrivateQuestion[] getOldPrivateQuestions(final long groupID, final int startIndex, final int quantity) {
-		// TODO Auto-generated method stub
+		// TODO von nur einer Gruppe??
 		return null;
 	}
 
 	@Override
-	public Answer[] getAnswersOfPublicQuestionAndCount(final long questionID) {
-		// TODO Auto-generated method stub
-		return null;
+	public Pair<Answer, Integer>[] getAnswersOfPublicQuestionAndCount(final long questionID) throws SQLException, DriverNotFoundException,
+			ModellToObjectException {
+		return getAnswersOfQuestionAndCount(questionID, Constants.TABLE_PUBLIC_QUESTIONS_TO_USERS, Constants.TABLE_ANSWERS_PUBLIC_QUESTIONS);
 	}
 
 	@Override
-	public Answer[] getAnswersOfPrivateQuestionAndCount(final long questionID) {
-		// TODO Auto-generated method stub
-		return null;
+	public Pair<Answer, Integer>[] getAnswersOfPrivateQuestionAndCount(final long questionID) throws SQLException, DriverNotFoundException,
+			ModellToObjectException {
+		return getAnswersOfQuestionAndCount(questionID, Constants.TABLE_PRIVATE_QUESTIONS_TO_USERS, Constants.TABLE_ANSWERS_PRIVATE_QUESTIONS);
 	}
 
 	@Override
-	public PublicQuestion[] getActivePublicQuestionsOfUser(final long userID, final int startIndex, final int quantity) {
-		// TODO Auto-generated method stub
-		return null;
+	public PublicQuestion[] getActivePublicQuestionsOfUser(final long userID, final int startIndex, final int quantity)
+			throws DriverNotFoundException, ModellToObjectException, SQLException {
+		return getPublicQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, false);
 	}
 
 	@Override
-	public PrivateQuestion[] getActivePrivateQuestionsOfUser(final long userID, final int startIndex, final int quantity) {
-		// TODO Auto-generated method stub
-		return null;
+	public PrivateQuestion[] getActivePrivateQuestionsOfUser(final long userID, final int startIndex, final int quantity)
+			throws DriverNotFoundException, ModellToObjectException, SQLException {
+		return getPrivateQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, true);
 	}
 
 	@Override
-	public PublicQuestion[] getOldPublicQuestionsOfUser(final long userID, final int startIndex, final int quantity) {
-		// TODO Auto-generated method stub
-		return null;
+	public PublicQuestion[] getOldPublicQuestionsOfUser(final long userID, final int startIndex, final int quantity) throws DriverNotFoundException,
+			ModellToObjectException, SQLException {
+		return getPublicQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, false);
+
 	}
 
 	@Override
-	public PrivateQuestion[] getOldPrivateQuestionsOfUser(final long userID, final int startIndex, final int quantity) {
-		// TODO Auto-generated method stub
-		return null;
+	public PrivateQuestion[] getOldPrivateQuestionsOfUser(final long userID, final int startIndex, final int quantity)
+			throws DriverNotFoundException, ModellToObjectException, SQLException {
+		return getPrivateQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, true);
 	}
 
 	@Override
@@ -364,6 +396,10 @@ public class DatabaseQueryManager implements QueryManager {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	// ================================================================================
+	// SET METHODS
+	// ================================================================================
 
 	@Override
 	public void setLanguage(final long userID, final String newLanguage) throws SQLException, DriverNotFoundException {
@@ -393,7 +429,6 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public void setChoosedAnswerOfPublicQuestion(final long userID, final long questionID, final long answerID) {
 		// klären ob gleichzeit mit add
-
 	}
 
 	@Override
@@ -444,6 +479,10 @@ public class DatabaseQueryManager implements QueryManager {
 		updateUserAttributes(userID, COLUMNS_USERS[3], newUsername);
 	}
 
+	// ================================================================================
+	// DELETE METHODS
+	// ================================================================================
+
 	@Override
 	public void deletePrivateQuestion(final long questionID) throws SQLException, DriverNotFoundException {
 		String statement = SQLFactory.buildDeleteStatement(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS);
@@ -484,20 +523,20 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public Group[] searchForGroup(final long userID, final String nameSearchPattern) throws SQLException, DriverNotFoundException {
-		// TODO Auto-generated method stub
+		// TODO nur die Gruppen in denen ich schon bin?
 		return null;
 	}
 
 	@Override
-	public PrivateQuestion[] searchForPrivateQuestionInGroup(final long groupID, final String groupnameSearchPattern) throws SQLException,
+	public PrivateQuestion[] searchForPrivateQuestionInGroup(final long groupID, final String questionSearchPattern) throws SQLException,
 			DriverNotFoundException {
-		// TODO Auto-generated method stub
+		// TODO nach was soll gesucht werden (Frage, addinfo, title)?
 		return null;
 	}
 
 	@Override
 	public PublicQuestion[] searchForPublicQuestion(final String nameSearchPattern) throws SQLException, DriverNotFoundException {
-		// TODO Auto-generated method stub
+		// TODO nach was soll gesucht werden (Frage, addinfo, title)?
 		return null;
 	}
 
@@ -512,12 +551,12 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public void addUserToPublicQuestion(final long questionID, final long userID) {
-		// TODO Auto-generated method stub
+		// TODO gleichzeitig mit beantworten?
 	}
 
-	/*
-	 * Helper Methods
-	 */
+	// ================================================================================
+	// HELPER METHODS
+	// ================================================================================
 
 	private void updateUserAttributes(final long userID, final String column, final String newValue) throws SQLException, DriverNotFoundException {
 		String statement = SQLFactory.buildBeginOfUpdateStatement(SCHEMA, Constants.TABLE_USERS);
@@ -601,5 +640,75 @@ public class DatabaseQueryManager implements QueryManager {
 		final ResultSet resultSet = preparedStatement.executeQuery();
 		final List<User> users = new ResultSetMapper<User>().mapResultSetToObject(resultSet, User.class);
 		return users.toArray(new User[users.size()]);
+	}
+
+	private Answer getChoseAnswer(final long questionID, final long userID, final String schema, final String table) throws SQLException,
+			DriverNotFoundException, ModellToObjectException {
+		final String statement = "SELECT * FROM " + table + " WHERE questionID = ? AND userID = ?;";
+		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+		preparedStatement.setLong(1, questionID);
+		preparedStatement.setLong(2, userID);
+		return mapSingleAnswerToObject(preparedStatement);
+	}
+
+	private Answer mapSingleAnswerToObject(final PreparedStatement preparedStatement) throws SQLException, ModellToObjectException {
+		final ResultSet resultSet = preparedStatement.executeQuery();
+		final List<Answer> answers = new ResultSetMapper<Answer>().mapResultSetToObject(resultSet, Answer.class);
+		return answers.get(0);
+	}
+
+	private String getGroupAttribute(final String column, final long groupID) throws SQLException, DriverNotFoundException {
+		final String statement = "SELECT " + column + " FROM Groups WHERE groupID = ?;";
+		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+		preparedStatement.setLong(1, groupID);
+		return preparedStatement.executeQuery().getString(1);
+	}
+
+	@SuppressWarnings("unchecked")
+	private Pair<Answer, Integer>[] getAnswersOfQuestionAndCount(final long questionID, final String questionToUserTable, final String answerTable)
+			throws SQLException, DriverNotFoundException, ModellToObjectException {
+		final String statement = "SELECT A.*, " + "( SELECT COUNT(*) FROM " + questionToUserTable
+				+ " PU WHERE PU.questionID = ? AND PU.choosedAnswerID = A.answerID) counter" + "FROM " + answerTable + " A "
+				+ "WHERE A.questionID = ? ORDER BY counter ASC;";
+		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+		preparedStatement.setLong(1, questionID);
+		preparedStatement.setLong(1, questionID);
+		final ResultSet resultSet = preparedStatement.executeQuery();
+		final List<Answer> answers = new ResultSetMapper<Answer>().mapResultSetToObject(resultSet, Answer.class);
+		final List<ImmutablePair<Answer, Integer>> answersWithCount = new ArrayList<ImmutablePair<Answer, Integer>>();
+		for (int answerCounter = 0; answerCounter < answers.size(); answerCounter++) {
+			final Answer answer = answers.get(answerCounter);
+			resultSet.absolute(answerCounter + 1);
+			final Integer count = resultSet.getInt("counter");
+			answersWithCount.add(new ImmutablePair<Answer, Integer>(answer, count));
+		}
+		return answersWithCount.toArray((Pair<Answer, Integer>[]) new Pair[answersWithCount.size()]);
+	}
+
+	private PublicQuestion[] getPublicQuestionsOfUserDependingOnStatus(final long userID, final int startIndex, final int quantity,
+			final boolean finished) throws SQLException, DriverNotFoundException, ModellToObjectException {
+		final String statement = "SELECT P.* FROM " + Constants.TABLE_PUBLIC_QUESTIONS + " P JOIN " + Constants.TABLE_PUBLIC_QUESTIONS_TO_USERS
+				+ " PQU ON PQU.userID = ? AND PQU.questionID = P.questionID WHRER finihed = ?";
+		final ResultSet resultSet = getQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, finished, statement);
+		final List<PublicQuestion> publicQuestions = new ResultSetMapper<PublicQuestion>().mapResultSetToObject(resultSet, PublicQuestion.class);
+		return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
+	}
+
+	private PrivateQuestion[] getPrivateQuestionsOfUserDependingOnStatus(final long userID, final int startIndex, final int quantity,
+			final boolean finished) throws SQLException, DriverNotFoundException, ModellToObjectException {
+		final String statement = "SELECT P.* FROM " + Constants.TABLE_PRIVATE_QUESTIONS + " P JOIN " + Constants.TABLE_PRIVATE_QUESTIONS_TO_USERS
+				+ " PQU ON PQU.userID = ? AND PQU.questionID = P.questionID WHRER finihed = ?";
+		final ResultSet resultSet = getQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, finished, statement);
+		final List<PrivateQuestion> privateQuestions = new ResultSetMapper<PrivateQuestion>().mapResultSetToObject(resultSet, PrivateQuestion.class);
+		return privateQuestions.toArray(new PrivateQuestion[privateQuestions.size()]);
+	}
+
+	private ResultSet getQuestionsOfUserDependingOnStatus(final long userID, final int startIndex, final int quantity, final boolean finished,
+			String statement) throws SQLException, DriverNotFoundException {
+		statement = SQLFactory.buildStatementForAreaSelect(statement, "P.createDate ASC", startIndex, quantity);
+		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+		preparedStatement.setLong(1, userID);
+		preparedStatement.setBoolean(2, finished);
+		return preparedStatement.executeQuery();
 	}
 }
