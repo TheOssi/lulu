@@ -1,12 +1,13 @@
 package com.askit.queries;
 
-//TODO bessers handling für columns
-//TODO SQLFactory überall benutzen
-//TODO notifications
-// TODO question abbrechen
-// TODO is host/admin
-//TODO langu beachten
-//TODO grop by
+// TODO bessers handling für columns
+// TODO SQLFactory überall benutzen
+// TODO notifications + trigegr for add admin to group after creat egroup & Question to User after Question creation (auch OTQ)
+// TODO logische Nachfolgeopertation addUserToGroup
+// TODO set und update unterscheiden
+// TODO Frage abbrechen -> was passiert und Public und/oder Private
+// TODO Sort überall beachten
+// TODO langu bei Active/Old PublicQuestions beachten?
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -22,6 +23,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.askit.database.ConnectionFactory;
 import com.askit.entities.Answer;
 import com.askit.entities.Group;
+import com.askit.entities.Notification;
 import com.askit.entities.PrivateQuestion;
 import com.askit.entities.PublicQuestion;
 import com.askit.entities.User;
@@ -86,7 +88,7 @@ public class DatabaseQueryManager implements QueryManager {
 		preparedStatement.setString(3, group.getGroupname());
 		preparedStatement.setString(4, group.getGroupPictureURI());
 		preparedStatement.executeUpdate();
-		// TODO admin hinzugefügt
+		// TODO add Admin
 	}
 
 	@Override
@@ -142,7 +144,6 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public void createOneTimeQuestion(final PrivateQuestion question) throws SQLException, DriverNotFoundException {
 		createNewQuestion(question, true);
-		// TODO host automatisch hinzugefügt
 	}
 
 	@Override
@@ -173,7 +174,7 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	@Override
-	public PublicQuestion getPublicQuesion(final long questionID) throws ModellToObjectException, SQLException, DriverNotFoundException {
+	public PublicQuestion getPublicQuestion(final long questionID) throws ModellToObjectException, SQLException, DriverNotFoundException {
 		String statement = SQLFactory.buildSimpleSelectStatement(SCHEMA, Constants.TABLE_PUBLIC_QUESTIONS);
 		statement += " WHERE questionID = ?";
 		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
@@ -212,7 +213,7 @@ public class DatabaseQueryManager implements QueryManager {
 		final String[] columns = new String[] { COLUMNS_USERS[0], COLUMNS_USERS[3], COLUMNS_USERS[4] };
 		String statement = SQLFactory.buildSelectStatement(SCHEMA, Constants.TABLE_USERS, columns);
 		searchPattern += "%";
-		statement += " WHERE username LIKE ?";
+		statement += " WHERE username LIKE ? ORDER BY username ASC";
 		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 		preparedStatement.setString(1, searchPattern);
 		return getUserArrayFromReaderPreparedStatement(preparedStatement);
@@ -225,6 +226,7 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public User[] getUsersOfPublicQuestion(final long questionID) throws SQLException, ModellToObjectException, DriverNotFoundException {
+		// TODO sort
 		final String statement = "SELECT U.* FROM Users U JOIN PublicQuestionsToUsers P ON questionID = ? AND P.userID = U.userID";
 		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 		preparedStatement.setLong(1, questionID);
@@ -233,7 +235,7 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public User[] getUsersOfPrivateQuestion(final long questionID) throws SQLException, ModellToObjectException, DriverNotFoundException {
-		final String statement = "SELECT U.* FROM Users U JOIN PrivateQuestionsToUsers P ON questionID = ? AND P.userID = U.userID;";
+		final String statement = "SELECT U.* FROM Users U JOIN PrivateQuestionsToUsers P ON questionID = ? AND P.userID = U.userID ORDER BY U.username;";
 		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 		preparedStatement.setLong(1, questionID);
 		return getUserArrayFromReaderPreparedStatement(preparedStatement);
@@ -241,7 +243,7 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public User[] getUsersOfAnswerPrivateQuestion(final long answerID) throws SQLException, ModellToObjectException, DriverNotFoundException {
-		final String statement = "SELECT U.* FROM Users U JOIN PrivateQuestionsToUsers P ON choosedAnswerID = ? AND P.userID = U.userID;";
+		final String statement = "SELECT U.* FROM Users U JOIN PrivateQuestionsToUsers P ON choosedAnswerID = ? AND P.userID = U.userID ORDER BY U.username;";
 		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 		preparedStatement.setLong(1, answerID);
 		return getUserArrayFromReaderPreparedStatement(preparedStatement);
@@ -249,7 +251,7 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public User[] getUsersOfAnswerPublicQuestion(final long answerID) throws SQLException, ModellToObjectException, DriverNotFoundException {
-		final String statement = "SELECT U.* FROM Users U JOIN PublicQuestionsToUsers P ON choosedAnswerID = ? AND P.userID = U.userID;";
+		final String statement = "SELECT U.* FROM Users U JOIN PublicQuestionsToUsers P ON choosedAnswerID = ? AND P.userID = U.userID ORDER BY U.username;";
 		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 		preparedStatement.setLong(1, answerID);
 		return getUserArrayFromReaderPreparedStatement(preparedStatement);
@@ -257,7 +259,7 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public User[] getUsersOfGroup(final long groupID) throws SQLException, ModellToObjectException, DriverNotFoundException {
-		final String statement = "SELECT U.* FROM Users U JOIN GroupsToUsers G ON groupID = ? AND G.userID = U.userID;";
+		final String statement = "SELECT U.* FROM Users U JOIN GroupsToUsers G ON groupID = ? AND G.userID = U.userID ORDER BY U.username;";
 		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 		preparedStatement.setLong(1, groupID);
 		return getUserArrayFromReaderPreparedStatement(preparedStatement);
@@ -346,6 +348,7 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public PrivateQuestion[] getOldPrivateQuestions(final long groupID, final int startIndex, final int quantity) {
 		// TODO von nur einer Gruppe??
+		// TODO sort
 		return null;
 	}
 
@@ -388,12 +391,15 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public Pair<Group, Integer>[] getAllGroupScoresAndGlobalScoreOfUser(final long userID) {
+		// TODO sort
+		// TODO todo
 		return null;
 	}
 
 	@Override
 	public Pair<User, Integer>[] getUsersOfGroupsWithScore(final long groupID) {
 		// TODO Auto-generated method stub
+		// TODO sort
 		return null;
 	}
 
@@ -523,20 +529,20 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public Group[] searchForGroup(final long userID, final String nameSearchPattern) throws SQLException, DriverNotFoundException {
-		// TODO nur die Gruppen in denen ich schon bin?
+		// TODO nur die Gruppen in denen ich schon bin
 		return null;
 	}
 
 	@Override
 	public PrivateQuestion[] searchForPrivateQuestionInGroup(final long groupID, final String questionSearchPattern) throws SQLException,
 			DriverNotFoundException {
-		// TODO nach was soll gesucht werden (Frage, addinfo, title)?
+		// TODO
 		return null;
 	}
 
 	@Override
 	public PublicQuestion[] searchForPublicQuestion(final String nameSearchPattern) throws SQLException, DriverNotFoundException {
-		// TODO nach was soll gesucht werden (Frage, addinfo, title)?
+		// TODO
 		return null;
 	}
 
@@ -608,7 +614,6 @@ public class DatabaseQueryManager implements QueryManager {
 		if (!isOneTime) {
 			addUsersToPublicQuestion(0, 0);
 		}
-		// TODO Question to User
 	}
 
 	private void addUsersToPublicQuestion(final long questionID, final long groupID) throws SQLException, DriverNotFoundException {
@@ -688,7 +693,7 @@ public class DatabaseQueryManager implements QueryManager {
 	private PublicQuestion[] getPublicQuestionsOfUserDependingOnStatus(final long userID, final int startIndex, final int quantity,
 			final boolean finished) throws SQLException, DriverNotFoundException, ModellToObjectException {
 		final String statement = "SELECT P.* FROM " + Constants.TABLE_PUBLIC_QUESTIONS + " P JOIN " + Constants.TABLE_PUBLIC_QUESTIONS_TO_USERS
-				+ " PQU ON PQU.userID = ? AND PQU.questionID = P.questionID WHRER finihed = ?";
+				+ " PQU ON PQU.userID = ? AND PQU.questionID = P.questionID WHERE finihed = ?";
 		final ResultSet resultSet = getQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, finished, statement);
 		final List<PublicQuestion> publicQuestions = new ResultSetMapper<PublicQuestion>().mapResultSetToObject(resultSet, PublicQuestion.class);
 		return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
@@ -710,5 +715,11 @@ public class DatabaseQueryManager implements QueryManager {
 		preparedStatement.setLong(1, userID);
 		preparedStatement.setBoolean(2, finished);
 		return preparedStatement.executeQuery();
+	}
+
+	@Override
+	public Notification[] getNotifications(final long userID) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
