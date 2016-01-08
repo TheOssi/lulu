@@ -6,6 +6,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.askit.entities.Answer;
 import com.askit.entities.Group;
+import com.askit.entities.Notification;
 import com.askit.entities.PrivateQuestion;
 import com.askit.entities.PublicQuestion;
 import com.askit.entities.User;
@@ -155,7 +156,7 @@ public interface QueryManager {
 	 * @throws SQLException
 	 * @throws DriverNotFoundException
 	 */
-	public PublicQuestion getPublicQuesion(long questionID) throws ModellToObjectException, SQLException, DriverNotFoundException;
+	public PublicQuestion getPublicQuestion(long questionID) throws ModellToObjectException, SQLException, DriverNotFoundException;
 
 	/**
 	 * return a specific PrivateQuestion
@@ -181,6 +182,8 @@ public interface QueryManager {
 	 */
 	public PrivateQuestion[] getQuestionsOfGroup(long groupID, int startIndex, int quantity) throws SQLException, ModellToObjectException,
 			DriverNotFoundException;
+
+	public Notification[] getNotifications(long userID);
 
 	/**
 	 * search by username
@@ -530,5 +533,4 @@ public interface QueryManager {
 	 */
 
 	public void finishPrivateQuestion(long questionID) throws SQLException, DriverNotFoundException;
-
 }

@@ -1,11 +1,14 @@
 USE APP;
 
--- Trigger AFTER UPDATE ON PrivateQuestionsToUser
--- If the choosenAnswer is set, the scores will updated
--- Also if the confition for the end is reached, the question will marked as finished
+
+-- ================================================================================
+-- AFTER UPDATE ON PrivateQuestionsToUser
+-- 		If the choosenAnswer is set, the scores will updated
+-- 		Also if the condition for the end is reached, the question will marked as finished
+-- ================================================================================
 DELIMITER \\
 CREATE DEFINER = 'appAdmin'@'localhost'
-	TRIGGER trigger_aUOnPrivateQuestionsToUsers_updateScores_checkFinished
+	TRIGGER tg_afterUpdate_PrivateQuestionsToUsers
 	AFTER UPDATE ON PrivateQuestionsToUsers
     FOR EACH ROW BEGIN
         DECLARE l_definitionOfEnd TINYINT unsigned;
@@ -66,11 +69,14 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 END \\
 DELIMITER ;
 
--- Trigger AFTER UPDATE ON PublicQuestionsToUsers
--- If a user participate a public question the scores will be updateded
+
+-- ================================================================================
+-- AFTER UPDATE ON PublicQuestionsToUsers
+-- 		If a user participate a public question the scores will be updateded
+-- ================================================================================
 DELIMITER \\
 CREATE DEFINER = 'appAdmin'@'localhost'
-	TRIGGER trigger_aUPublicQuestionsToUser_updateScores
+	TRIGGER tg_afterUpdate_PublicQuestionsToUser
 	AFTER INSERT ON PublicQuestionsToUsers
     FOR EACH ROW BEGIN
 		DECLARE l_hostID INT UNSIGNED;
@@ -98,16 +104,18 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 			-- Update global score of host
 			UPDATE APP.Users
 				SET scoreOfGlobal = (scoreOfGlobal + l_pointsHost ) 
-			WHERE userID = l_hostID;
-			
+			WHERE userID = l_hostID;		
 END \\
 DELIMITER ;
 
--- Trigger AFTER INSERT ON PublicQuestions
+
+-- ================================================================================
+-- AFTER INSERT ON PublicQuestions
 -- If somebody creates a new public question, the score will be increased
+-- ================================================================================
 DELIMITER \\
 CREATE DEFINER = 'appAdmin'@'localhost'
-	TRIGGER trigger_afterInsertOnPublicQuestions_updateScores
+	TRIGGER tg_afterInsert_PublicQuestions
 	AFTER INSERT ON PublicQuestions
     FOR EACH ROW BEGIN
 	DECLARE l_points INT UNSIGNED;
@@ -124,9 +132,19 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 END \\
 DELIMITER ;
 
+
+-- ================================================================================
+-- AFTER UPDATE ON PrivateQuestions
+--		If the selectedAnswer is set and this is a bet, this trigger update the 
+--			score of all users, which selected this answer
+--			Also a notification will be created (lose or win)
+--		If this is not a bet, a single notification will be created, that this
+--			question is finished
+--		If this is a bet and no selectedAnswer is set, a notification will be created
+-- ================================================================================
 DELIMITER \\
 CREATE DEFINER = 'appAdmin'@'localhost'
-	TRIGGER tg_aInsert_PrivateQuestions_updateScoresForRightAnswer_not
+	TRIGGER tg_afterInsert_PrivateQuestions
 	AFTER UPDATE ON PrivateQuestions
     FOR EACH ROW BEGIN
 	DECLARE l_points INT UNSIGNED;
@@ -257,9 +275,13 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 END \\
 DELIMITER ;
 
+
+-- ================================================================================
+-- ADTER INSERT ON GroupsToUsers
+-- ================================================================================
 DELIMITER \\
 CREATE DEFINER = 'appAdmin'@'localhost' 
-	TRIGGER tg_aInsertGroupsToUsers_not
+	TRIGGER tg_afterInsert_GroupsToUsers
     AFTER INSERT ON GroupsToUsers
     FOR EACH ROW BEGIN
     DECLARE l_code VARCHAR(4);
@@ -285,9 +307,12 @@ END \\
 DELIMITER ;
 
 
+-- ================================================================================
+-- AFTER INSERT ON Messages
+-- ================================================================================
 DELIMITER \\
 CREATE DEFINER = 'appAdmin'@'localhost' 
-	TRIGGER tg_aInsertMessages_not
+	TRIGGER tg_afterInsert_Messages
     AFTER INSERT ON Messages
     FOR EACH ROW BEGIN
 	DECLARE l_code VARCHAR(4);
@@ -313,9 +338,13 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 END \\
 DELIMITER ;
 
+
+-- ================================================================================
+-- AFTER INSERT ON PrivateQuestions
+-- ================================================================================
 DELIMITER \\
 CREATE DEFINER = 'appAdmin'@'localhost' 
-	TRIGGER tg_aInsertPrivateQuestions_not
+	TRIGGER tg_afterInsert_PrivateQuestions
     AFTER INSERT ON PrivateQuestions
     FOR EACH ROW BEGIN
 	DECLARE l_code VARCHAR(4);
