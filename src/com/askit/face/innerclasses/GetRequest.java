@@ -3,12 +3,13 @@ package com.askit.face.innerclasses;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.askit.entities.Answer;
 import com.askit.entities.Group;
@@ -45,14 +46,13 @@ public class GetRequest {
 	private Integer id;
 
 	@SuppressWarnings("unused")
-	public GetRequest(final String pathInfo, final Map<String, String[]> parameters, final PrintWriter out)
-			throws ServletException, SQLException, DriverNotFoundException, WrongHashException, DuplicateHashException,
-			MissingParametersException, ModellToObjectException {
+	public GetRequest(final String pathInfo, final Map<String, String[]> parameters, final PrintWriter out) throws ServletException, SQLException,
+			DriverNotFoundException, WrongHashException, DuplicateHashException, MissingParametersException, ModellToObjectException {
 
 		Matcher matcher;
-		QueryManager qm = new DatabaseQueryManager();
-		String shash[] = parameters.get(Constants.PARAMETERS_SESSIONHASH);
-		JSONBuilder jb = new JSONBuilder();
+		final QueryManager queryManager = new DatabaseQueryManager();
+		final String shash[] = parameters.get(Constants.PARAMETERS_SESSIONHASH);
+		final JSONBuilder jsonBuilder = new JSONBuilder();
 		matcher = regExSessionPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			String hash[];
@@ -72,8 +72,8 @@ public class GetRequest {
 			if (matcher.find()) {
 				id = Integer.parseInt(matcher.group(1));
 
-				out.println(jb.createJSON(new Group(new Long(id), Calendar.getInstance().getTime(), new Long(1337),
-						"KaiIstGay", "/bla/blubber/fasel")));
+				out.println(jsonBuilder
+						.createJSON(new Group(new Long(id), Calendar.getInstance().getTime(), new Long(1337), "KaiIstGay", "/bla/blubber/fasel")));
 
 				return;
 			}
@@ -82,8 +82,8 @@ public class GetRequest {
 			matcher = regExGroupsPattern.matcher(pathInfo);
 			if (matcher.find()) {
 
-				out.println(jb.createJSON(new Group(new Long(id), Calendar.getInstance().getTime(), new Long(1337),
-						"KaiIstGay", "/bla/blubber/fasel")));
+				out.println(jsonBuilder
+						.createJSON(new Group(new Long(id), Calendar.getInstance().getTime(), new Long(1337), "KaiIstGay", "/bla/blubber/fasel")));
 
 				return;
 			}
@@ -93,7 +93,7 @@ public class GetRequest {
 			if (matcher.find()) {
 				id = Integer.parseInt(matcher.group(1));
 				if (id != null) {
-					String username = qm.getUsername(id);
+					final String username = queryManager.getUsername(id);
 					out.println("{username : " + id + "}");
 				} else {
 					throw new MissingParametersException("Missing ID in Parameters");
@@ -105,14 +105,14 @@ public class GetRequest {
 			// /USER/SCORE/ID + GROUPID=ID Pattern returns Global or Group Score
 			matcher = regExUserScorePattern.matcher(pathInfo);
 			if (matcher.find()) {
-				Long groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
+				final Long groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
 				Long userscore;
 				id = Integer.parseInt(matcher.group(1));
 				if (id != null) {
 					if (groupID != null) {
-						userscore = qm.getUserScoreInGroup(id, groupID);
+						userscore = queryManager.getUserScoreInGroup(id, groupID);
 					} else {
-						userscore = qm.getUserScoreOfGlobal(id);
+						userscore = queryManager.getUserScoreOfGlobal(id);
 					}
 					out.println("{Score : " + userscore + "}");
 				} else {
@@ -136,20 +136,20 @@ public class GetRequest {
 
 				if (!groupID.isEmpty() || !searchPattern.isEmpty() || questionID != null) {
 					if (!groupID.isEmpty() && searchPattern.isEmpty() && questionID == null) {
-						users = qm.getUsersOfGroup(Long.parseLong(groupID));
+						users = queryManager.getUsersOfGroup(Long.parseLong(groupID));
 					} else if (!searchPattern.isEmpty() && groupID.isEmpty()) {
-						users = qm.getUsersByUsername(searchPattern);
+						users = queryManager.getUsersByUsername(searchPattern);
 					} else if (questionID != null && answerID == null && isPublic) {
-						users = qm.getUsersOfPublicQuestion(questionID);
+						users = queryManager.getUsersOfPublicQuestion(questionID);
 					} else if (questionID != null && answerID == null && !isPublic) {
-						users = qm.getUsersOfPrivateQuestion(questionID);
+						users = queryManager.getUsersOfPrivateQuestion(questionID);
 					} else if (questionID != null && answerID != null && !isPublic) {
-						users = qm.getUsersOfAnswerPrivateQuestion(questionID, answerID);
+						users = queryManager.getUsersOfAnswerPrivateQuestion(answerID);
 					} else if (questionID != null && answerID != null && isPublic) {
-						users = qm.getUsersOfAnswerPublicQuestion(questionID, answerID);
+						users = queryManager.getUsersOfAnswerPublicQuestion(answerID);
 					}
 
-					out.println(jb.createJSON(users));
+					out.println(jsonBuilder.createJSON(users));
 				} else {
 					throw new MissingParametersException("No Parameters specified.");
 				}
@@ -160,9 +160,9 @@ public class GetRequest {
 		matcher = regExQuestionPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			id = Integer.parseInt(matcher.group(1));
-			boolean isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
+			final boolean isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
 			if (id != null && !isPublic) {
-				out.println(jb.createJSON(qm.getPrivateQuestion(id)));
+				out.println(jsonBuilder.createJSON(queryManager.getPrivateQuestion(id)));
 
 			} else {
 				throw new MissingParametersException("Missing ID in Parameters");
@@ -184,33 +184,31 @@ public class GetRequest {
 			if (isPublic) {
 				PublicQuestion[] publicQuestions;
 				if (userID == null && quantity != 0 && language != null) {
-					publicQuestions = qm.getPublicQuestions(startIndex, quantity, language);
+					publicQuestions = queryManager.getPublicQuestions(startIndex, quantity, language);
 				} else if (userID != null && quantity != 0 && !isExpired) {
-					publicQuestions = qm.getActivePublicQuestionsOfUser(userID, startIndex, quantity);
+					publicQuestions = queryManager.getActivePublicQuestionsOfUser(userID, startIndex, quantity);
 				} else if (userID != null && quantity != 0 && isExpired) {
-					publicQuestions = qm.getOldPublicQuestionsOfUser(userID, startIndex, quantity);
+					publicQuestions = queryManager.getOldPublicQuestionsOfUser(userID, startIndex, quantity);
 				} else {
 					throw new MissingParametersException("No or not enough Parameters specified");
 				}
-				out.println(jb.createJSON(publicQuestions));
+				out.println(jsonBuilder.createJSON(publicQuestions));
 			} else {
 				PrivateQuestion[] privateQuestions = null;
 				if (questionID == null && groupID != null && startIndex != 0 && quantity != 0) {
-					privateQuestions = qm.getQuestionsOfGroup(groupID, startIndex, quantity);
+					privateQuestions = queryManager.getQuestionsOfGroup(groupID, startIndex, quantity);
 				} else if (questionID == null && groupID != null && startIndex != 0 && quantity != 0 && isExpired) {
-					privateQuestions = qm.getOldPrivateQuestions(groupID, startIndex, quantity);
+					privateQuestions = queryManager.getOldPrivateQuestions(groupID, startIndex, quantity);
 				} else if (questionID != null && groupID == null && quantity == 0 && userID == null) {
-					out.println(jb.createJSON(qm.getPrivateQuestion(questionID)));
-				} else if (questionID == null && groupID == null && !isExpired && userID != null && startIndex != 0
-						&& quantity != 0) {
-					privateQuestions = qm.getActivePrivateQuestionsOfUser(userID, startIndex, quantity);
-				} else if (questionID == null && groupID == null && isExpired && userID != null && startIndex != 0
-						&& quantity != 0) {
-					privateQuestions = qm.getOldPrivateQuestionsOfUser(userID, startIndex, quantity);
+					out.println(jsonBuilder.createJSON(queryManager.getPrivateQuestion(questionID)));
+				} else if (questionID == null && groupID == null && !isExpired && userID != null && startIndex != 0 && quantity != 0) {
+					privateQuestions = queryManager.getActivePrivateQuestionsOfUser(userID, startIndex, quantity);
+				} else if (questionID == null && groupID == null && isExpired && userID != null && startIndex != 0 && quantity != 0) {
+					privateQuestions = queryManager.getOldPrivateQuestionsOfUser(userID, startIndex, quantity);
 				} else {
 					throw new MissingParametersException("No or not enough Parameters specified");
 				}
-				out.println(jb.createJSON(privateQuestions));
+				out.println(jsonBuilder.createJSON(privateQuestions));
 			}
 			return;
 		}
@@ -226,14 +224,15 @@ public class GetRequest {
 			final Long userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
 			final boolean isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
 			Answer[] answers;
+			Pair<Answer, Integer>[] countedAnswers;
 
 			if (questionID != null && userID == null && !isPublic) {
-				answers = qm.getAnswersOfPrivateQuestionAndCount(questionID);
+				countedAnswers = queryManager.getAnswersOfPrivateQuestionAndCount(questionID);
 			} else if (questionID != null && userID == null && !isPublic) {
-				answers = qm.getAnswersOfPublicQuestionAndCount(questionID);
+				countedAnswers = queryManager.getAnswersOfPublicQuestionAndCount(questionID);
 			} else if (questionID != null && userID != null && !isPublic) {
 				answers = new Answer[1];
-				answers[0] = qm.getSelectedAnswerInPrivateQuestion(questionID, userID);
+				answers[0] = queryManager.getChoseAnswerInPrivateQuestion(questionID, userID);
 			} else {
 				throw new MissingParametersException("No or not enough Parameters specified");
 			}
