@@ -1,4 +1,4 @@
-package com.askit;
+package com.askit.queries;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class DatabaseQueryManagerTest {
+public class SQLFactoryTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -26,7 +26,6 @@ public class DatabaseQueryManagerTest {
 
 	@Test
 	public void test() {
-
 	}
 
 }

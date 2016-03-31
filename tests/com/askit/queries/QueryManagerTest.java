@@ -1,4 +1,4 @@
-package com.askit;
+package com.askit.queries;
 
 import java.sql.SQLException;
 
