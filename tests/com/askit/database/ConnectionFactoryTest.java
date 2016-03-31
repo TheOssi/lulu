@@ -1,4 +1,4 @@
-package com.askit;
+package com.askit.database;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;

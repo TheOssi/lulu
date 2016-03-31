@@ -12,6 +12,7 @@ public class ConnectionFactory {
 	private final static String PARAMETER_USER = "user";
 	private final static String PARAMETER_PASSWORD = "password";
 	private static final String IP_OF_DATABASE = "localhost";
+	private static final String MARIA_DB_DRIVER = "org.mariadb.jdbc.Driver";
 	private static ConnectionFactory instance;
 
 	private Connection readerConnection;
@@ -20,7 +21,7 @@ public class ConnectionFactory {
 
 	private ConnectionFactory() throws DriverNotFoundException {
 		try {
-			Class.forName("org.mariadb.jdbc.Driver");
+			Class.forName(MARIA_DB_DRIVER);
 		} catch (final ClassNotFoundException e) {
 			e.printStackTrace();
 			throw new DriverNotFoundException("Driver class not found");
@@ -28,10 +29,11 @@ public class ConnectionFactory {
 	}
 
 	/**
-	 * This Instance handle all the Connections to the Database
+	 * This instance handles all connections to the database
 	 *
 	 * @return the instance of the ConnectionFactory
 	 * @throws DriverNotFoundException
+	 *             if the driver wasn't found
 	 */
 	public static synchronized ConnectionFactory getInstance() throws DriverNotFoundException {
 		if (instance == null) {
