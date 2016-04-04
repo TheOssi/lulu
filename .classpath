@@ -37,5 +37,10 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/BetTest/lib/javadoc/commons-lang3-3.4-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/javapoet-1.6.1.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="https://square.github.io/javapoet/1.x/javapoet/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
