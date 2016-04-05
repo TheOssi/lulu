@@ -1,0 +1,255 @@
+    // Füge einen Benutzer hinzu.
+    public void addUser()
+		public void registerUser()   
+    
+    //Einen Nutzer einloggen
+    public void login() 
+   		// TODO Max 
+  	
+     //Einen Nutzer auslogen
+     public void logout
+     	// TODO Max
+     
+    // Füge eine Gruppe hinzu
+    public void addGroup()
+		public void createNewGroup
+    
+    // Einen Benutzer zu einer Gruppe hinzufügen.
+    public void addUserToGroup()
+		public void addUserToGroup
+    
+    // Füge einen anderen User zu der Freundesliste hinzu.
+    public void addNewFriend()
+		public void addContact
+    
+    // Füge eine Benutzer zu einer öffentlchen Frage hinzu.
+    public void addUserToQuestion()
+    	public void addUserToPublicQuestion
+    
+    //Fügt einen Nutezr zu einer OTQ hinzu (Flag für Wette)
+    addUserToOneTimeQuestion
+		public void addUserToOneTimeQuestion	
+
+    // Füge eine öffentliche Wette oder Frage hinzu. (Attribut wo (DE oder INT) wird mitgeschickt).
+    public void addPublicQuestion() 
+		public void createPublicQuestion
+    
+    //Füge eine Frage in einer Gruppe hinzu
+    //Falg für Wette
+    public void addQuestionInGroup()
+   		public void createNewQuestionInGroup 
+
+    // Erstelle eine private Frage. (Wird nur unter Aktiv angezeigt)
+    //Flag für Wette
+    public void addOneTimeQuestion()
+		public void createOneTimeQuestion
+    
+    // Füge zu der Ö Frage eine mögliche Antwort hinzu.
+    public void addPublicAnswer()
+		public void addAnswerToPublicQuestion
+		
+	// Füge zu der P Frage eine mögliche Antwort hinzu.	
+	public void addPrivateAnswer
+		public void addAnswerToPrivateQuestion
+    
+    //Liefert eine privet Frage mit allen dazugehörigen Daten zurück.
+    public void getPrivateQuestion()
+		public PrivateQuestion getPrivateQuestion()
+		
+	//Liefert eine öffentliche Frage mit allen dazugehörigen Daten zurück.
+	public void getPublicQuesion()
+		public PublicQuestion getPublicQuesion()
+    
+    // Liefert alle Fragen einer Gruppe zurück und deren Metdaten.
+    public void getGroupQuestion()
+		public PrivateQuestion[] getQuestionsOfGroup	
+
+    // Liefert eine Liste aller Fragen im Public Bereich (DE oder INT wird mitgeschickt).
+    public void getPublicQuestions()
+		public PublicQuestion[] getPublicQuestions
+    
+     // Dem Server wird ein UserName übergeben und es sollen alle ausgegeben werden, die in Frage kommen.
+    public void getUserWithName()
+		public User[] getUsersByUsername
+    	/USERS?SEARCH=%SEARCHPATTERN%
+
+    // Liefert den Nutzernamen eines Benutzers zurück.
+    public void getUserName()
+		public String getUsername
+    	/USER/%ID%
+
+    // Liefert alle Nutzernamen einer Frage zurück.
+    //inkl BIld
+    public void getAllUserNamesQuestion()
+		public User[] getUsersOfPublicQuestion(long questionID);
+		/USERS?QUESTIONID=%QUESTIONID%&PUBLIC=TRUE
+		public User[] getUsersOfPrivateQuestion(long questionID);
+		/USERS?QUESTIONID=%QUESTIONID%
+	//Liefert die Nutzernamen, die eine bestimmte Antwort ausgewählt haben.
+    //inkl Bild
+    public void getUserNamesAnswer()
+		public User[] getUsersOfAnswerPrivateQuestion(long questionID);
+		/USERS?QUESTIONID=%QUESTIONID%&ANSWERID=%ANSWERID%&PUBLIC=TRUE
+		public User[] getUsersOfAnswerPublicQuestion(long questionID);
+		/USERS?QUESTIONID=%QUESTIONID%&ANSWERID=%ANSWERID%    
+
+    // Liefert alle Nutzernamen der Gruppe.
+    //inkl Bild
+    public void getGroupUserNames()
+		public User[] getUsersOfGroup
+    	/USERS?GROUPID=%GROUPID%
+
+    // Liefert den globalen Score eines Benutzers zurück.
+    public void getUserGlobalScore()
+		public Long getUserScoreOfGlobal
+    	/USER/SCORE/%ID%
+
+    // Liefert den Score eines Benutzers einer Gruppe zurück.
+    public void getUserGroupScore()
+		public Long getUserScoreInGroup(long groupID)
+    	/USER/SCORE/%ID%?GROUPID=%GROUPID%	
+	// Liefert alle Nutzernamen einer private Frage zurück.		
+	public void getAllUserNamesPrivateQuestion
+    	public User[] getUsersOfPrivateQuestion
+
+    // Liefert eine Liste mit allen GruppenNamen in denen der User ist und seiner Punktzahl.
+    // Es soll auch GlobalScore zurückgegeben werden.
+    public void getUSerAllGroupsAndScores()
+		public Pair<Group,Integer>[] getAllGroupScoresAndGlobalScoreOfUser;
+
+    // Liefert alle Nutzer und deren Gruppen Score zurück. Sortiert nach dem Score.
+    public void getGroupScore()
+		public Pair<User,Integer>[] getUsersOfGroupsWithScore() 
+
+    // Liefert die Handynummer vom User.
+    public void getPhoneNumber()
+		public String getPhoneNumberHash   
+    
+	// Liefert die ausgewählte Antwort einer Ö Frage vom User zurück.
+	public void getSelectedPublicAnswer
+		public Answer getSelectedAnswerInPublicQuestion	
+		
+	// Liefert die ausgewählte Antwort einer P Frage vom User zurück
+	public void getSelectedPrivateAnswer
+		public Answer getSelectedAnswerInPrivateQuestion    
+
+    // Gibt alle möglichen Antworten einer ÖF zurück und die Anzahl, wie oft eine Antwort angeklickt worden ist.
+    public void getAllPublicAnswersAndCount
+    	public Answer[] getAnswersOfPublicQuestionAndCount
+    
+    // Gibt alle möglichen Antworten einer PF zurück und die Anzahl, wie oft eine Antwort angeklickt worden ist.
+	public void getAllPrivateAnswersAndCount
+		public Answer[] getAnswersOfPrivateQuestionAndCount
+   
+    // Liefert den Platz in der Gruppe zurück.
+    public void getRankingInGroup()
+		public Long getRankingInGroup
+   
+    // Liefert den Hash vom Passwort
+    public void getPassword()
+		public String getPasswordHash  
+
+    // Liefert alle aktive Fragen des Benutzers zurück.
+    public void getAktivQuestions()
+  		public PublicQuestion[] getActivePublicQuestionsOfUser
+		public PrivateQuestion[] getActivePrivateQuestionsOfUser 
+
+    // Liefert alle vergangene Fragen des Benutzers zurück.
+    public void getArchivQuestions()
+    	public PublicQuestion[] getOldPublicQuestionsOfUser
+		public PrivateQuestion[] getOldPrivateQuestionsOfUser
+    
+    // Liefert alle vergangenen Fragen einer Gruppe zurück.
+    public void getArchivQuestionsGroup()
+		public PrivateQuestion[] getOldPrivateQuestions
+    
+    // Liefert das Bild einer Gruppe zurück
+    public void getGroupPicture()
+		public String getGroupPictureURI
+    
+
+    // Liefret das Profilbild des Users zurück.
+    public void getUserProfilPicture()
+		public String getProfilePictureURI
+    
+
+    // Liefert die ausgewählte Sprache.
+    public void getLanguage()
+		public String getLanguage
+    
+
+    // Setze die ausgewählte Sprache.
+    public void setLanguage()
+		public void setLanguage
+
+    // Setze ein neues Bild als Profilbild.
+    public void setUserProfilPicture()
+		public void setProfilPictureOfUser    
+
+    // Setze ein neues Bild als Gruppenbild.
+    public void setGroupPicture()
+    
+    // Setzt ein neues Passwort.
+	public void setPassword	
+		public void setPasswordHash
+    
+    // Setze die vom User gewählte Antwort. 
+    public void setSelectedPublicAnswer()
+    	public void setSelectedAnswerOfPublicQuestion
+    		
+    // Setze die vom User gewählte Antwort.
+    public void setSelectedPrivateAnswer()
+		public void setSelectedAnswerOfPrivateQuestion
+    
+    //Nach Ende der Wette, kann der Admin die richtige Antwort setzen. Nur in Gruppen!
+    public void setRightAnswer()
+		public void setSelectedAnswerOfPrivateQuestion
+
+    // Setze einen anderen User der Gruppe als Admin.
+    public void setGroupAdmin()
+		public void setGroupAdmin()
+    
+    // Setze eine neue Handynummer
+    public void setPhoneNumber()
+   		public void setPhoneNumberHash
+   		
+    // Setze den Namen einer Gruppe.
+    public void setGroupName()   
+		public void setGroupName
+		
+    // Setze einen neuen Usernamen
+    public void setUsername()
+		 public void setUsername
+    
+    // Der Admin hat die Möglichkeit eine Frage zu löschen.
+    public void deleteQuestion()
+   		public void deletePrivateQuestion 	
+
+    // Verlassen einer Gruppe. Oder der Admin löscht jemanden.
+    public void deleteFromGroup()
+		 public void deleteUserFromGroup
+    
+    // Die gesamte Gruppe löschen. Kann nur der Admin der Gruppe.
+    public void deleteGroup()
+		public void deleteGroup
+
+    // Lösche einen anderen User von der Freundesliste.
+    public void deleteFriend()
+		public void deleteContact
+    
+    // Suche in eigenen Gruppen.
+    public void searchInMyGroups()
+		public Group[] searchForGroup
+    
+    // Suche in einer Gruppe nach einer Frage.
+    public void searchInGroupForBet()
+		public PrivateQuestion[] searchForPrivateQuestionInGroup
+    
+    // Suche öffentlich nach Fragen, die mit dem Wort/ Filter was zu tun haben (DE oder INT wird mitgeschickt).
+    public void seachPublicQuestion()
+		public PublicQuestion[] searchForPublicQuestion
+    
+    // Der Admin kann eine Frage sofort beenden. Nur in Gruppen möglich.
+    public void finishQuestion()
+		public void finishPrivateQuestion
+    
