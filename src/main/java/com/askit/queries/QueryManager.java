@@ -1,7 +1,5 @@
 package com.askit.queries;
 
-import java.sql.SQLException;
-
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.askit.entities.Answer;
@@ -10,8 +8,7 @@ import com.askit.entities.Notification;
 import com.askit.entities.PrivateQuestion;
 import com.askit.entities.PublicQuestion;
 import com.askit.entities.User;
-import com.askit.exception.DriverNotFoundException;
-import com.askit.exception.ModellToObjectException;
+import com.askit.exception.DatabaseLayerException;
 
 public interface QueryManager {
 
@@ -19,7 +16,13 @@ public interface QueryManager {
 	 * Private Methods
 	 */
 
-	public boolean checkUser(String username, String passwordHash) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param username
+	 * @param passwordHash
+	 * @return
+	 * @throws DatabaseLayerException
+	 */
+	public boolean checkUser(String username, String passwordHash) throws DatabaseLayerException;
 
 	/*
 	 * Add and Create Methods
@@ -29,58 +32,53 @@ public interface QueryManager {
 	 * Register a User
 	 *
 	 * @param user
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public void registerUser(User user) throws SQLException, DriverNotFoundException;
+	public void registerUser(User user) throws DatabaseLayerException;
 
 	/**
 	 * create a new Group
 	 *
 	 * @param group
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public void createNewGroup(Group group) throws SQLException, DriverNotFoundException;
+	public void createNewGroup(Group group) throws DatabaseLayerException;
 
 	/**
 	 * add a user to a group
 	 *
 	 * @param groupID
 	 * @param userID
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
+	 * @throws DatabaseLayerException
 	 */
-	public void addUserToGroup(long groupID, long userID) throws SQLException, DriverNotFoundException;
+	public void addUserToGroup(long groupID, long userID) throws DatabaseLayerException;
 
 	/**
 	 * add a contact to a user
 	 *
 	 * @param userIDOfUser
 	 * @param userIDofContact
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public void addContact(long userIDOfUser, long userIDofContact) throws SQLException, DriverNotFoundException;
+	public void addContact(long userIDOfUser, long userIDofContact) throws DatabaseLayerException;
 
 	/**
 	 * add a user to a oneTimeQuestion
 	 *
 	 * @param userID
 	 * @param questionID
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public void addUserToOneTimeQuestion(long userID, long questionID) throws SQLException, DriverNotFoundException;
+	public void addUserToOneTimeQuestion(long userID, long questionID) throws DatabaseLayerException;
 
 	/**
 	 * crate a new public question
 	 *
 	 * @param question
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public void createPublicQuestion(PublicQuestion question) throws SQLException, DriverNotFoundException;
+	public void createPublicQuestion(PublicQuestion question) throws DatabaseLayerException;
 
 	/**
 	 *
@@ -88,42 +86,38 @@ public interface QueryManager {
 	 *
 	 * @param question
 	 * @param groupID
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public void createNewQuestionInGroup(PrivateQuestion question) throws SQLException, DriverNotFoundException;
+	public void createNewQuestionInGroup(PrivateQuestion question) throws DatabaseLayerException;
 
 	/**
 	 * create a new oneTimeQuestion
 	 *
 	 * @param question
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public void createOneTimeQuestion(PrivateQuestion question) throws SQLException, DriverNotFoundException;
+	public void createOneTimeQuestion(PrivateQuestion question) throws DatabaseLayerException;
 
 	/**
 	 *
 	 * @param answer
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public void addAnswerToPublicQuestion(Answer answer) throws SQLException, DriverNotFoundException;
+	public void addAnswerToPublicQuestion(Answer answer) throws DatabaseLayerException;
 
 	/**
 	 *
 	 * @param answer
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public void addAnswerToPrivateQuestion(Answer answer) throws SQLException, DriverNotFoundException;
+	public void addAnswerToPrivateQuestion(Answer answer) throws DatabaseLayerException;
 
 	/**
 	 *
 	 * @param questionID
 	 * @param userID
 	 */
-	public void addUserToPublicQuestion(long questionID, long userID);
+	public void addUserToPublicQuestion(long questionID, long userID) throws DatabaseLayerException;
 
 	/*
 	 * Get Methods
@@ -140,34 +134,27 @@ public interface QueryManager {
 	 * @param language
 	 *            the langauge
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
-	 * @throws ModellToObjectException
+	 * @throws DatabaseLayerException
 	 */
-	public PublicQuestion[] getPublicQuestions(int startIndex, int quantity, String language) throws SQLException, DriverNotFoundException,
-			ModellToObjectException;
+	public PublicQuestion[] getPublicQuestions(int startIndex, int quantity, String language) throws DatabaseLayerException;
 
 	/**
 	 * Returns a specific PublicQuestion
 	 *
 	 * @return
 	 * @param questionID
-	 * @throws ModellToObjectException
-	 * @throws SQLException
-	 * @throws DriverNotFoundException
+	 * @throws DatabaseLayerException
 	 */
-	public PublicQuestion getPublicQuestion(long questionID) throws ModellToObjectException, SQLException, DriverNotFoundException;
+	public PublicQuestion getPublicQuestion(long questionID) throws DatabaseLayerException;
 
 	/**
 	 * return a specific PrivateQuestion
 	 *
 	 * @param questionID
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
-	 * @throws ModellToObjectException
+	 * @throws DatabaseLayerException
 	 */
-	public PrivateQuestion getPrivateQuestion(long questionID) throws ModellToObjectException, SQLException, DriverNotFoundException;
+	public PrivateQuestion getPrivateQuestion(long questionID) throws DatabaseLayerException;
 
 	/**
 	 * returns all questions of a group within a puffer
@@ -176,149 +163,124 @@ public interface QueryManager {
 	 * @param startIndex
 	 * @param quantity
 	 * @return
-	 * @throws SQLException
-	 * @throws ModellToObjectException
-	 * @throws DriverNotFoundException
+	 * @throws DatabaseLayerException
 	 */
-	public PrivateQuestion[] getQuestionsOfGroup(long groupID, int startIndex, int quantity) throws SQLException, ModellToObjectException,
-			DriverNotFoundException;
+	public PrivateQuestion[] getQuestionsOfGroup(long groupID, int startIndex, int quantity) throws DatabaseLayerException;
 
-	public Notification[] getNotifications(long userID);
+	public Notification[] getNotifications(long userID) throws DatabaseLayerException;;
 
 	/**
 	 * search by username
 	 *
 	 * @param searchPattern
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
-	 * @throws ModellToObjectException
+	 * @throws DatabaseLayerException
 	 */
-	public User[] getUsersByUsername(String searchPattern) throws ModellToObjectException, SQLException, DriverNotFoundException;
+	public User[] getUsersByUsername(String searchPattern) throws DatabaseLayerException;
 
 	/**
 	 * returns the username of a user
 	 *
 	 * @param userID
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public String getUsername(long userID) throws SQLException, DriverNotFoundException;
+	public String getUsername(long userID) throws DatabaseLayerException;
 
 	/**
 	 * returns all users of a PublicQuestion
 	 *
 	 * @param questionID
 	 * @return
-	 * @throws SQLException
-	 * @throws ModellToObjectException
-	 * @throws DriverNotFoundException
+	 * @throws DatabaseLayerException
 	 */
-	public User[] getUsersOfPublicQuestion(long questionID) throws SQLException, ModellToObjectException, DriverNotFoundException;
+	public User[] getUsersOfPublicQuestion(long questionID) throws DatabaseLayerException;
 
 	/**
 	 * returns all users of a PrivateQuestion
 	 *
 	 * @param questionID
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws ModellToObjectException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public User[] getUsersOfPrivateQuestion(long questionID) throws SQLException, ModellToObjectException, DriverNotFoundException;
+	public User[] getUsersOfPrivateQuestion(long questionID) throws DatabaseLayerException;
 
 	/**
 	 *
 	 * @param questionID
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws ModellToObjectException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public User[] getUsersOfAnswerPrivateQuestion(long answerID) throws SQLException, ModellToObjectException, DriverNotFoundException;
+	public User[] getUsersOfAnswerPrivateQuestion(long answerID) throws DatabaseLayerException;
 
 	/**
 	 *
 	 *
 	 * @param questionID
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws ModellToObjectException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public User[] getUsersOfAnswerPublicQuestion(long answerID) throws SQLException, ModellToObjectException, DriverNotFoundException;
+	public User[] getUsersOfAnswerPublicQuestion(long answerID) throws DatabaseLayerException;
 
 	/**
 	 * returns the users of a group
 	 *
 	 * @param groupID
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws ModellToObjectException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public User[] getUsersOfGroup(long groupID) throws SQLException, ModellToObjectException, DriverNotFoundException;
+	public User[] getUsersOfGroup(long groupID) throws DatabaseLayerException;
 
 	/**
 	 *
 	 * @param userID
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public Long getUserScoreOfGlobal(long userID) throws SQLException, DriverNotFoundException;
+	public Long getUserScoreOfGlobal(long userID) throws DatabaseLayerException;
 
 	/**
 	 *
 	 * @param userID
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public Long getUserScoreInGroup(long userID, long groupID) throws SQLException, DriverNotFoundException;
+	public Long getUserScoreInGroup(long userID, long groupID) throws DatabaseLayerException;
 
 	/**
 	 *
 	 * @param userID
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public String getPhoneNumberHash(long userID) throws SQLException, DriverNotFoundException;
+	public String getPhoneNumberHash(long userID) throws DatabaseLayerException;
 
 	/**
 	 *
 	 * @param questionID
 	 * @param userID
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws ModellToObjectException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public Answer getChoseAnswerInPublicQuestion(long questionID, long userID) throws SQLException, ModellToObjectException, DriverNotFoundException;
+	public Answer getChoseAnswerInPublicQuestion(long questionID, long userID) throws DatabaseLayerException;
 
 	/**
 	 *
 	 * @param questionID
 	 * @param userID
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws ModellToObjectException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public Answer getChoseAnswerInPrivateQuestion(long questionID, long userID) throws SQLException, ModellToObjectException, DriverNotFoundException;
+	public Answer getChoseAnswerInPrivateQuestion(long questionID, long userID) throws DatabaseLayerException;
 
 	/**
 	 *
 	 * @param questionID
 	 * @param userID
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws ModellToObjectException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public Answer getSelectedAnswerInPrivateQuestion(long questionID) throws SQLException, ModellToObjectException, DriverNotFoundException;
+	public Answer getSelectedAnswerInPrivateQuestion(long questionID) throws DatabaseLayerException;
 
 	/**
 	 * returns the place in the Ranking of a user in a group
@@ -326,61 +288,53 @@ public interface QueryManager {
 	 * @param userID
 	 * @param groupID
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public Long getRankingInGroup(long userID, long groupID) throws SQLException, DriverNotFoundException;
+	public Long getRankingInGroup(long userID, long groupID) throws DatabaseLayerException;
 
 	/**
 	 * returns the passwordHash of a user
 	 *
 	 * @param userID
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public String getPasswordHash(long userID) throws SQLException, DriverNotFoundException;
+	public String getPasswordHash(long userID) throws DatabaseLayerException;
 
 	/**
-	 *
-	 *
+	 * 
 	 * @param userID
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
-	 *
+	 * @throws DatabaseLayerException
 	 */
-	public String getLanguage(long userID) throws SQLException, DriverNotFoundException;
+	public String getLanguage(long userID) throws DatabaseLayerException;
 
 	/**
 	 * get the profilePictureURI a user
 	 *
 	 * @param userID
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public String getProfilePictureURI(long userID) throws SQLException, DriverNotFoundException;
+	public String getProfilePictureURI(long userID) throws DatabaseLayerException;
 
 	/**
 	 * get the groupPicture
 	 *
 	 * @param groupID
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public String getGroupPictureURI(long groupID) throws SQLException, DriverNotFoundException;
+	public String getGroupPictureURI(long groupID) throws DatabaseLayerException;
 
 	/**
 	 * get the group name
 	 *
 	 * @param groupID
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public String getGroupName(long groupID) throws SQLException, DriverNotFoundException;
+	public String getGroupName(long groupID) throws DatabaseLayerException;
 
 	/**
 	 *
@@ -396,23 +350,16 @@ public interface QueryManager {
 	 *
 	 * @param questionID
 	 * @return
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
-	 * @throws ModellToObjectException
+	 * @throws DatabaseLayerException
 	 */
-	public Pair<Answer, Integer>[] getAnswersOfPublicQuestionAndCount(long questionID) throws SQLException, DriverNotFoundException,
-			ModellToObjectException;
+	public Pair<Answer, Integer>[] getAnswersOfPublicQuestionAndCount(long questionID) throws DatabaseLayerException;
 
 	/**
-	 *
 	 * @param questionID
 	 * @return
-	 * @throws ModellToObjectException
-	 * @throws DriverNotFoundException
-	 * @throws SQLException
+	 * @throws DatabaseLayerException
 	 */
-	public Pair<Answer, Integer>[] getAnswersOfPrivateQuestionAndCount(long questionID) throws SQLException, DriverNotFoundException,
-			ModellToObjectException;
+	public Pair<Answer, Integer>[] getAnswersOfPrivateQuestionAndCount(long questionID) throws DatabaseLayerException;
 
 	/**
 	 *
@@ -420,12 +367,9 @@ public interface QueryManager {
 	 * @param startIndex
 	 * @param quantity
 	 * @return
-	 * @throws SQLException
-	 * @throws ModellToObjectException
-	 * @throws DriverNotFoundException
+	 * @throws DatabaseLayerException
 	 */
-	public PublicQuestion[] getActivePublicQuestionsOfUser(long userID, int startIndex, int quantity) throws DriverNotFoundException,
-			ModellToObjectException, SQLException;
+	public PublicQuestion[] getActivePublicQuestionsOfUser(long userID, int startIndex, int quantity) throws DatabaseLayerException;
 
 	/**
 	 *
@@ -433,12 +377,9 @@ public interface QueryManager {
 	 * @param startIndex
 	 * @param quantity
 	 * @return
-	 * @throws SQLException
-	 * @throws ModellToObjectException
-	 * @throws DriverNotFoundException
+	 * @throws DatabaseLayerException
 	 */
-	public PrivateQuestion[] getActivePrivateQuestionsOfUser(long userID, int startIndex, int quantity) throws DriverNotFoundException,
-			ModellToObjectException, SQLException;
+	public PrivateQuestion[] getActivePrivateQuestionsOfUser(long userID, int startIndex, int quantity) throws DatabaseLayerException;
 
 	/**
 	 *
@@ -446,12 +387,9 @@ public interface QueryManager {
 	 * @param startIndex
 	 * @param quantity
 	 * @return
-	 * @throws SQLException
-	 * @throws ModellToObjectException
-	 * @throws DriverNotFoundException
+	 * @throws DatabaseLayerException
 	 */
-	public PublicQuestion[] getOldPublicQuestionsOfUser(long userID, int startIndex, int quantity) throws DriverNotFoundException,
-			ModellToObjectException, SQLException;
+	public PublicQuestion[] getOldPublicQuestionsOfUser(long userID, int startIndex, int quantity) throws DatabaseLayerException;
 
 	/**
 	 *
@@ -459,78 +397,171 @@ public interface QueryManager {
 	 * @param startIndex
 	 * @param quantity
 	 * @return
-	 * @throws SQLException
-	 * @throws ModellToObjectException
-	 * @throws DriverNotFoundException
+	 * @throws DatabaseLayerException
 	 */
-	public PrivateQuestion[] getOldPrivateQuestionsOfUser(long userID, int startIndex, int quantity) throws DriverNotFoundException,
-			ModellToObjectException, SQLException;
+	public PrivateQuestion[] getOldPrivateQuestionsOfUser(long userID, int startIndex, int quantity) throws DatabaseLayerException;
 
 	/**
 	 *
 	 * @param userID
 	 * @return
 	 */
-	public Pair<Group, Integer>[] getAllGroupScoresAndGlobalScoreOfUser(long userID);
+	public Pair<Group, Integer>[] getAllGroupScoresAndGlobalScoreOfUser(long userID) throws DatabaseLayerException;;
 
 	/**
 	 *
 	 * @param groupID
 	 * @return
 	 */
-	public Pair<User, Integer>[] getUsersOfGroupsWithScore(long groupID);
+	public Pair<User, Integer>[] getUsersOfGroupsWithScore(long groupID) throws DatabaseLayerException;;
 
 	/*
 	 * Set Methods
 	 */
 
-	public void setLanguage(long userID, String newLanguage) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param userID
+	 * @param newLanguage
+	 * @throws DatabaseLayerException
+	 */
+	public void setLanguage(long userID, String newLanguage) throws DatabaseLayerException;
 
-	public void setProfilPictureOfUser(long userID, String newProfilePictureURI) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param userID
+	 * @param newProfilePictureURI
+	 * @throws DatabaseLayerException
+	 */
+	public void setProfilPictureOfUser(long userID, String newProfilePictureURI) throws DatabaseLayerException;
 
-	public void setGroupPicture(long groupID, String newGroupPictureURI) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param groupID
+	 * @param newGroupPictureURI
+	 * @throws DatabaseLayerException
+	 */
+	public void setGroupPicture(long groupID, String newGroupPictureURI) throws DatabaseLayerException;
 
-	public void setPasswordHash(long userID, String newPasswordHash) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param userID
+	 * @param newPasswordHash
+	 * @throws DatabaseLayerException
+	 */
+	public void setPasswordHash(long userID, String newPasswordHash) throws DatabaseLayerException;
 
-	public void setChoosedAnswerOfPrivateQuestion(long userID, long questionID, long answerID) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param userID
+	 * @param questionID
+	 * @param answerID
+	 * @throws DatabaseLayerException
+	 */
+	public void setChoosedAnswerOfPrivateQuestion(long userID, long questionID, long answerID) throws DatabaseLayerException;
 
-	public void setChoosedAnswerOfPublicQuestion(long userID, long questionID, long answerID) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param userID
+	 * @param questionID
+	 * @param answerID
+	 * @throws DatabaseLayerException
+	 */
+	public void setChoosedAnswerOfPublicQuestion(long userID, long questionID, long answerID) throws DatabaseLayerException;
 
-	public void setSelectedAnswerOfPrivateQuestion(long questionID, long answerID) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param questionID
+	 * @param answerID
+	 * @throws DatabaseLayerException
+	 */
+	public void setSelectedAnswerOfPrivateQuestion(long questionID, long answerID) throws DatabaseLayerException;
 
-	public void setGroupAdmin(long groupID, long newAdmminID) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param groupID
+	 * @param newAdmminID
+	 * @throws DatabaseLayerException
+	 */
+	public void setGroupAdmin(long groupID, long newAdmminID) throws DatabaseLayerException;
 
-	public void setPhoneNumberHash(long userID, String newPhoneNumberHash) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param userID
+	 * @param newPhoneNumberHash
+	 * @throws DatabaseLayerException
+	 */
+	public void setPhoneNumberHash(long userID, String newPhoneNumberHash) throws DatabaseLayerException;
 
-	public void setGroupName(long groupID, String newGroupName) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param groupID
+	 * @param newGroupName
+	 * @throws DatabaseLayerException
+	 */
+	public void setGroupName(long groupID, String newGroupName) throws DatabaseLayerException;
 
-	public void setUsername(long userID, String newUsername) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param userID
+	 * @param newUsername
+	 * @throws DatabaseLayerException
+	 */
+	public void setUsername(long userID, String newUsername) throws DatabaseLayerException;
 
 	/*
 	 * delete Methods
 	 */
 
-	public void deletePrivateQuestion(long questionID) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param questionID
+	 * @throws DatabaseLayerException
+	 */
+	public void deletePrivateQuestion(long questionID) throws DatabaseLayerException;
 
-	public void deleteUserFromGroup(long groupID, long userID) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param groupID
+	 * @param userID
+	 * @throws DatabaseLayerException
+	 */
+	public void deleteUserFromGroup(long groupID, long userID) throws DatabaseLayerException;
 
-	public void deleteGroup(long groupID) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param groupID
+	 * @throws DatabaseLayerException
+	 */
+	public void deleteGroup(long groupID) throws DatabaseLayerException;
 
-	public void deleteContact(long userID, long contactID) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param userID
+	 * @param contactID
+	 * @throws DatabaseLayerException
+	 */
+	public void deleteContact(long userID, long contactID) throws DatabaseLayerException;
 
 	/*
 	 * search Methods
 	 */
 
-	public Group[] searchForGroup(long userID, String nameSearchPattern) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param userID
+	 * @param nameSearchPattern
+	 * @return
+	 * @throws DatabaseLayerException
+	 */
+	public Group[] searchForGroup(long userID, String nameSearchPattern) throws DatabaseLayerException;
 
-	public PrivateQuestion[] searchForPrivateQuestionInGroup(long groupID, String questionSearchPattern) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param groupID
+	 * @param questionSearchPattern
+	 * @return
+	 * @throws DatabaseLayerException
+	 */
+	public PrivateQuestion[] searchForPrivateQuestionInGroup(long groupID, String questionSearchPattern) throws DatabaseLayerException;
 
-	public PublicQuestion[] searchForPublicQuestion(String nameSearchPattern) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param nameSearchPattern
+	 * @return
+	 * @throws DatabaseLayerException
+	 */
+	public PublicQuestion[] searchForPublicQuestion(String nameSearchPattern) throws DatabaseLayerException;
 
 	/*
 	 * other
 	 */
 
-	public void finishPrivateQuestion(long questionID) throws SQLException, DriverNotFoundException;
+	/**
+	 * @param questionID
+	 * @throws DatabaseLayerException
+	 */
+	public void finishPrivateQuestion(long questionID) throws DatabaseLayerException;
 }

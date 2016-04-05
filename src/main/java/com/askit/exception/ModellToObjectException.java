@@ -1,6 +1,6 @@
 package com.askit.exception;
 
-public class ModellToObjectException extends DatabaseLayerException {
+public class ModellToObjectException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
