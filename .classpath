@@ -37,5 +37,6 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/BetTest/lib/javadoc/commons-lang3-3.4-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/D062367/Desktop/tomcat/apache/lib/servlet-api.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
