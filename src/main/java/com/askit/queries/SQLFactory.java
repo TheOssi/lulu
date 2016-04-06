@@ -13,8 +13,7 @@ public class SQLFactory {
 	}
 
 	/**
-	 * This method build the start of a SELECT Statement with the keyword
-	 * "WHERE", but without a condition
+	 * This method builds a select statement with a given where condition
 	 *
 	 * @param schema
 	 *            Schema name
@@ -22,9 +21,11 @@ public class SQLFactory {
 	 *            Table name
 	 * @param columns
 	 *            String array with to selecting columns
+	 * @param whereCondition
+	 *            the where condition
 	 * @return a SELECT Stament without the WHERE conditions
 	 */
-	public static String buildSelectStatement(final String schema, final String table, final String[] columns) {
+	public static String buildSelectStatement(final String schema, final String table, final String[] columns, final String whereCondition) {
 		final StringBuilder statement = new StringBuilder();
 		statement.append("SELECT ");
 		for (final String column : columns) {
@@ -37,6 +38,8 @@ public class SQLFactory {
 		statement.append(".");
 		statement.append(table);
 		statement.append(" WHERE ");
+		statement.append(whereCondition);
+		statement.append(";");
 		return statement.toString();
 	}
 

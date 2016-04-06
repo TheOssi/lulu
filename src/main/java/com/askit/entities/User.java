@@ -8,6 +8,15 @@ import com.thirdparty.entities.Entity;
 @Entity
 public class User {
 
+	public final static String USER_ID = "userID";
+	public final static String PASSWORD_HASH = "passwordHash";
+	public final static String PHONENUMBER_HASH = "phoneNumberHash";
+	public final static String USERNAME = "username";
+	public final static String ACCESSION_DATE = "accessionDtae";
+	public final static String PROFILEPICTURE_URI = "profilePictureURI";
+	public final static String LANGUAGE = "language";
+	public final static String SCORE_OF_GLOBAL = "scoreOfGlobal";
+
 	@Column(name = "userID")
 	private Long userID;
 	@Column(name = "passwordHash")

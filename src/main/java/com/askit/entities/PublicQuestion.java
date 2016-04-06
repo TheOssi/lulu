@@ -8,6 +8,17 @@ import com.thirdparty.entities.Entity;
 @Entity
 public class PublicQuestion {
 
+	public final static String QUESTION_ID = "questionID";
+	public final static String QUESTION = "question";
+	public final static String ADDITIONAL_INFORMATION = "additionalInformation";
+	public final static String HOST_ID = "hostID";
+	public final static String PICTURE_URI = "pictureURI";
+	public final static String CREATED_DATE = "createDate";
+	public final static String END_DATE = "endDate";
+	public final static String OPTION_EXTENSION = "optionExtension";
+	public final static String FINISHED = "finished";
+	public final static String LANGUAGE = "language";
+
 	@Column(name = "questionID")
 	private Long questionID;
 	@Column(name = "question")
