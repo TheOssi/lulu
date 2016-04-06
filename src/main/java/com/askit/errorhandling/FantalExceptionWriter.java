@@ -1,4 +1,4 @@
-package com.askit.etc;
+package com.askit.errorhandling;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -9,6 +9,9 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.mail.MessagingException;
+
+import com.askit.etc.SMPTEmailSender;
+import com.askit.etc.Util;
 
 public class FantalExceptionWriter {
 
