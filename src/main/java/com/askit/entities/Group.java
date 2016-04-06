@@ -8,6 +8,12 @@ import com.thirdparty.entities.Entity;
 @Entity
 public class Group {
 
+	public final static String GROUP_ID = "groupID";
+	public final static String CREATE_DATE = "createDate";
+	public final static String ADMIN_ID = "adminID";
+	public final static String GROUP_NAME = "groupName";
+	public final static String GROUP_PICTURE_URI = "groupPictureURI";
+
 	@Column(name = "groupID")
 	private Long groupID;
 	@Column(name = "createDate")

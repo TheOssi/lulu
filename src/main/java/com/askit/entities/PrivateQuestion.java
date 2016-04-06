@@ -8,6 +8,22 @@ import com.thirdparty.entities.Entity;
 @Entity
 public class PrivateQuestion {
 
+	public final static String QUESTION_ID = "questionID";
+	public final static String QUESTION = "question";
+	public final static String ADDITIONAL_INFORMATION = "additionalInformation";
+	public final static String HOST_ID = "hostID";
+	public final static String PICTURE_URI = "pictureURI";
+	public final static String GROUP_ID = "groupID";
+	public final static String CREATED_DATE = "createDate";
+	public final static String END_DATE = "endDate";
+	public final static String OPTION_EXTENSION = "optionExtension";
+	public final static String DEFINITION_OF_END = "definitionOfEnd";
+	public final static String SUM_OF_USERS_TO_ANSWER = "sumOfUsersToAnswer";
+	public final static String FINISHED = "finished";
+	public final static String SELECTED_ANSWER_ID = "selectedAnswerID";
+	public final static String LANGUAGE = "language";
+	public final static String IS_BET = "isBet";
+
 	@Column(name = "questionID")
 	private Long questionID;
 	@Column(name = "question")

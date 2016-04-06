@@ -6,6 +6,9 @@ import com.thirdparty.entities.Entity;
 @Entity
 public class Contact {
 
+	public final static String USER_ID = "userID";
+	public final static String CONTACT_ID = "contactID";
+
 	@Column(name = "userID")
 	private String userID;
 	@Column(name = "contactID")

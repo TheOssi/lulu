@@ -8,6 +8,12 @@ import com.thirdparty.entities.Entity;
 @Entity
 public class Message {
 
+	public final static String MESSAGE_ID = "messageID";
+	public final static String GROUP_ID = "groupID";
+	public final static String USER_ID = "userID";
+	public final static String MESSSAGE = "message";
+	public final static String DATE = "date";
+
 	@Column(name = "messageID")
 	private Long messageID;
 	@Column(name = "groupID")
