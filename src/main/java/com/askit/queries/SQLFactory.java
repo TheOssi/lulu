@@ -23,7 +23,7 @@ public class SQLFactory {
 	 *            String array with to selecting columns
 	 * @param whereCondition
 	 *            the where condition
-	 * @return a SELECT Stament without the WHERE conditions
+	 * @return a SELECT Stament
 	 */
 	public static String buildSelectStatement(final String schema, final String table, final String[] columns, final String whereCondition) {
 		final StringBuilder statement = new StringBuilder();

@@ -23,7 +23,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.askit.database.ConnectionFactory;
 import com.askit.entities.Answer;
 import com.askit.entities.Group;
-import com.askit.entities.Notification;
 import com.askit.entities.PrivateQuestion;
 import com.askit.entities.PublicQuestion;
 import com.askit.entities.User;
@@ -32,23 +31,11 @@ import com.askit.etc.Util;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DriverNotFoundException;
 import com.askit.exception.ModellToObjectException;
+import com.askit.notification.Notification;
 import com.thirdparty.modelToObject.ResultSetMapper;
 
 public class DatabaseQueryManager implements QueryManager {
 	private static final String SCHEMA = Constants.SCHEMA_NAME;
-	public final static String[] COLUMNS_USERS = new String[] { "userID", "passwordhash", "phoneNumberHash", "username", "accessionDate",
-			"profilePictureURI", "language", "scoreOfGlobal", };
-	private final static String[] COLUMNS_GROUPS = new String[] { "groupID", "createDate", "adminID", "groupname", "groupPictureURI" };
-	private final static String[] COLUMNS_GROUPS_TO_USER = new String[] { "groupID", "userID", "score" };
-	private final static String[] COLUMNS_PUBLIC_QUESTIONS_TO_USERS = new String[] { "questionID", "userID", "choosedAnswerID" };
-	private final static String[] COLUMNS_PRIVATE_QUESTION_TO_USERS = new String[] { "questionID", "userID", "choosedAnswerID" };
-	private final static String[] COLUMNS_PRIVATE_QUESTION = new String[] { "questionID", "question", "additionalInformation", "hostID ", "groupID",
-			"pictureURI", "createDate", "endDate", "optionExtension", "definitionOfEnd", "sumOfUsersToAnswer", "language", "isBet",
-			"selectedAnswerID", "finished" };
-	private final static String[] COLUMNS_PUBLIC_QUESTION = new String[] { "publicQuestionID", "question", "additionalInformation", "hostID",
-			"pictureURI", "createDate", "endDate", "language", "optionExtension", "finished" };
-	private final static String[] COLUMNS_ONE_TIME_QUESTION = Util.concatenateTwoArrays(Util.getFromToFromArray(COLUMNS_PRIVATE_QUESTION, 0, 3),
-			Util.getFromToFromArray(COLUMNS_PRIVATE_QUESTION, 5, COLUMNS_PRIVATE_QUESTION.length - 1));
 
 	@Override
 	public boolean checkUser(final String username, final String passwordHash) throws DatabaseLayerException {
@@ -72,7 +59,8 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public void registerUser(final User user) throws DatabaseLayerException {
 		try {
-			final String[] columns = Util.getFromToFromArray(COLUMNS_USERS, 2, 7);
+			final String[] columns = new String[] { User.PASSWORD_HASH, User.PHONENUMBER_HASH, User.USERNAME, User.ACCESSION_DATE,
+					User.PROFILEPICTURE_URI, User.LANGUAGE };
 			final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_USERS, columns);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setString(1, user.getPasswordHash());
@@ -90,7 +78,7 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public void createNewGroup(final Group group) throws DatabaseLayerException {
 		try {
-			final String[] columns = Util.getFromToFromArray(COLUMNS_GROUPS, 1, 4);
+			final String[] columns = new String[] { Group.CREATE_DATE, Group.ADMIN_ID, Group.GROUP_NAME, Group.GROUP_PICTURE_URI };
 			final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_GROUPS, columns);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setDate(1, new Date(System.currentTimeMillis()));
@@ -107,7 +95,7 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public void addUserToGroup(final long groupID, final long userID) throws DatabaseLayerException {
 		try {
-			final String[] columns = Util.getFromToFromArray(COLUMNS_GROUPS_TO_USER, 0, 1);
+			final String[] columns = new String[] {}; // TODO
 			final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_GROUPS_TO_USERS, columns);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
@@ -134,7 +122,7 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public void addUserToOneTimeQuestion(final long userID, final long questionID) throws DatabaseLayerException {
 		try {
-			final String[] columns = Util.getFromToFromArray(COLUMNS_PRIVATE_QUESTION_TO_USERS, 0, 1);
+			final String[] columns = new String[] {}; // TODO
 			final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS_TO_USERS, columns);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, userID);
@@ -148,7 +136,7 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public void createPublicQuestion(final PublicQuestion question) throws DatabaseLayerException {
 		try {
-			final String[] columns = Util.getFromToFromArray(COLUMNS_PUBLIC_QUESTION, 1, 8);
+			final String[] columns = new String[] {}; // TODO
 			final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS, columns);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setString(1, question.getQuestion());
@@ -272,7 +260,7 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public User[] getUsersByUsername(String searchPattern) throws DatabaseLayerException {
 		try {
-			final String[] columns = new String[] { COLUMNS_USERS[0], COLUMNS_USERS[3], COLUMNS_USERS[4] };
+			final String[] columns = new String[] {}; // TODO
 			String statement = SQLFactory.buildSelectStatement(SCHEMA, Constants.TABLE_USERS, columns);
 			searchPattern += "%";
 			statement += " WHERE username LIKE ? ORDER BY username ASC";
@@ -357,7 +345,7 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public Long getUserScoreOfGlobal(final long userID) throws DatabaseLayerException {
 		try {
-			return Long.parseLong(getUserAttribute(COLUMNS_USERS[7], userID));
+			return Long.parseLong(getUserAttribute(User.SCORE_OF_GLOBAL, userID));
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
@@ -379,7 +367,7 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public String getPhoneNumberHash(final long userID) throws DatabaseLayerException {
 		try {
-			return getUserAttribute(COLUMNS_USERS[2], userID);
+			return getUserAttribute(User.PHONENUMBER_HASH, userID);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
@@ -438,7 +426,7 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public String getPasswordHash(final long userID) throws DatabaseLayerException {
 		try {
-			return getUserAttribute(COLUMNS_USERS[1], userID);
+			return getUserAttribute(User.PHONENUMBER_HASH, userID);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
