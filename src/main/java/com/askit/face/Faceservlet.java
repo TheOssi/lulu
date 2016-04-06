@@ -10,12 +10,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DriverNotFoundException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
 import com.askit.exception.ModellToObjectException;
 import com.askit.exception.WrongHashException;
 import com.askit.face.innerclasses.GetRequest;
+import com.askit.face.innerclasses.PostRequest;
 import com.askit.queries.DatabaseQueryManager;
 import com.askit.queries.QueryManager;
 
@@ -54,27 +56,21 @@ public class Faceservlet extends HttpServlet {
 //		out.println(request.getParameterMap());
 		try {
 			final GetRequest resourceValues = new GetRequest(request.getPathInfo(), request.getParameterMap(), out);
+			resourceValues.handleRequest();
 			
 		} catch (final ServletException e) {
 			JSONBuilder jb = new JSONBuilder();
 			out.print(jb.createJSON(e));
-		} catch (final WrongHashException e) {
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-		} catch (final DriverNotFoundException e) {
-			// TODO
-		} catch (final SQLException e) {
-			// TODO
-		}
-		catch(final DuplicateHashException e){
-			
+		// TODO
+	
 		}
 		catch(final MissingParametersException e){
 			JSONBuilder jb = new JSONBuilder();
 			out.print(jb.createJSON(e));
 		}
-		catch(final ModellToObjectException e){
-			//TODO
+	
+		catch(final DatabaseLayerException e){
+			
 		}
 		
 		out.close();
@@ -86,8 +82,9 @@ public class Faceservlet extends HttpServlet {
 	 */
 	@Override
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-
+		final PrintWriter out = response.getWriter();
+		final PostRequest post = new PostRequest(request.getPathInfo(), request.getParameterMap(), out);
+		out.close();
 	}
 
 	@Override

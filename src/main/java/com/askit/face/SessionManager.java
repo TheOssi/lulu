@@ -45,7 +45,7 @@ public class SessionManager implements Runnable {
 		}
 	}
 
-	public String createSession(final String username, final String passwordHash) throws SQLException, DriverNotFoundException, WrongHashException,
+	public String createSession(final String username, final String passwordHash) throws WrongHashException,
 			DuplicateHashException {
 		start();
 		if (checkHash(username, passwordHash)) {
@@ -75,7 +75,7 @@ public class SessionManager implements Runnable {
 		sessionMap.remove(sessionHash);
 	}
 
-	private boolean checkHash(final String username, final String passwordHash) throws SQLException, DriverNotFoundException {
+	private boolean checkHash(final String username, final String passwordHash) {
 		return true;
 		//return queryManager.checkUser(username, passwordHash);
 	}

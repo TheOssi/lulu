@@ -78,6 +78,25 @@ public class PrivateQuestion {
 		this.language = language;
 		this.isBet = isBet;
 	}
+	public PrivateQuestion( final String question, final String additionalInformation, final Long hostID,
+			final String pictureURI, final Long groupID, final Date endDate, final Boolean optionExtension,
+			final Integer definitionOfEnd, final Integer sumOfUsersToAnswer, final Boolean finished, final Long selectedAnswerID,
+			final String language, final Boolean isBet) {	
+		this.question = question;
+		this.additionalInformation = additionalInformation;
+		this.hostID = hostID;
+		this.pictureURI = pictureURI;
+		this.groupID = groupID;
+		this.endDate = endDate;
+		this.optionExtension = optionExtension;
+		this.definitionOfEnd = definitionOfEnd;
+		this.sumOfUsersToAnswer = sumOfUsersToAnswer;
+		this.finished = finished;
+		this.selectedAnswerID = selectedAnswerID;
+		this.language = language;
+		this.isBet = isBet;
+	}
+
 
 	public Long getQuestionID() {
 		return questionID;
