@@ -4,11 +4,11 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.askit.entities.Answer;
 import com.askit.entities.Group;
-import com.askit.entities.Notification;
 import com.askit.entities.PrivateQuestion;
 import com.askit.entities.PublicQuestion;
 import com.askit.entities.User;
 import com.askit.exception.DatabaseLayerException;
+import com.askit.notification.Notification;
 
 public interface QueryManager {
 
