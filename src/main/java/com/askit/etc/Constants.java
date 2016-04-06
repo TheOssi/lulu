@@ -33,6 +33,9 @@ public class Constants {
 	 */
 
 	public static final String PARAMETERS_GROUPID = "GROUPID";
+	public static final String PARAMETERS_USERNAME = "USERNAME";
+	public static final String PARAMETERS_PASSWORDHASH = "PASSWORDHASH";
+	public static final String PARAMETERS_PHONEHASH = "PHONEHASH";
 	public static final String PARAMETERS_SEARCH = "SEARCH";
 	public static final String PARAMETERS_PUBLIC = "PUBLIC";
 	public static final String PARAMETERS_QUESTIONID = "QUESTIONID";

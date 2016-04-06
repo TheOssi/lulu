@@ -71,6 +71,12 @@ public class Faceservlet extends HttpServlet {
 	
 		catch(final DatabaseLayerException e){
 			
+		} catch (WrongHashException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DuplicateHashException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		out.close();
@@ -81,9 +87,33 @@ public class Faceservlet extends HttpServlet {
 	 *      response)
 	 */
 	@Override
-	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-		final PrintWriter out = response.getWriter();
+	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) {
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		final PostRequest post = new PostRequest(request.getPathInfo(), request.getParameterMap(), out);
+		try {
+			post.handleRequest();
+		} catch (MissingParametersException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (WrongHashException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DuplicateHashException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DatabaseLayerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ServletException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		out.close();
 	}
 

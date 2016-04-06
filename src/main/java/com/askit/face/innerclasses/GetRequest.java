@@ -37,7 +37,7 @@ public class GetRequest extends Request {
 	}
 
 	@SuppressWarnings("unused")
-	public void handleRequest() throws DatabaseLayerException, MissingParametersException, ServletException {
+	public void handleRequest() throws DatabaseLayerException, MissingParametersException, ServletException, WrongHashException, DuplicateHashException {
 		final JSONBuilder jsonBuilder = new JSONBuilder();
 		final QueryManager queryManager = new DatabaseQueryManager();
 		
@@ -52,8 +52,14 @@ public class GetRequest extends Request {
 		final String searchPattern = parameters.get(Constants.PARAMETERS_SEARCH)[0];
 		final Long answerID = Long.parseLong(parameters.get(Constants.PARAMETERS_ANSWERID)[0]);
 		
+		super.handleRequest();
 		// /GROUP
 		// SINGLE GROUP
+		/*GET
+		 *   	/GROUP/ID 
+		 *   	@params: NONE
+		 *  	Example: /GROUP/1234
+		 */
 		matcher = regExGroupPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			id = Integer.parseInt(matcher.group(1));
@@ -65,6 +71,12 @@ public class GetRequest extends Request {
 		}
 		// /GROUPS
 		// ENTITYSET GROUP
+		/*GET
+		 *   	/GROUPS
+		 *   	@params: 
+		 *   	
+		 *  	Example: /GROUP/1234
+		 */
 		matcher = regExGroupsPattern.matcher(pathInfo);
 		if (matcher.find()) {
 
@@ -74,7 +86,11 @@ public class GetRequest extends Request {
 			return;
 		}
 
-		// /USER/ID returns Username
+		/*GET
+		 *   	/USER/ID 
+		 *   	@params: NONE
+		 *  	Example: /USER/1234
+		 */
 		matcher = regExUserPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			id = Integer.parseInt(matcher.group(1));
@@ -89,6 +105,12 @@ public class GetRequest extends Request {
 		}
 
 		// /USER/SCORE/ID + GROUPID=ID Pattern returns Global or Group Score
+		/*GET
+		 *   	/USER/SCORE/ID 
+		 *   	@params: 
+		 *   	GROUPID: Long
+		 *  	Example: /USER/SCORE/1234?GROUPID=423
+		 */
 		matcher = regExUserScorePattern.matcher(pathInfo);
 		if (matcher.find()) {
 			Long userscore;
@@ -110,6 +132,16 @@ public class GetRequest extends Request {
 		// returns Users
 		// Answer Parameter + Question = getUsersofAnswer
 		// Public Flag --> true when "TRUE" , FALSE --> when not set
+		/*GET
+		 *   	/USER 
+		 *   	@params:
+		 *   	GROUPID: Long
+		 *   	SEARCH: String, SearchPattern
+		 *   	QUESTIONID: Long
+		 *   	ANSWERID: Long
+		 *   	PUBLIC: Boolean
+		 *  	Example: /USER?QUESTIONID=32&ANSWERID=23&PUBLIC="TRUE"
+		 */
 		matcher = regExUsersPattern.matcher(pathInfo);
 		if (matcher.find()) {	
 			User[] users = null;
@@ -139,6 +171,12 @@ public class GetRequest extends Request {
 		// Question
 		// /QUESTION/ID
 		// Parameter Public: True/False
+		/*GET
+		 *   	/QUESTION/ID
+		 *   	@params: 
+		 *   	PUBLIC: boolean
+		 *  	Example: /QUESTION/123
+		 */
 		matcher = regExQuestionPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			id = Integer.parseInt(matcher.group(1));
@@ -151,6 +189,16 @@ public class GetRequest extends Request {
 			return;
 		}
 		// Questions
+		/*GET
+		 *   	/QUESTIONS 
+		 *   	@params: 
+		 *   	USERID
+		 *   	QUANTITY
+		 *   	LANGUAGE
+		 *   	ACTIVE: Boolean
+		 *   	START: StartIndex
+		 *  	Example: /QUESTIONS
+		 */
 		matcher = regExQuestionsPattern.matcher(pathInfo);
 		if (matcher.find()) {
 		
@@ -187,12 +235,25 @@ public class GetRequest extends Request {
 			}
 			return;
 		}
-			// Answer
+			// Answer Not implemented?
+		/*GET
+		 *   	/Answer/ID 
+		 *   	@params: NONE
+		 *  	Example: /GROUP/1234
+		 */
 			matcher = regExAnswerPattern.matcher(pathInfo);
 			if (matcher.find()) {
 				return;
 			}
 			// Answers
+			/*GET
+			 *   	/ANSWERS 
+			 *   	@params: 
+			 *   	QUESTIONID
+			 *   	USERID
+			 *   	PUBLIC
+			 *  	Example: /ANSWERS
+			 */
 			matcher = regExAnswersPattern.matcher(pathInfo);
 			if (matcher.find()) {
 				Answer[] answers;

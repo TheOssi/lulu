@@ -49,9 +49,7 @@ public class Request {
 	}
 
 	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException, DatabaseLayerException, ServletException {
-		final QueryManager queryManager = new DatabaseQueryManager();
 		final String shash[] = parameters.get(Constants.PARAMETERS_SESSIONHASH);
-		final JSONBuilder jsonBuilder = new JSONBuilder();
 		matcher = regExSessionPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			String hash[];
