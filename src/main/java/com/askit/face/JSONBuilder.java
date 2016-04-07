@@ -11,53 +11,70 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
+/**
+ * @author D062391
+ *
+ */
 public class JSONBuilder {
-	GsonBuilder gb = new GsonBuilder();
-	Gson gson = 	gb.setPrettyPrinting().create();
-	
-	public JSONBuilder() {
+	private final GsonBuilder gsonBuilder = new GsonBuilder();
+	private final Gson gson = gsonBuilder.setPrettyPrinting().create();
 
+	/**
+	 * Generates a JSON for a single object
+	 * 
+	 * @param object
+	 *            the object which should be a JSON
+	 * @return a JSON object
+	 */
+	public String createJSON(final Object object) {
+
+		final JsonObject jsonObject = new JsonObject();
+		final JsonArray jsonArray = new JsonArray();
+		jsonArray.add(gson.toJsonTree(object));
+		jsonObject.add(object.getClass().getSimpleName(), jsonArray);
+		return gson.toJson(jsonObject);
 	}
 
-	// Generate from Single Entity
-	public String createJSON(final Object o) {
-
-		final JsonObject jo = new JsonObject(); 
-		final JsonArray ja = new JsonArray();
-		ja.add(gson.toJsonTree(o));
-		jo.add(o.getClass().getSimpleName(), ja);
-		
-		return (gson.toJson(jo));
-	}
-
-	// Generate from Collection
+	/**
+	 * Generates a JSON from a collection
+	 * 
+	 * @param objectArray
+	 *            a array of object which should be a JSON
+	 * @return a JSON object
+	 */
 	public String createJSON(final Object[] objectArray) {
-		final JsonObject jo = new JsonObject();
-		final JsonObject innerJo = new JsonObject();
-		final JsonArray ja = new JsonArray();
-		for (Object currentObject : objectArray) {
-			ja.add(gson.toJsonTree(currentObject));
+		final JsonObject jsonObject = new JsonObject();
+		final JsonArray jsonArray = new JsonArray();
+		for (final Object currentObject : objectArray) {
+			jsonArray.add(gson.toJsonTree(currentObject));
 		}
-		jo.add(objectArray.getClass().getSimpleName().substring(0, objectArray.getClass().getSimpleName().length()-2), ja);
-		return gson.toJson(jo);
+		jsonObject.add(objectArray.getClass().getSimpleName().substring(0, objectArray.getClass().getSimpleName().length() - 2), jsonArray);
+		return gson.toJson(jsonObject);
 	}
-	
-	private String removeNulls(String json){
-		Type type = new TypeToken<Map<String, Object>>() {}.getType();
-		Map<String, Object> data = new Gson().fromJson(json, type);
 
-		for (Iterator<Map.Entry<String, Object>> it = data.entrySet().iterator(); it.hasNext();) {
-		    Map.Entry<String, Object> entry = it.next();
-		    if (entry.getValue() == null) {
-		        it.remove();
-		    } else if (entry.getValue().getClass().equals(ArrayList.class)) {
-		        if (((ArrayList<?>) entry.getValue()).size() == 0) {
-		            it.remove();
-		        }
-		    }
+	/**
+	 * Removes all null's of a JSON
+	 * 
+	 * @param json
+	 *            the JSON to edit
+	 * @return a JSON without null's
+	 */
+	private String removeNulls(final String json) {
+		final Type type = new TypeToken<Map<String, Object>>() {
+		}.getType();
+		final Map<String, Object> data = new Gson().fromJson(json, type);
+
+		for (final Iterator<Map.Entry<String, Object>> iterator = data.entrySet().iterator(); iterator.hasNext();) {
+			final Map.Entry<String, Object> entry = iterator.next();
+			if (entry.getValue() == null) {
+				iterator.remove();
+			} else if (entry.getValue().getClass().equals(ArrayList.class)) {
+				if (((ArrayList<?>) entry.getValue()).size() == 0) {
+					iterator.remove();
+				}
+			}
 		}
-
-		json = new GsonBuilder().setPrettyPrinting().create().toJson(data);
-		return json;
+		final String jsonWithoutNull = new GsonBuilder().setPrettyPrinting().create().toJson(data);
+		return jsonWithoutNull;
 	}
 }
