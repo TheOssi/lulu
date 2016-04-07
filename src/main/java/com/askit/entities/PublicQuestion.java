@@ -58,6 +58,20 @@ public class PublicQuestion {
 		this.language = language;
 	}
 
+	public PublicQuestion(final String question, final String additionalInformation, final Long hostID,
+			final String pictureURI, final Date createDate, final Date endDate, final Boolean optionExtension, final Boolean finished,
+			final String language) {
+		this.question = question;
+		this.additionalInformation = additionalInformation;
+		this.hostID = hostID;
+		this.pictureURI = pictureURI;
+		this.createDate = createDate;
+		this.endDate = endDate;
+		this.optionExtension = optionExtension;
+		this.finished = finished;
+		this.language = language;
+	}
+
 	public Long getQuestionID() {
 		return questionID;
 	}
