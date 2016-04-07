@@ -1,6 +1,5 @@
 USE APP;
 
-
 -- ================================================================================
 -- AFTER UPDATE ON PrivateQuestionsToUser
 -- 		If the choosenAnswer is set, the scores will updated
@@ -137,10 +136,6 @@ DELIMITER ;
 -- AFTER UPDATE ON PrivateQuestions
 --		If the selectedAnswer is set and this is a bet, this trigger update the 
 --			score of all users, which selected this answer
---			Also a notification will be created (lose or win)
---		If this is not a bet, a single notification will be created, that this
---			question is finished
---		If this is a bet and no selectedAnswer is set, a notification will be created
 -- ================================================================================
 DELIMITER \\
 CREATE DEFINER = 'appAdmin'@'localhost'
@@ -148,11 +143,6 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 	AFTER UPDATE ON PrivateQuestions
     FOR EACH ROW BEGIN
 	DECLARE l_points INT UNSIGNED;
-    DECLARE l_code_lost VARCHAR(4);
-	DECLARE l_code_win VARCHAR(4);
-    DECLARE l_code VARCHAR(4);
-    DECLARE l_notificationID INT UNSIGNED;
-    
 	
         IF NEW.selectedAnswerID IS NOT NULL 
         AND NEW.isBet IS TRUE THEN
@@ -163,6 +153,7 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 			
 			-- Update group scores
 			IF NEW.groupID IS NOT NULL THEN
+			
 				UPDATE APP.GroupsToUsers G
 					INNER JOIN APP.PrivateQuestionsToUsers P ON
 						choosedAnswerID = NEW.selectedAnswerID
@@ -170,199 +161,8 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 					SET score = (score + l_points)
 				WHERE G.groupID = NEW.groupID AND
 					  G.userID = P.userID;
-			END IF;
-			
-            -- SELECT code for notification
-			SELECT value FROM APP.AppConstants 
-				WHERE name = "NOT_BET_WIN"
-			INTO l_code_win;
-            SELECT value FROM APP.AppConstants 
-				WHERE name = "NOT_BET_LOST"
-			INTO l_code_lost;
-    
-			-- INSERT notification for win
-			INSERT INTO APP.notifications VALUES (default, l_code_win);
-    
-			-- Get notification ID for win
-			SELECT MAX(notificationID) FROM APP.notifications INTO l_notificationID;
-    
-			-- Connect notification and user
-			INSERT INTO APP.notificationstousers 
-				SELECT P.userID,l_notificationID FROM APP.PrivateQuestionsToUsers P
-					WHERE choosedAnswerID = NEW.selectedAnswerID
-                    AND questionID = NEW.questionID;
-            
-			-- Add parameter for win
-			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'questionID',NEW.questionID);
-			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'question',NEW.question);
-			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupID',NEW.groupID);
-			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupname',( SELECT groupname FROM groups WHERE groupID = NEW.groupID ));
-            
-            -- INSERT notification for lost
-			INSERT INTO APP.notifications VALUES (default, l_code_lost);
-    
-			-- Get notification ID for lost
-			SELECT MAX(notificationID) FROM APP.notifications INTO l_notificationID;
-    
-			-- Connect notification and user for lost
-			INSERT INTO APP.notificationstousers 
-				SELECT P.userID,l_notificationID FROM APP.PrivateQuestionsToUsers P
-					WHERE choosedAnswerID != NEW.selectedAnswerID
-                    AND questionID = NEW.questionID;
-            
-			-- Add parameter for lost
-			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'questionID',NEW.questionID);
-			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'question',NEW.question);
-			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupID',NEW.groupID);
-			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupname',( SELECT groupname FROM groups WHERE groupID = NEW.groupID ));
-            
-            -- richtige Antort setzten
+					  
+			END IF;           
 		END IF;
-        
-        IF NEW.finished IS TRUE AND
-        OLD.finished IS FALSE AND
-        NEW.isBet IS FALSE THEN
-        
-			-- SELECT code for notification that question is finished
-			SELECT value FROM APP.AppConstants 
-				WHERE name = "NOT_QUESTION_END"
-			INTO l_code;
-            
-			-- INSERT notification
-			INSERT INTO APP.notifications VALUES (default, l_code_lost);
-    
-			-- Get notification ID
-			SELECT MAX(notificationID) FROM APP.notifications INTO l_notificationID;
-    
-			-- Connect notification and user
-			INSERT INTO APP.notificationstousers 
-				SELECT P.userID,l_notificationID FROM APP.PrivateQuestionsToUsers P
-					WHERE choosedAnswerID != NEW.selectedAnswerID
-                    AND questionID = NEW.questionID;
-            
-			-- Add parameter
-			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'questionID',NEW.questionID);
-			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'question',NEW.question);
-			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupID',NEW.groupID);
-			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupname',( SELECT groupname FROM groups WHERE groupID = NEW.groupID ));
-        
-        END IF;
-        
-        IF NEW.finished IS TRUE AND
-        OLD.finished IS FALSE AND
-        NEW.isBet IS TRUE THEN
-        
-        -- SELECT code for notification that question is finished
-			SELECT value FROM APP.AppConstants 
-				WHERE name = "NOT_SET_ANSWER"
-			INTO l_code;
-            
-			-- INSERT notification
-			INSERT INTO APP.notifications VALUES (default, l_code_lost);
-    
-			-- Get notification ID
-			SELECT MAX(notificationID) FROM APP.notifications INTO l_notificationID;
-    
-			-- Connect notification and user
-			INSERT INTO APP.notificationstousers VALUES ( NEW.hostID, l_notificationID);
-            
-			-- Add parameter
-			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'questionID',NEW.questionID);
-			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'question',NEW.question);
-			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupID',NEW.groupID);
-			INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupname',( SELECT groupname FROM groups WHERE groupID = NEW.groupID ));
-        END IF;
 END \\
-DELIMITER ;
-
-
--- ================================================================================
--- ADTER INSERT ON GroupsToUsers
--- ================================================================================
-DELIMITER \\
-CREATE DEFINER = 'appAdmin'@'localhost' 
-	TRIGGER tg_afterInsert_GroupsToUsers
-    AFTER INSERT ON GroupsToUsers
-    FOR EACH ROW BEGIN
-    DECLARE l_code VARCHAR(4);
-    DECLARE l_notificationID INT UNSIGNED;
-    
-	SELECT value FROM AppConstants 
-		WHERE name = "NOT_ADD_TO_GROUP"
-	INTO l_code;
-    
-    -- INSERT notification
-    INSERT INTO APP.notifications VALUES (default, l_code);
-    
-    -- Get notification ID
-    SELECT MAX(questionID) FROM APP.privatequestions INTO l_notificationID;
-    
-    -- Connect notification and user
-    INSERT INTO APP.notificationstousers VALUES (NEW.userID,l_notificationID);
-    
-    -- Add parametrs
-    INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupID',NEW.groupID);
-	INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupname',( SELECT groupname FROM groups WHERE groupID = NEW.groupID ));
-END \\
-DELIMITER ;
-
-
--- ================================================================================
--- AFTER INSERT ON Messages
--- ================================================================================
-DELIMITER \\
-CREATE DEFINER = 'appAdmin'@'localhost' 
-	TRIGGER tg_afterInsert_Messages
-    AFTER INSERT ON Messages
-    FOR EACH ROW BEGIN
-	DECLARE l_code VARCHAR(4);
-    DECLARE l_notificationID INT UNSIGNED;
-    
-    SELECT value FROM APP.AppConstants 
-		WHERE name = "NOT_NEW_MESS"
-	INTO l_code;
-    
-    -- INSERT notification
-    INSERT INTO APP.notifications VALUES (default, l_code);
-    
-    -- Get notification ID
-    SELECT MAX(notificationID) FROM APP.notifications INTO l_notificationID;
-    
-	-- Connect notification and user
-    INSERT INTO APP.notificationstousers SELECT G.userID,l_notificationID FROM APP.groupstousers G WHERE groupID = NEW.groupID;
-    
-    -- Add parameter
-	INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupID',NEW.groupID);
-    INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupname',( SELECT groupname FROM groups WHERE groupID = NEW.groupID ));
-
-END \\
-DELIMITER ;
-
-
--- ================================================================================
--- AFTER INSERT ON PrivateQuestions
--- ================================================================================
-DELIMITER \\
-CREATE DEFINER = 'appAdmin'@'localhost' 
-	TRIGGER tg_afterInsert_PrivateQuestions
-    AFTER INSERT ON PrivateQuestions
-    FOR EACH ROW BEGIN
-	DECLARE l_code VARCHAR(4);
-    DECLARE l_notificationID INT UNSIGNED;
-	    
-	 -- INSERT notification
-    INSERT INTO APP.notifications VALUES (default, l_code);
-    
-    -- Get notification ID
-    SELECT MAX(notificationID) FROM APP.notifications INTO l_notificationID;
-    
-	-- Connect notification and user
-    INSERT INTO APP.notificationstousers SELECT G.userID,l_notificationID FROM APP.groupstousers G WHERE groupID = NEW.groupID;
-    
-    -- Add parameter
-	INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupID',NEW.groupID);
-    INSERT INTO APP.notificationsparameters VALUES (default,l_notificationID,'groupname',( SELECT groupname FROM groups WHERE groupID = NEW.groupID ));    
-	    
-	    
-    END \\
 DELIMITER ;

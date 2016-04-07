@@ -70,17 +70,7 @@ ALTER TABLE GroupsToUsers
 			ON DELETE CASCADE
 			ON UPDATE NO ACTION;
 
--- Users no foreign Key
-								  		
-ALTER TABLE NotificationsToUsers
-	ADD CONSTRAINT fk_NotificationsToUsers_userID
-		FOREIGN KEY ( userID ) REFERENCES Users ( userID )
-			ON DELETE CASCADE
-			ON UPDATE NO ACTION,
-	ADD CONSTRAINT fk_NotificationsToUsers_notificationID
-		FOREIGN KEY ( notificationID ) REFERENCES Notifications ( notificationID )
-			ON DELETE CASCADE
-			ON UPDATE NO ACTION;
+-- Users no foreign Key						  		
 			
 ALTER TABLE PublicQuestions
 	ADD CONSTRAINT fk_PublicQuestions_hostID
@@ -101,13 +91,5 @@ ALTER TABLE PublicQuestionsToUsers
 			ON UPDATE NO ACTION,
 	ADD CONSTRAINT fk_PublicQuestionsToUsers_userID
 		FOREIGN KEY ( userID ) REFERENCES Users( userID )
-			ON DELETE CASCADE
-			ON UPDATE NO ACTION;
-			
--- Notification no foreign key
-									  
-ALTER TABLE NotificationsParameters
-	ADD CONSTRAINT fk_NotificatiosnParameters_notificationID
-		FOREIGN KEY ( notificationID ) REFERENCES Notifications ( notificationID )
 			ON DELETE CASCADE
 			ON UPDATE NO ACTION;
