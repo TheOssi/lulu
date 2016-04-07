@@ -1,29 +1,22 @@
 package com.askit.notification;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 //TODO remove from SQL
 
-public class Notification {
+public class Notification implements Serializable {
 
-	private final Long userID;
-	private final String code;
-	private final String[] parameters;
+	private static final long serialVersionUID = 1L;
 
-	public Notification(final Long userID, final String code, final String[] parameters) {
-		this.userID = userID;
-		this.code = code;
-		this.parameters = parameters;
+	@SuppressWarnings("unused")
+	private final String to;
+	private final Map<String, String> notification = new HashMap<String, String>();
+
+	public Notification(final String receiverID, final String title, final String message) {
+		to = receiverID;
+		notification.put("title", title);
+		notification.put("message", message);
 	}
-
-	public Long getUserID() {
-		return userID;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public String[] getParameters() {
-		return parameters;
-	}
-
 }
