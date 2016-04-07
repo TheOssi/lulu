@@ -13,11 +13,11 @@ import javax.mail.MessagingException;
 import com.askit.etc.SMPTEmailSender;
 import com.askit.etc.Util;
 
-public class FantalExceptionWriter {
+public class FatalExceptionWriter {
 
 	// TODO is it thread safe
 
-	private static final FantalExceptionWriter INSTANCE = new FantalExceptionWriter();
+	private static final FatalExceptionWriter INSTANCE = new FatalExceptionWriter();
 	private static final String ERROR_LOG_FILE_NAME = "java_error_log";
 	private static final long TIMEOUT = 5 * 60 * 1000; // 5min
 	private static final File ERROR_FILE = new File(Util.getRunntimeDirectory(), ERROR_LOG_FILE_NAME);
@@ -25,7 +25,7 @@ public class FantalExceptionWriter {
 	private final Thread checkThread;
 	private final Map<Exception, Long> exceptionMap = new ConcurrentHashMap<Exception, Long>();
 
-	private FantalExceptionWriter() {
+	private FatalExceptionWriter() {
 		checkThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -49,7 +49,7 @@ public class FantalExceptionWriter {
 	 * 
 	 * @return the instance of the errorHandler
 	 */
-	public static synchronized FantalExceptionWriter getInstance() {
+	public static synchronized FatalExceptionWriter getInstance() {
 		return INSTANCE;
 	}
 
