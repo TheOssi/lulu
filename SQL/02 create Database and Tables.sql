@@ -77,13 +77,6 @@ CREATE TABLE Users (
 	PRIMARY KEY ( userID )
 );				
 
-CREATE TABLE NotificationsToUsers ( 
-	userID MEDIUMINT UNSIGNED NOT NULL,
-	notificationID INT UNSIGNED NOT NULL,
-	PRIMARY KEY ( userID, notificationID )
-);
-
-
 CREATE TABLE PublicQuestions (
 	questionID INT UNSIGNED UNIQUE NOT NULL AUTO_INCREMENT,
     question VARCHAR(150) NOT NULL,
@@ -110,21 +103,6 @@ CREATE TABLE PublicQuestionsToUsers (
 	userID MEDIUMINT UNSIGNED NOT NULL,
 	choosedAnswerID INT UNSIGNED NOT NULL,
 	PRIMARY KEY ( questionID, userID )
-);
-								
-CREATE TABLE Notifications ( 
-	notificationID INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	code VARCHAR(3) NOT NULL,
-	PRIMARY KEY ( notificationID )
-);
-									  
-									  
-CREATE TABLE NotificationsParameters ( 
-	parameterID INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	notificationID INT UNSIGNED NOT NULL,
-    parameterDescription VARCHAR(100) NOT NULL,
-	parameterData VARCHAR(100) NOT NULL,
-	PRIMARY KEY ( parameterID )
 );
 
 CREATE TABLE AppConstants (
