@@ -4,7 +4,9 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 
@@ -32,9 +34,11 @@ public class PostRequest extends Request {
 	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
 			DatabaseLayerException, ServletException {
 		super.handleRequest();
+		
 		final JSONBuilder jsonBuilder = new JSONBuilder();
 		final QueryManager queryManager = new DatabaseQueryManager();
-
+		
+		
 		final Long groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
 		final Long questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
 		final Long userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);

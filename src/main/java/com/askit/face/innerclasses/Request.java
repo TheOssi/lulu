@@ -24,18 +24,18 @@ public class Request {
 	Map<String, String[]> parameters;
 	PrintWriter out;
 
-	final Pattern regExQuestionPattern = Pattern.compile("/QUESTION/([0-9]*)|/QUESTION");
-	final Pattern regExQuestionsPattern = Pattern.compile("/QUESTION");
+	final static Pattern regExQuestionPattern = Pattern.compile("/QUESTION/([0-9]*)|/QUESTION$");
+	final static Pattern regExQuestionsPattern = Pattern.compile("/QUESTION");
 
-	final Pattern regExGroupPattern = Pattern.compile("/GROUP/([0-9]*)|/GROUP");
-	final Pattern regExGroupsPattern = Pattern.compile("/GROUPS");
+	final static Pattern regExGroupPattern = Pattern.compile("/GROUP/([0-9]*)|/GROUP$");
+	final static Pattern regExGroupsPattern = Pattern.compile("/GROUPS");
 
-	final Pattern regExAnswerPattern = Pattern.compile("/ANSWER/([0-9]*)|/ANSWER");
-	final Pattern regExAnswersPattern = Pattern.compile("/ANSWERS");
+	final static Pattern regExAnswerPattern = Pattern.compile("/ANSWER/([0-9]*)|/ANSWER$");
+	final static Pattern regExAnswersPattern = Pattern.compile("/ANSWERS");
 
-	final Pattern regExUserPattern = Pattern.compile("/USER/([0-9]*)|/USER");
-	final Pattern regExUserScorePattern = Pattern.compile("/USER/SCORE/([0-9]*)");
-	final Pattern regExUsersPattern = Pattern.compile("/USERS");
+	final static Pattern regExUserPattern = Pattern.compile("/USER/([0-9]*)|/USER$");
+	final static Pattern regExUserScorePattern = Pattern.compile("/USER/SCORE/([0-9]*)");
+	final static Pattern regExUsersPattern = Pattern.compile("/USERS");
 
 	final Pattern regExSessionPattern = Pattern.compile("/SESSION");
 
@@ -49,7 +49,7 @@ public class Request {
 	}
 
 	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException, DatabaseLayerException, ServletException {
-		final String shash[] = parameters.get(Constants.PARAMETERS_SESSIONHASH);
+		final String shash[] = this.parameters.get(Constants.PARAMETERS_SESSIONHASH);
 		matcher = regExSessionPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			String hash[];
@@ -62,8 +62,12 @@ public class Request {
 			return;
 		}else{
 			System.out.println("Bla");
+			if(shash != null){
 			if (!SessionManager.getInstance().isValidSessionHash(shash[0])) {
 				throw new WrongHashException("Sessionhash not valid");
+			}
+			}else{
+				throw new MissingParametersException("Missing Userhash");
 			}
 			
 		}
