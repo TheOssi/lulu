@@ -53,7 +53,7 @@ public class SessionManagerTest {
 	public void testCreateSessionSimple() {
 		try {
 			SessionManager.getInstance().createSession(usernames[0], passwordHashes[0]);
-		} catch (SQLException | DriverNotFoundException | WrongHashException | DuplicateHashException e) {
+		} catch (WrongHashException | DuplicateHashException e) {
 			e.printStackTrace();
 			fail("a exception appeared: " + e.getMessage());
 		}
@@ -68,7 +68,7 @@ public class SessionManagerTest {
 	public void testCreateSessionWithNullHash() {
 		try {
 			SessionManager.getInstance().createSession(null, null);
-		} catch (SQLException | DriverNotFoundException | WrongHashException | DuplicateHashException e) {
+		} catch (WrongHashException | DuplicateHashException e) {
 			e.printStackTrace();
 			fail("a exception appeared: " + e.getMessage());
 		}
@@ -78,15 +78,10 @@ public class SessionManagerTest {
 	public void testCreateSessionWithFalseHash() throws WrongHashException {
 		try {
 			SessionManager.getInstance().createSession("THISISNOTAUSER", "THISISNOTAHASH");
-		} catch (SQLException | DriverNotFoundException | DuplicateHashException e) {
+		} catch (DuplicateHashException e) {
 			e.printStackTrace();
 			fail("a exception appeared: " + e.getMessage());
 		}
-	}
-
-	@Test
-	public void testTimeout() {
-		// nach 10 min neu anmelden
 	}
 
 }

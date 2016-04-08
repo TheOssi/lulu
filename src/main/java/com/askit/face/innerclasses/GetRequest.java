@@ -31,65 +31,98 @@ import com.askit.queries.QueryManager;
 public class GetRequest extends Request {
 	private Integer id;
 
-	
 	public GetRequest(final String pathInfo, final Map<String, String[]> parameters, final PrintWriter out) {
 		super(pathInfo, parameters, out);
 	}
 
 	@SuppressWarnings("unused")
-	public void handleRequest() throws DatabaseLayerException, MissingParametersException, ServletException, WrongHashException, DuplicateHashException {
+	public void handleRequest() throws DatabaseLayerException, MissingParametersException, ServletException,
+			WrongHashException, DuplicateHashException {
 		final JSONBuilder jsonBuilder = new JSONBuilder();
 		final QueryManager queryManager = new DatabaseQueryManager();
-		
-		final Long groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
-		final Long questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
-		final Long userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
-		final boolean isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
-		final boolean isExpired = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_ACTIVE)[0]);
-		final int startIndex = Integer.parseInt(parameters.get(Constants.PARAMETERS_STARTINDEX)[0]);
-		final int quantity = Integer.parseInt(parameters.get(Constants.PARAMETERS_QUANTITY)[0]);
-		final String language = parameters.get(Constants.PARAMETERS_LANGUAGE)[0];
-		final String searchPattern = parameters.get(Constants.PARAMETERS_SEARCH)[0];
-		final Long answerID = Long.parseLong(parameters.get(Constants.PARAMETERS_ANSWERID)[0]);
-		
+		Long groupID = null;
+		Long questionID = null;
+		Long userID = null;
+		boolean isPublic = false;
+		boolean isExpired = false;
+		int startIndex = 0;
+		int quantity = 0;
+		String language = null;
+		String searchPattern = null;
+		Long answerID = null;
+
+		if (parameters.containsKey(Constants.PARAMETERS_GROUPID)) {
+			groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_QUESTIONID)) {
+			questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_USERID)) {
+			userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_PUBLIC)) {
+			isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_ACTIVE)) {
+			isExpired = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_ACTIVE)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_STARTINDEX)) {
+			startIndex = Integer.parseInt(parameters.get(Constants.PARAMETERS_STARTINDEX)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_QUANTITY)) {
+			quantity = Integer.parseInt(parameters.get(Constants.PARAMETERS_QUANTITY)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_LANGUAGE)) {
+			language = parameters.get(Constants.PARAMETERS_LANGUAGE)[0];
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_SEARCH)) {
+			searchPattern = parameters.get(Constants.PARAMETERS_SEARCH)[0];
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_ANSWERID)) {
+			answerID = Long.parseLong(parameters.get(Constants.PARAMETERS_ANSWERID)[0]);
+		}
+
 		super.handleRequest();
 		// /GROUP
 		// SINGLE GROUP
-		/*GET
-		 *   	/GROUP/ID 
-		 *   	@params: NONE
-		 *  	Example: /GROUP/1234
+		/*
+		 * GET /GROUP/ID
+		 * 
+		 * @params: NONE Example: /GROUP/1234
 		 */
 		matcher = regExGroupPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			id = Integer.parseInt(matcher.group(1));
-
-			out.println(jsonBuilder.createJSON(new Group(new Long(id), Calendar.getInstance().getTime(), new Long(1337),
-					"KaiIstGay", "/bla/blubber/fasel")));
+			
+			// out.println(jsonBuilder.createJSON(new Group(new Long(id),
+			// Calendar.getInstance().getTime(), new Long(1337),
+			// "KaiIstGay", "/bla/blubber/fasel")));
 
 			return;
 		}
 		// /GROUPS
 		// ENTITYSET GROUP
-		/*GET
-		 *   	/GROUPS
-		 *   	@params: 
-		 *   	
-		 *  	Example: /GROUP/1234
+		/*
+		 * GET /GROUPS
+		 * 
+		 * @params:
+		 * 
+		 * Example: /GROUP/1234
 		 */
 		matcher = regExGroupsPattern.matcher(pathInfo);
 		if (matcher.find()) {
-
-			out.println(jsonBuilder.createJSON(new Group(new Long(id), Calendar.getInstance().getTime(), new Long(1337),
-					"KaiIstGay", "/bla/blubber/fasel")));
+			
+			// out.println(jsonBuilder.createJSON(new Group(new Long(id),
+			// Calendar.getInstance().getTime(), new Long(1337),
+			// "KaiIstGay", "/bla/blubber/fasel")));
 
 			return;
 		}
 
-		/*GET
-		 *   	/USER/ID 
-		 *   	@params: NONE
-		 *  	Example: /USER/1234
+		/*
+		 * GET /USER/ID
+		 * 
+		 * @params: NONE Example: /USER/1234
 		 */
 		matcher = regExUserPattern.matcher(pathInfo);
 		if (matcher.find()) {
@@ -105,14 +138,16 @@ public class GetRequest extends Request {
 		}
 
 		// /USER/SCORE/ID + GROUPID=ID Pattern returns Global or Group Score
-		/*GET
-		 *   	/USER/SCORE/ID 
-		 *   	@params: 
-		 *   	GROUPID: Long
-		 *  	Example: /USER/SCORE/1234?GROUPID=423
+		/*
+		 * GET /USER/SCORE/ID
+		 * 
+		 * @params: GROUPID: Long Example: /USER/SCORE/1234?GROUPID=423
 		 */
 		matcher = regExUserScorePattern.matcher(pathInfo);
 		if (matcher.find()) {
+			if (parameters.containsKey(Constants.PARAMETERS_GROUPID)) {
+				groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
+			}
 			Long userscore;
 			id = Integer.parseInt(matcher.group(1));
 			if (id != null) {
@@ -132,18 +167,15 @@ public class GetRequest extends Request {
 		// returns Users
 		// Answer Parameter + Question = getUsersofAnswer
 		// Public Flag --> true when "TRUE" , FALSE --> when not set
-		/*GET
-		 *   	/USER 
-		 *   	@params:
-		 *   	GROUPID: Long
-		 *   	SEARCH: String, SearchPattern
-		 *   	QUESTIONID: Long
-		 *   	ANSWERID: Long
-		 *   	PUBLIC: Boolean
-		 *  	Example: /USER?QUESTIONID=32&ANSWERID=23&PUBLIC="TRUE"
+		/*
+		 * GET /USER
+		 * 
+		 * @params: GROUPID: Long SEARCH: String, SearchPattern QUESTIONID: Long
+		 * ANSWERID: Long PUBLIC: Boolean Example:
+		 * /USER?QUESTIONID=32&ANSWERID=23&PUBLIC="TRUE"
 		 */
 		matcher = regExUsersPattern.matcher(pathInfo);
-		if (matcher.find()) {	
+		if (matcher.find()) {
 			User[] users = null;
 
 			if (groupID != null || !searchPattern.isEmpty() || questionID != null) {
@@ -171,11 +203,10 @@ public class GetRequest extends Request {
 		// Question
 		// /QUESTION/ID
 		// Parameter Public: True/False
-		/*GET
-		 *   	/QUESTION/ID
-		 *   	@params: 
-		 *   	PUBLIC: boolean
-		 *  	Example: /QUESTION/123
+		/*
+		 * GET /QUESTION/ID
+		 * 
+		 * @params: PUBLIC: boolean Example: /QUESTION/123
 		 */
 		matcher = regExQuestionPattern.matcher(pathInfo);
 		if (matcher.find()) {
@@ -189,19 +220,15 @@ public class GetRequest extends Request {
 			return;
 		}
 		// Questions
-		/*GET
-		 *   	/QUESTIONS 
-		 *   	@params: 
-		 *   	USERID
-		 *   	QUANTITY
-		 *   	LANGUAGE
-		 *   	ACTIVE: Boolean
-		 *   	START: StartIndex
-		 *  	Example: /QUESTIONS
+		/*
+		 * GET /QUESTIONS
+		 * 
+		 * @params: USERID QUANTITY LANGUAGE ACTIVE: Boolean START: StartIndex
+		 * Example: /QUESTIONS
 		 */
 		matcher = regExQuestionsPattern.matcher(pathInfo);
 		if (matcher.find()) {
-		
+
 			if (isPublic) {
 				PublicQuestion[] publicQuestions;
 				if (userID == null && quantity != 0 && language != null) {
@@ -235,46 +262,42 @@ public class GetRequest extends Request {
 			}
 			return;
 		}
-			// Answer Not implemented?
-		/*GET
-		 *   	/Answer/ID 
-		 *   	@params: NONE
-		 *  	Example: /GROUP/1234
+		// Answer Not implemented?
+		/*
+		 * GET /Answer/ID
+		 * 
+		 * @params: NONE Example: /GROUP/1234
 		 */
-			matcher = regExAnswerPattern.matcher(pathInfo);
-			if (matcher.find()) {
-				return;
-			}
-			// Answers
-			/*GET
-			 *   	/ANSWERS 
-			 *   	@params: 
-			 *   	QUESTIONID
-			 *   	USERID
-			 *   	PUBLIC
-			 *  	Example: /ANSWERS
-			 */
-			matcher = regExAnswersPattern.matcher(pathInfo);
-			if (matcher.find()) {
-				Answer[] answers;
-				Pair<Answer, Integer>[] countedAnswers;
+		matcher = regExAnswerPattern.matcher(pathInfo);
+		if (matcher.find()) {
+			return;
+		}
+		// Answers
+		/*
+		 * GET /ANSWERS
+		 * 
+		 * @params: QUESTIONID USERID PUBLIC Example: /ANSWERS
+		 */
+		matcher = regExAnswersPattern.matcher(pathInfo);
+		if (matcher.find()) {
+			Answer[] answers;
+			Pair<Answer, Integer>[] countedAnswers;
 
-				if (questionID != null && userID == null && !isPublic) {
-					countedAnswers = queryManager.getAnswersOfPrivateQuestionAndCount(questionID);
-				} else if (questionID != null && userID == null && !isPublic) {
-					countedAnswers = queryManager.getAnswersOfPublicQuestionAndCount(questionID);
-				} else if (questionID != null && userID != null && !isPublic) {
-					answers = new Answer[1];
-					answers[0] = queryManager.getChoseAnswerInPrivateQuestion(questionID, userID);
-				} else {
-					throw new MissingParametersException("No or not enough Parameters specified");
-				}
-
-				return;
+			if (questionID != null && userID == null && !isPublic) {
+				countedAnswers = queryManager.getAnswersOfPrivateQuestionAndCount(questionID);
+			} else if (questionID != null && userID == null && !isPublic) {
+				countedAnswers = queryManager.getAnswersOfPublicQuestionAndCount(questionID);
+			} else if (questionID != null && userID != null && !isPublic) {
+				answers = new Answer[1];
+				answers[0] = queryManager.getChoseAnswerInPrivateQuestion(questionID, userID);
+			} else {
+				throw new MissingParametersException("No or not enough Parameters specified");
 			}
 
-			throw new ServletException("Invalid URI");
+			return;
 		}
 
+		throw new ServletException("Invalid URI");
 	}
 
+}
