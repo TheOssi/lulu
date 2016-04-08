@@ -38,9 +38,19 @@ public class testRequestTest {
 		
 		GetRequest post = new GetRequest("/GROUP/1", parameters, out);
 		GetRequest post2 = new GetRequest("/GROUPS", parameters, out);
+		ar = new String[1];
+		ar[0] = "BLA";		
+		parameters.put("GROUPNAME", ar);
+		ar = new String[1];
+		ar[0] = "123";		
+		parameters.put("ADMINID", ar);
+		parameters.put("PICTUREURL", ar);
+		PostRequest realPost = new PostRequest("/GROUP", parameters, out);
+		
 		try {
 			post.handleRequest();
 			post2.handleRequest();
+			realPost.handleRequest();
 		} catch (MissingParametersException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

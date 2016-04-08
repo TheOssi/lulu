@@ -23,6 +23,7 @@ import com.askit.exception.WrongHashException;
 import com.askit.face.JSONBuilder;
 import com.askit.queries.DatabaseQueryManager;
 import com.askit.queries.QueryManager;
+import com.sun.org.apache.bcel.internal.classfile.ConstantObject;
 import com.sun.org.apache.xml.internal.resolver.readers.OASISXMLCatalogReader;
 
 public class PostRequest extends Request {
@@ -34,36 +35,111 @@ public class PostRequest extends Request {
 	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
 			DatabaseLayerException, ServletException {
 		super.handleRequest();
-		
+
 		final JSONBuilder jsonBuilder = new JSONBuilder();
 		final QueryManager queryManager = new DatabaseQueryManager();
-		
-		
-		final Long groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
-		final Long questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
-		final Long userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
-		final boolean isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
-		final boolean isExpired = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_ACTIVE)[0]);
-		final String language = parameters.get(Constants.PARAMETERS_LANGUAGE)[0];
-		final Long answerID = Long.parseLong(parameters.get(Constants.PARAMETERS_ANSWERID)[0]);
-		final String userName = parameters.get(Constants.PARAMETERS_USERNAME)[0];
-		final String passwordHash = parameters.get(Constants.PARAMETERS_PASSWORDHASH)[0];
-		final String phoneNumberHash = parameters.get(Constants.PARAMETERS_PHONEHASH)[0];
-		final Long adminID = Long.parseLong(parameters.get(Constants.PARAMETERS_ADMINID)[0]);
-		final String groupName = parameters.get(Constants.PARAMETERS_GROUPNAME)[0];
-		final String pictureUrl = parameters.get(Constants.PARAMETERS_PICTUREURL)[0];
-		final String question = parameters.get(Constants.PARAMETERS_QUESTION)[0];
-		final String additionalInformation = parameters.get(Constants.PARAMETERS_INFORMATION)[0];
-		final Long hostID = Long.parseLong(parameters.get(Constants.PARAMETERS_HOSTID)[0]);
-		final boolean optionExtension = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_EXTENSION)[0]);
-		final Long eDate = Long.parseLong(parameters.get(Constants.PARAMETERS_ENDDATE)[0]);
-		final boolean isBet = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_BET)[0]);
-		final int definitionOfEnd = Integer.parseInt(parameters.get(Constants.PARAMETERS_DEFINITIONEND)[0]);
-		final int sumOfUsersToAnswer = Integer.parseInt(parameters.get(Constants.PARAMETERS_SUMANSWERS)[0]);
-		final Long selectedAnswerID = Long.parseLong(parameters.get(Constants.PARAMETERS_SELECTEDANSWER)[0]);
-		final boolean isOneTime = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_ONETIME)[0]);
-		final String answerText = parameters.get(Constants.PARAMETERS_ANSWER)[0];
-		final Long contactID = Long.parseLong(parameters.get(Constants.PARAMETERS_CONTACTID)[0]);
+
+		Long groupID = null;
+		Long questionID = null;
+		Long userID = null;
+		boolean isPublic = false;
+		boolean isExpired = false;
+		String language = null;
+		Long answerID = null;
+		String userName = null;
+		String passwordHash = null;
+		String phoneNumberHash = null;
+		Long adminID = null;
+		String groupName = null;
+		String pictureUrl = null;
+		String question = null;
+		String additionalInformation = null;
+		Long hostID = null;
+		boolean optionExtension = false;
+		Long eDate = null;
+		boolean isBet = false;
+		int definitionOfEnd = 0;
+		int sumOfUsersToAnswer = 0;
+		Long selectedAnswerID = null;
+		boolean isOneTime = false;
+		String answerText = null;
+		Long contactID = null;
+
+		if (parameters.containsKey(Constants.PARAMETERS_GROUPID)) {
+			groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_QUESTIONID)) {
+			questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_USERID)) {
+			userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_PUBLIC)) {
+			isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_ACTIVE)) {
+			isExpired = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_ACTIVE)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_LANGUAGE)) {
+			language = parameters.get(Constants.PARAMETERS_LANGUAGE)[0];
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_ANSWERID)) {
+			answerID = Long.parseLong(parameters.get(Constants.PARAMETERS_ANSWERID)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_USERNAME)) {
+			userName = parameters.get(Constants.PARAMETERS_USERNAME)[0];
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_PASSWORDHASH)) {
+			passwordHash = parameters.get(Constants.PARAMETERS_PASSWORDHASH)[0];
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_PHONEHASH)) {
+			phoneNumberHash = parameters.get(Constants.PARAMETERS_PHONEHASH)[0];
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_ADMINID)) {
+			adminID = Long.parseLong(parameters.get(Constants.PARAMETERS_ADMINID)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_GROUPNAME)) {
+			groupName = parameters.get(Constants.PARAMETERS_GROUPNAME)[0];
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_PICTUREURL)) {
+			pictureUrl = parameters.get(Constants.PARAMETERS_PICTUREURL)[0];
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_QUESTION)) {
+			question = parameters.get(Constants.PARAMETERS_QUESTION)[0];
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_INFORMATION)) {
+			additionalInformation = parameters.get(Constants.PARAMETERS_INFORMATION)[0];
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_HOSTID)) {
+			hostID = Long.parseLong(parameters.get(Constants.PARAMETERS_HOSTID)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_EXTENSION)) {
+			optionExtension = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_EXTENSION)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_ENDDATE)) {
+			eDate = Long.parseLong(parameters.get(Constants.PARAMETERS_ENDDATE)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_BET)) {
+			isBet = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_BET)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_DEFINITIONEND)) {
+			definitionOfEnd = Integer.parseInt(parameters.get(Constants.PARAMETERS_DEFINITIONEND)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_SUMANSWERS)) {
+			sumOfUsersToAnswer = Integer.parseInt(parameters.get(Constants.PARAMETERS_SUMANSWERS)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_SELECTEDANSWER)) {
+			selectedAnswerID = Long.parseLong(parameters.get(Constants.PARAMETERS_SELECTEDANSWER)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_ONETIME)) {
+			isOneTime = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_ONETIME)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_ANSWER)) {
+			answerText = parameters.get(Constants.PARAMETERS_ANSWER)[0];
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_CONTACTID)) {
+			contactID = Long.parseLong(parameters.get(Constants.PARAMETERS_CONTACTID)[0]);
+		}
 		/*
 		 * POST /USER
 		 * 
