@@ -61,7 +61,6 @@ public class Request {
 			}
 			return;
 		}else{
-			System.out.println("Bla");
 			if(shash != null){
 			if (!SessionManager.getInstance().isValidSessionHash(shash[0])) {
 				throw new WrongHashException("Sessionhash not valid");

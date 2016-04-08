@@ -93,7 +93,9 @@ public class GetRequest extends Request {
 		matcher = regExGroupPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			id = Integer.parseInt(matcher.group(1));
-			
+			queryManager.getGroupName(groupID);
+			queryManager.getGroupPictureURI(groupID);
+			queryManager.searchForGroup(userID, searchPattern);
 			// out.println(jsonBuilder.createJSON(new Group(new Long(id),
 			// Calendar.getInstance().getTime(), new Long(1337),
 			// "KaiIstGay", "/bla/blubber/fasel")));
@@ -111,7 +113,7 @@ public class GetRequest extends Request {
 		 */
 		matcher = regExGroupsPattern.matcher(pathInfo);
 		if (matcher.find()) {
-			
+
 			// out.println(jsonBuilder.createJSON(new Group(new Long(id),
 			// Calendar.getInstance().getTime(), new Long(1337),
 			// "KaiIstGay", "/bla/blubber/fasel")));
@@ -237,7 +239,9 @@ public class GetRequest extends Request {
 					publicQuestions = queryManager.getActivePublicQuestionsOfUser(userID, startIndex, quantity);
 				} else if (userID != null && quantity != 0 && isExpired) {
 					publicQuestions = queryManager.getOldPublicQuestionsOfUser(userID, startIndex, quantity);
-				} else {
+				} else if(userID == null && searchPattern != null) {
+					publicQuestions = queryManager.searchForPublicQuestion(searchPattern);
+				}else {
 					throw new MissingParametersException("No or not enough Parameters specified");
 				}
 				out.println(jsonBuilder.createJSON(publicQuestions));
@@ -255,6 +259,8 @@ public class GetRequest extends Request {
 				} else if (questionID == null && groupID == null && isExpired && userID != null && startIndex != 0
 						&& quantity != 0) {
 					privateQuestions = queryManager.getOldPrivateQuestionsOfUser(userID, startIndex, quantity);
+				} else if (groupID != null && searchPattern != null && questionID == null && userID == null) {
+					privateQuestions = queryManager.searchForPrivateQuestionInGroup(groupID, searchPattern);
 				} else {
 					throw new MissingParametersException("No or not enough Parameters specified");
 				}
