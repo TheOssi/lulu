@@ -27,11 +27,17 @@ import com.sun.org.apache.bcel.internal.classfile.ConstantObject;
 import com.sun.org.apache.xml.internal.resolver.readers.OASISXMLCatalogReader;
 
 public class PostRequest extends Request {
+
 	public PostRequest(final String pathInfo, final Map<String, String[]> parameters, final PrintWriter out) {
 		super(pathInfo, parameters, out);
-
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.askit.face.innerclasses.Request#handleRequest() handles
+	 * PostRequest
+	 */
 	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
 			DatabaseLayerException, ServletException {
 		super.handleRequest();
@@ -259,6 +265,6 @@ public class PostRequest extends Request {
 
 			return;
 		}
-
+		throw new ServletException();
 	}
 }

@@ -18,7 +18,11 @@ public class DeleteRequest extends Request {
 	public DeleteRequest(String pathInfo, Map<String, String[]> parameters, PrintWriter out) {
 		super(pathInfo, parameters, out);
 	}
-
+		/*
+		 * (non-Javadoc)
+		 * @see com.askit.face.innerclasses.Request#handleRequest()
+		 * Processes Delete Request
+		 */
 	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
 			DatabaseLayerException, ServletException {
 		super.handleRequest();
@@ -84,6 +88,8 @@ public class DeleteRequest extends Request {
 
 			return;
 		}
+		
+		throw new ServletException();
 
 	}
 

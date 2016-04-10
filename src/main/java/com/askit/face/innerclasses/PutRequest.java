@@ -15,12 +15,20 @@ import com.askit.queries.QueryManager;
 import com.sun.xml.internal.org.jvnet.mimepull.MIMEParsingException;
 
 public class PutRequest extends Request {
-
+	
+	/*
+	 *Constructor
+	 *Calls super() Constructor, see Request; 
+	 */
 	public PutRequest(String pathInfo, Map<String, String[]> parameters, PrintWriter out) {
 		super(pathInfo, parameters, out);
 
 	}
-
+	/*
+	 * (non-Javadoc)
+	 * @see com.askit.face.innerclasses.Request#handleRequest()
+	 * Processes PutRequest and handles required Actions
+	 */
 	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
 			DatabaseLayerException, ServletException {
 		super.handleRequest();
@@ -39,6 +47,16 @@ public class PutRequest extends Request {
 		String groupName = null;
 		String pictureUrl = null;
 
+		/* PUT
+		 * /USER
+		 * Parameters:
+		 * USERID: Long
+		 * USERNAME: String
+		 * LANGUAGE: String
+		 * PASSWORDHASH: String
+		 * PHONEHASH: String
+		 * PICTUREURL: String
+		 */
 		matcher = regExUserPattern.matcher(this.pathInfo);
 		if (matcher.find()) {
 			if (parameters.containsKey(Constants.PARAMETERS_USERID)
@@ -71,6 +89,14 @@ public class PutRequest extends Request {
 			}
 			return;
 		}
+		/* PUT
+		 * /QUESTION
+		 * Parameters:
+		 * QUESTIONID: Long
+		 * ANSWERID: Long
+		 * PUBLIC: Boolean
+		 * USERID: Long
+		 */
 		matcher = regExQuestionPattern.matcher(this.pathInfo);
 		if (matcher.find()) {
 			if (parameters.containsKey(Constants.PARAMETERS_QUESTIONID)
@@ -102,7 +128,14 @@ public class PutRequest extends Request {
 			}
 			return;
 		}
-
+		/* PUT
+		 * /GROUP
+		 * Parameters:
+		 * USERID: Long
+		 * GROUPID: Long
+		 * GROUNAME: String
+		 * PICTUREURL: String
+		 */
 		matcher = regExGroupPattern.matcher(this.pathInfo);
 		if (matcher.find()) {
 			if (parameters.containsKey(Constants.PARAMETERS_GROUPID)
