@@ -48,7 +48,12 @@ public class Request {
 		this.out = out;
 	}
 
-	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException, DatabaseLayerException, ServletException {
+	/*
+	 * Method for general request processing Checks for valid session and
+	 * handles request f0r sessionhashes
+	 */
+	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
+			DatabaseLayerException, ServletException {
 		final String shash[] = this.parameters.get(Constants.PARAMETERS_SESSIONHASH);
 		matcher = regExSessionPattern.matcher(pathInfo);
 		if (matcher.find()) {
@@ -60,15 +65,15 @@ public class Request {
 				throw new MissingParametersException("Missing Userhash");
 			}
 			return;
-		}else{
-			if(shash != null){
-			if (!SessionManager.getInstance().isValidSessionHash(shash[0])) {
-				throw new WrongHashException("Sessionhash not valid");
-			}
-			}else{
+		} else {
+			if (shash != null) {
+				if (!SessionManager.getInstance().isValidSessionHash(shash[0])) {
+					throw new WrongHashException("Sessionhash not valid");
+				}
+			} else {
 				throw new MissingParametersException("Missing Userhash");
 			}
-			
+
 		}
 	}
 }

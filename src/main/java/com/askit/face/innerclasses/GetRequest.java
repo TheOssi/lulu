@@ -30,12 +30,18 @@ import com.askit.queries.QueryManager;
 
 public class GetRequest extends Request {
 	private Integer id;
-
+	/*
+	 * 
+	 */
 	public GetRequest(final String pathInfo, final Map<String, String[]> parameters, final PrintWriter out) {
 		super(pathInfo, parameters, out);
 	}
 
-	@SuppressWarnings("unused")
+	/*
+	 * (non-Javadoc)
+	 * @see com.askit.face.innerclasses.Request#handleRequest()
+	 * Processes Get Request
+	 */
 	public void handleRequest() throws DatabaseLayerException, MissingParametersException, ServletException,
 			WrongHashException, DuplicateHashException {
 		final JSONBuilder jsonBuilder = new JSONBuilder();
@@ -93,13 +99,17 @@ public class GetRequest extends Request {
 		matcher = regExGroupPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			id = Integer.parseInt(matcher.group(1));
-			queryManager.getGroupName(groupID);
-			queryManager.getGroupPictureURI(groupID);
-			queryManager.searchForGroup(userID, searchPattern);
-			// out.println(jsonBuilder.createJSON(new Group(new Long(id),
-			// Calendar.getInstance().getTime(), new Long(1337),
-			// "KaiIstGay", "/bla/blubber/fasel")));
-
+			if(id != null){
+				out.println("{ groupName: " + queryManager.getGroupName(groupID) + ", pictureUrl: " +queryManager.getGroupPictureURI(groupID)+"}");
+			}
+			else if(userID != null && searchPattern != null){
+				Group[] groups;
+				groups = queryManager.searchForGroup(userID, searchPattern);
+				out.println(jsonBuilder.createJSON(groups));
+			}else{
+				throw new MissingParametersException();
+			}
+			
 			return;
 		}
 		// /GROUPS
@@ -114,9 +124,7 @@ public class GetRequest extends Request {
 		matcher = regExGroupsPattern.matcher(pathInfo);
 		if (matcher.find()) {
 
-			// out.println(jsonBuilder.createJSON(new Group(new Long(id),
-			// Calendar.getInstance().getTime(), new Long(1337),
-			// "KaiIstGay", "/bla/blubber/fasel")));
+		
 
 			return;
 		}
