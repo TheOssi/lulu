@@ -22,11 +22,14 @@ public class Steuerung {
      */
 
 
+	// POST /USER
+	@params: USERNAME: String PHONEHASH: String PASSWORDHASH: String
+	 LANGUAGE: String
     // Füge einen Benutzer hinzu.
     public void addUser(){
 
     }
-
+	
     // Füge eine Gruppe hinzu
     public void addGroup(){
 
