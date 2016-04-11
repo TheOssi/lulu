@@ -167,7 +167,7 @@ public class PostRequest extends Request {
 				final int scoreOfGlobal = 0;
 				User user = new User(userID, passwordHash, phoneNumberHash, userName, accessionDate, profilePictureURI,
 						language, scoreOfGlobal);
-				queryManager.registerUser(user);
+				queryManager.createUser(user);
 			} else if (userID != null && contactID != null) {
 				queryManager.addContact(userID, contactID);
 			} else if (userID != null && groupID != null) {
@@ -224,7 +224,7 @@ public class PostRequest extends Request {
 					PrivateQuestion privateQuestion = new PrivateQuestion(question, additionalInformation, hostID,
 							pictureUrl, groupID, endDate, optionExtension, definitionOfEnd, sumOfUsersToAnswer,
 							isExpired, selectedAnswerID, language, isBet);
-					queryManager.createNewQuestionInGroup(privateQuestion);
+					queryManager.createNewPrivateQuestionInGroup(privateQuestion);
 				} else if (!isPublic && isOneTime) {
 					Date endDate = new Date(createDate.getTime() + eDate);
 					PrivateQuestion privateQuestion = new PrivateQuestion(question, additionalInformation, hostID,
