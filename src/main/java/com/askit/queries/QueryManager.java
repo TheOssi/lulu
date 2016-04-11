@@ -8,7 +8,6 @@ import com.askit.entities.PrivateQuestion;
 import com.askit.entities.PublicQuestion;
 import com.askit.entities.User;
 import com.askit.exception.DatabaseLayerException;
-import com.askit.notification.Notification;
 
 public interface QueryManager {
 
@@ -34,7 +33,7 @@ public interface QueryManager {
 	 * @param user
 	 * @throws DatabaseLayerException
 	 */
-	public void registerUser(User user) throws DatabaseLayerException;
+	public void createUser(User user) throws DatabaseLayerException;
 
 	/**
 	 * create a new Group
@@ -88,7 +87,7 @@ public interface QueryManager {
 	 * @param groupID
 	 * @throws DatabaseLayerException
 	 */
-	public void createNewQuestionInGroup(PrivateQuestion question) throws DatabaseLayerException;
+	public void createNewPrivateQuestionInGroup(PrivateQuestion question) throws DatabaseLayerException;
 
 	/**
 	 * create a new oneTimeQuestion
@@ -166,8 +165,6 @@ public interface QueryManager {
 	 * @throws DatabaseLayerException
 	 */
 	public PrivateQuestion[] getQuestionsOfGroup(long groupID, int startIndex, int quantity) throws DatabaseLayerException;
-
-	public Notification[] getNotifications(long userID) throws DatabaseLayerException;;
 
 	/**
 	 * search by username
@@ -563,5 +560,5 @@ public interface QueryManager {
 	 * @param questionID
 	 * @throws DatabaseLayerException
 	 */
-	public void finishPrivateQuestion(long questionID) throws DatabaseLayerException;
+	public void setPrivateQuestionToFinish(long questionID) throws DatabaseLayerException;
 }
