@@ -2,38 +2,103 @@ package com.askit.queries;
 
 public class SQLFactory {
 
-	public static String buildSimpleSelectStatement(final String schema, final String table) {
+	public static final String ASCENDING = "ASC";
+	public static final String DESCENDING = "DESC";
+
+	// ================================================================================
+	// SELECT STATEMENTS
+	// ================================================================================
+
+	public static String buildSelectAllStatement(final String schema, final String table) {
+		return buildSelectStatement(schema, table, "*", "", "", "");
+	}
+
+	public static String buildSelectAllStatementWithWhereCondition(final String schema, final String table, final String whereCondition) {
+		return buildSelectStatement(schema, table, "*", "WHERE " + whereCondition, "", "");
+	}
+
+	public static String buildSelectAllStatementWithWhereConditionLimitClauselOrderByClausel(final String schema, final String table,
+			final String whereCondition, final String orderBy, final String limit) {
+		return buildSelectStatement(schema, table, "*", "WHERE " + whereCondition, orderBy, limit);
+	}
+
+	public static String buildSelectStatementWithWhereCondition(final String schema, final String table, final String[] columns,
+			final String whereCondition) {
+		final StringBuilder preStatement = new StringBuilder();
+		preStatement.append(columns[0]);
+		for (int i = 1; i < columns.length; i++) {
+			preStatement.append(",");
+			preStatement.append(columns[i]);
+		}
+		return buildSelectStatement(schema, table, preStatement.toString(), "WHERE " + whereCondition, "", "");
+	}
+
+	private static String buildSelectStatement(final String schema, final String table, final String selectColumnsStatement,
+			final String whereStatement, final String orderbyStatement, final String limitStatement) {
 		final StringBuilder statement = new StringBuilder();
-		statement.append("SELECT * FROM ");
+		statement.append("SELECT ");
+		statement.append(selectColumnsStatement);
+		statement.append(" FROM ");
 		statement.append(schema);
 		statement.append(".");
 		statement.append(table);
-		statement.append(";");
+		statement.append(" ");
+		statement.append(whereStatement);
+		statement.append(" ");
+		statement.append(orderbyStatement);
+		statement.append(" ");
+		statement.append(limitStatement);
+		return statement.toString().trim() + ";";
+	}
+
+	// ================================================================================
+	// INSERT STATEMENTS
+	// ================================================================================
+
+	public static String buildInsertAllStatement(final String schema, final String table, final int columnNumber) {
+		final StringBuilder statement = new StringBuilder();
+		statement.append("INSERT INTO ");
+		statement.append(schema);
+		statement.append(".");
+		statement.append(table);
+		statement.append(" VALUES ( ?");
+		for (int i = 1; i < columnNumber; i++) {
+			statement.append(",?");
+		}
+		statement.append(");");
 		return statement.toString();
 	}
 
-	/**
-	 * This method builds a select statement with a given where condition
-	 *
-	 * @param schema
-	 *            Schema name
-	 * @param table
-	 *            Table name
-	 * @param columns
-	 *            String array with to selecting columns
-	 * @param whereCondition
-	 *            the where condition
-	 * @return a SELECT Stament
-	 */
-	public static String buildSelectStatement(final String schema, final String table, final String[] columns, final String whereCondition) {
+	@SuppressWarnings("unused")
+	public static String buildInsertStatement(final String schema, final String table, final String[] columns) {
 		final StringBuilder statement = new StringBuilder();
-		statement.append("SELECT ");
-		for (final String column : columns) {
-			statement.append(column);
+		statement.append("INSERT INTO ");
+		statement.append(schema);
+		statement.append(".");
+		statement.append(table);
+		statement.append("(");
+		statement.append(columns[0]);
+		for (int i = 1; i < columns.length; i++) {
 			statement.append(",");
+			statement.append(columns[i]);
 		}
-		statement.delete(statement.length() - 1, statement.length() + 1);
-		statement.append(" FROM ");
+		statement.append(")");
+		statement.append(" VALUES ( ");
+		statement.append("?");
+		for (final String column : columns) {
+			statement.append(",?");
+		}
+		statement.append(");");
+		return statement.toString();
+	}
+
+	// ================================================================================
+	// DELETE STATEMENTS
+	// ================================================================================
+
+	public static String buildDeleteStatement(final String schema, final String table, final String whereCondition) {
+		final StringBuilder statement = new StringBuilder();
+		statement.append("DELETE FROM ");
 		statement.append(schema);
 		statement.append(".");
 		statement.append(table);
@@ -43,98 +108,27 @@ public class SQLFactory {
 		return statement.toString();
 	}
 
-	/**
-	 * This method build a String of a INSERT Statement for all columns as a
-	 * PreparedStatement
-	 *
-	 *
-	 * @param schema
-	 *            Schema name
-	 * @param table
-	 *            Table name
-	 * @return a INSERT Stament as a PreparedStatement
-	 */
-	public static String buildSimpleInsertStatement(final String schema, final String table, final int columnNumber) {
-		final StringBuilder statement = new StringBuilder();
-		statement.append("INSERT INTO ");
-		statement.append(schema);
-		statement.append(".");
-		statement.append(table);
-		statement.append(" VALUES ( ");
-		for (int i = 0; i < columnNumber; i++) {
-			statement.append("?,");
-		}
-		statement.delete(statement.length() - 1, statement.length() + 1);
-		statement.append(");");
-		return statement.toString();
-	}
+	// ================================================================================
+	// UPDATE STATEMENTS
+	// ================================================================================
 
-	/**
-	 * This method build a INSERT Statement for specified columns as a
-	 * PreparedStatement
-	 *
-	 * @param schema
-	 *            Schema name
-	 * @param table
-	 *            Table name
-	 * @param columns
-	 *            the columns in witch the values shoud be inserted
-	 * @return a INSERT Stament as a PreparedStatement
-	 */
-	public static String buildInsertStatement(final String schema, final String table, final String[] columns) {
+	public static String buildUpdateStatement(final String schema, final String table, final String setClausel, final String whereCondition) {
 		final StringBuilder statement = new StringBuilder();
-		statement.append("INSERT INTO ");
+		statement.append("UPDATE  ");
 		statement.append(schema);
 		statement.append(".");
 		statement.append(table);
-		statement.append("(");
-		for (final String column : columns) {
-			statement.append(column);
-			statement.append(",");
-		}
-		statement.delete(statement.length() - 1, statement.length() + 1);
-		statement.append(")");
-		statement.append(" VALUES ( ");
-		for (final String column : columns) {
-			statement.append("?,");
-		}
-		statement.delete(statement.length() - 1, statement.length() + 1);
-		statement.append(");");
-		return statement.toString();
-	}
-
-	/**
-	 * This method build the start of a DELETE Statement with the keyword
-	 * "WHERE", but without a condition
-	 *
-	 * @param schema
-	 *            Schema name
-	 * @param table
-	 *            Table name
-	 * @return a DELETE Stament without the WHERE conditions
-	 */
-	public static String buildDeleteStatement(final String schema, final String table) {
-		final StringBuilder statement = new StringBuilder();
-		statement.append("DELETE FROM ");
-		statement.append(schema);
-		statement.append(".");
-		statement.append(table);
+		statement.append("SET ");
+		statement.append(setClausel);
 		statement.append(" WHERE ");
-		return statement.toString();
-	}
-
-	public static String buildStatementForAreaSelect(final String begin, final String gorderByStatement, final int startIndex, final int quantity) {
-		final StringBuilder statement = new StringBuilder();
-		statement.append(begin);
-		statement.append(" ORDER BY ");
-		statement.append(gorderByStatement);
-		statement.append(" LIMIT ");
-		statement.append(String.valueOf(startIndex));
-		statement.append(",");
-		statement.append(String.valueOf(quantity));
+		statement.append(whereCondition);
 		statement.append(";");
 		return statement.toString();
 	}
+
+	// ================================================================================
+	// OTHER STATEMENTS
+	// ================================================================================
 
 	public static String buildBeginOSimpleInstertStatement(final String schema, final String table) {
 		final StringBuilder statement = new StringBuilder();
@@ -163,13 +157,20 @@ public class SQLFactory {
 		return statement.toString();
 	}
 
-	public static String buildBeginOfUpdateStatement(final String schema, final String table) {
+	public static String buildOrderByStatement(final String orderByStatement) {
 		final StringBuilder statement = new StringBuilder();
-		statement.append("UPDATE  ");
-		statement.append(schema);
-		statement.append(".");
-		statement.append(table);
-		statement.append("SET ");
+		statement.append("ORDER BY ");
+		statement.append(orderByStatement);
 		return statement.toString();
 	}
+
+	public static String buildLimitStatement(final int startIndex, final int quantity) {
+		final StringBuilder statement = new StringBuilder();
+		statement.append("LIMIT ");
+		statement.append(String.valueOf(startIndex));
+		statement.append(",");
+		statement.append(String.valueOf(quantity));
+		return statement.toString();
+	}
+
 }
