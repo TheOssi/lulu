@@ -421,8 +421,10 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(1, groupID);
 			preparedStatement.setLong(2, userID);
 			final ResultSet resultSet = preparedStatement.executeQuery();
-			resultSet.next();
-			return resultSet.getLong(1);
+			if (resultSet.next()) {
+				return resultSet.getLong(1);
+			}
+			return null;
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
@@ -476,13 +478,16 @@ public class DatabaseQueryManager implements QueryManager {
 			final ResultSet resultSet = preparedStatement.executeQuery();
 			final int resultSetSize = Util.getSizeOfResultSet(resultSet);
 			long placeInRaking = 0;
-			for (int place = 1; place <= resultSetSize; place++) {
-				resultSet.next();
-				if (resultSet.getLong(User.USER_ID) == userID) {
-					placeInRaking = place;
+			if (resultSet.next()) {
+				for (int place = 1; place <= resultSetSize; place++) {
+					if (resultSet.getLong(User.USER_ID) == userID) {
+						placeInRaking = place;
+					}
+					resultSet.next();
 				}
+				return new Long(placeInRaking);
 			}
-			return new Long(placeInRaking);
+			return null;
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
@@ -867,8 +872,10 @@ public class DatabaseQueryManager implements QueryManager {
 		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 		preparedStatement.setLong(1, userID);
 		final ResultSet resultSet = preparedStatement.executeQuery();
-		resultSet.next();
-		return resultSet.getString(1);
+		if (resultSet.next()) {
+			return resultSet.getString(1);
+		}
+		return null;
 	}
 
 	private void addAnswerToAnswerTable(final Answer answer, final String table) throws SQLException, DriverNotFoundException {
@@ -921,10 +928,13 @@ public class DatabaseQueryManager implements QueryManager {
 		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 		preparedStatement.setLong(1, groupID);
 		final ResultSet resultSet = preparedStatement.executeQuery();
-		resultSet.next();
-		return resultSet.getString(1);
+		if (resultSet.next()) {
+			return resultSet.getString(1);
+		}
+		return null;
 	}
 
+	// TODO empty
 	@SuppressWarnings("unchecked")
 	private Pair<Answer, Integer>[] getAnswersOfQuestionAndCount(final long questionID, final String questionToUserTable, final String answerTable)
 			throws SQLException, DriverNotFoundException, ModellToObjectException {
