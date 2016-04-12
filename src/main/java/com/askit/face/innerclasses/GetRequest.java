@@ -102,12 +102,12 @@ public class GetRequest extends Request {
 		if (matcher.find()) {
 			id = Integer.parseInt(matcher.group(1));
 			if (id != null) {
-				out.println("{ groupName: " + queryManager.getGroupName(groupID) + ", pictureUrl: "
+				this.out.println("{ groupName: " + queryManager.getGroupName(groupID) + ", pictureUrl: "
 						+ queryManager.getGroupPictureURI(groupID) + "}");
 			} else if (userID != null && searchPattern != null) {
 				Group[] groups;
 				groups = queryManager.searchForGroup(userID, searchPattern);
-				out.println(jsonBuilder.createJSON(groups));
+				this.out.println(jsonBuilder.createJSON(groups));
 			} else {
 				throw new MissingParametersException();
 			}
@@ -137,9 +137,10 @@ public class GetRequest extends Request {
 		matcher = regExUserPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			id = Integer.parseInt(matcher.group(1));
+			this.out.println(id);
 			if (id != null) {
 				final String username = queryManager.getUsername(id);
-				out.println("{username : " + id + "}");
+				this.out.println("{username : " + username + "}");
 			} else {
 				throw new MissingParametersException("Missing ID in Parameters");
 			}
@@ -160,13 +161,14 @@ public class GetRequest extends Request {
 			}
 			Long userscore;
 			id = Integer.parseInt(matcher.group(1));
+			this.out.println("{Score of : " + id + "}");
 			if (id != null) {
 				if (groupID != null) {
 					userscore = queryManager.getUserScoreInGroup(id, groupID);
 				} else {
 					userscore = queryManager.getUserScoreOfGlobal(id);
 				}
-				out.println("{Score : " + userscore + "}");
+				this.out.println("{Score : " + userscore + "}");
 			} else {
 				throw new MissingParametersException("Missing ID in Parameters");
 			}
@@ -203,7 +205,7 @@ public class GetRequest extends Request {
 					users = queryManager.getUsersOfAnswerPublicQuestion(answerID);
 				}
 
-				out.println(jsonBuilder.createJSON(users));
+				this.out.println(jsonBuilder.createJSON(users));
 			} else {
 				throw new MissingParametersException("No Parameters specified.");
 			}
@@ -222,7 +224,7 @@ public class GetRequest extends Request {
 		if (matcher.find()) {
 			id = Integer.parseInt(matcher.group(1));
 			if (id != null && !isPublic) {
-				out.println(jsonBuilder.createJSON(queryManager.getPrivateQuestion(id)));
+				this.out.println(jsonBuilder.createJSON(queryManager.getPrivateQuestion(id)));
 
 			} else {
 				throw new MissingParametersException("Missing ID in Parameters");
@@ -252,7 +254,7 @@ public class GetRequest extends Request {
 				} else {
 					throw new MissingParametersException("No or not enough Parameters specified");
 				}
-				out.println(jsonBuilder.createJSON(publicQuestions));
+				this.out.println(jsonBuilder.createJSON(publicQuestions));
 			} else {
 				PrivateQuestion[] privateQuestions = null;
 				if (questionID == null && groupID != null && startIndex != 0 && quantity != 0) {
@@ -260,7 +262,7 @@ public class GetRequest extends Request {
 				} else if (questionID == null && groupID != null && startIndex != 0 && quantity != 0 && isExpired) {
 					privateQuestions = queryManager.getOldPrivateQuestions(groupID, startIndex, quantity);
 				} else if (questionID != null && groupID == null && quantity == 0 && userID == null) {
-					out.println(jsonBuilder.createJSON(queryManager.getPrivateQuestion(questionID)));
+					this.out.println(jsonBuilder.createJSON(queryManager.getPrivateQuestion(questionID)));
 				} else if (questionID == null && groupID == null && !isExpired && userID != null && startIndex != 0
 						&& quantity != 0) {
 					privateQuestions = queryManager.getActivePrivateQuestionsOfUser(userID, startIndex, quantity);
@@ -272,7 +274,7 @@ public class GetRequest extends Request {
 				} else {
 					throw new MissingParametersException("No or not enough Parameters specified");
 				}
-				out.println(jsonBuilder.createJSON(privateQuestions));
+				this.out.println(jsonBuilder.createJSON(privateQuestions));
 			}
 			return;
 		}
