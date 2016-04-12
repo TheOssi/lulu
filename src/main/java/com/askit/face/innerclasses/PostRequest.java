@@ -168,14 +168,19 @@ public class PostRequest extends Request {
 				User user = new User(userID, passwordHash, phoneNumberHash, userName, accessionDate, profilePictureURI,
 						language, scoreOfGlobal);
 				queryManager.createUser(user);
+				out.println("{message: "+ "Sucessfully create User}");
 			} else if (userID != null && contactID != null) {
 				queryManager.addContact(userID, contactID);
+				out.println("{message: "+ "Sucessfully added Contact}");
 			} else if (userID != null && groupID != null) {
 				queryManager.addUserToGroup(groupID, userID);
+				out.println("{message: "+ "Sucessfully added User to Group}");
 			} else if (userID != null && questionID != null && isOneTime) {
 				queryManager.addUserToOneTimeQuestion(userID, questionID);
+				out.println("{message: "+ "Sucessfully added User to Question}");
 			} else if (userID != null && questionID != null && isPublic) {
 				queryManager.addUserToPublicQuestion(questionID, userID);
+				out.println("{message: "+ "Sucessfully added User to Question}");
 			} else {
 				throw new MissingParametersException("Missings Parameters");
 			}
@@ -194,6 +199,7 @@ public class PostRequest extends Request {
 				Date createDate = Calendar.getInstance().getTime();
 				Group group = new Group(createDate, adminID, groupName, pictureUrl);
 				queryManager.createNewGroup(group);
+				out.println("{message: "+ "Sucessfully created new Group}");
 			} else {
 				throw new MissingParametersException("Missings Parameters");
 			}

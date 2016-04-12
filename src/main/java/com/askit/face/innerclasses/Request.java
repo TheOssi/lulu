@@ -60,7 +60,7 @@ public class Request {
 			String hash[];
 			if (!parameters.isEmpty()) {
 				hash = parameters.get("HASH");
-				out.println("{hash : " + SessionManager.getInstance().createSession(hash[0], "blala") + " }");
+				out.println("{hash : " + SessionManager.getInstance().createSession(hash[0], "blala") + "}");
 			} else {
 				throw new MissingParametersException("Missing Userhash");
 			}
@@ -71,7 +71,7 @@ public class Request {
 					throw new WrongHashException("Sessionhash not valid");
 				}
 			} else {
-				throw new MissingParametersException("Missing Userhash");
+				throw new MissingParametersException("Invalid URI");
 			}
 
 		}
