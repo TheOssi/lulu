@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-//TODO remove from SQL
-
 public class Notification implements Serializable {
 
 	private static final long serialVersionUID = 1L;
