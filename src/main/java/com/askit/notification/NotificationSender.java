@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.askit.exception.NotificationException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -31,10 +32,10 @@ public class NotificationSender implements Runnable {
 	}
 
 	public void sendNotification(final Notification notification) {
-		notifications.offer(notification); // TODO errorhandling
+		notifications.offer(notification);
 	}
 
-	public Notification getNextNotificationAndDelete() {
+	private Notification getNextNotificationAndDelete() {
 		return notifications.poll();
 	}
 
@@ -42,7 +43,7 @@ public class NotificationSender implements Runnable {
 		return notifications.isEmpty();
 	}
 
-	private void send(final Notification notification) {
+	private void send(final Notification notification) throws NotificationException {
 		try {
 			final URL url = new URL(GCM_URL);
 			final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -56,6 +57,7 @@ public class NotificationSender implements Runnable {
 			dataOutputStream.flush();
 			dataOutputStream.close();
 
+			// TODO output
 			final int responseCode = connection.getResponseCode();
 			System.out.println("Response Code : " + responseCode);
 
@@ -68,8 +70,8 @@ public class NotificationSender implements Runnable {
 			responseReader.close();
 
 		} catch (final IOException e) {
-			// TODO
 			e.printStackTrace();
+			throw new NotificationException(e);
 		}
 
 	}
@@ -85,12 +87,18 @@ public class NotificationSender implements Runnable {
 	public void run() {
 		while (true) {
 			if (hasNotifications()) {
-				send(getNextNotificationAndDelete());
+				try {
+					send(getNextNotificationAndDelete());
+				} catch (final NotificationException e) {
+					e.printStackTrace(); // TODO
+				}
 			} else {
 				try {
 					Thread.sleep(5000);
 				} catch (final InterruptedException e) {
-					sendNotificationThread.start();
+					if (!sendNotificationThread.isAlive() || sendNotificationThread.isInterrupted()) {
+						sendNotificationThread.start();
+					}
 				}
 			}
 		}
