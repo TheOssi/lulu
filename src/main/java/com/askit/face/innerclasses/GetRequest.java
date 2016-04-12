@@ -30,6 +30,7 @@ import com.askit.queries.QueryManager;
 
 public class GetRequest extends Request {
 	private Integer id;
+
 	/*
 	 * 
 	 */
@@ -39,8 +40,9 @@ public class GetRequest extends Request {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.askit.face.innerclasses.Request#handleRequest()
-	 * Processes Get Request
+	 * 
+	 * @see com.askit.face.innerclasses.Request#handleRequest() Processes Get
+	 * Request
 	 */
 	public void handleRequest() throws DatabaseLayerException, MissingParametersException, ServletException,
 			WrongHashException, DuplicateHashException {
@@ -99,17 +101,17 @@ public class GetRequest extends Request {
 		matcher = regExGroupPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			id = Integer.parseInt(matcher.group(1));
-			if(id != null){
-				out.println("{ groupName: " + queryManager.getGroupName(groupID) + ", pictureUrl: " +queryManager.getGroupPictureURI(groupID)+"}");
-			}
-			else if(userID != null && searchPattern != null){
+			if (id != null) {
+				out.println("{ groupName: " + queryManager.getGroupName(groupID) + ", pictureUrl: "
+						+ queryManager.getGroupPictureURI(groupID) + "}");
+			} else if (userID != null && searchPattern != null) {
 				Group[] groups;
 				groups = queryManager.searchForGroup(userID, searchPattern);
 				out.println(jsonBuilder.createJSON(groups));
-			}else{
+			} else {
 				throw new MissingParametersException();
 			}
-			
+
 			return;
 		}
 		// /GROUPS
@@ -123,8 +125,6 @@ public class GetRequest extends Request {
 		 */
 		matcher = regExGroupsPattern.matcher(pathInfo);
 		if (matcher.find()) {
-
-		
 
 			return;
 		}
@@ -247,9 +247,9 @@ public class GetRequest extends Request {
 					publicQuestions = queryManager.getActivePublicQuestionsOfUser(userID, startIndex, quantity);
 				} else if (userID != null && quantity != 0 && isExpired) {
 					publicQuestions = queryManager.getOldPublicQuestionsOfUser(userID, startIndex, quantity);
-				} else if(userID == null && searchPattern != null) {
+				} else if (userID == null && searchPattern != null) {
 					publicQuestions = queryManager.searchForPublicQuestion(searchPattern);
-				}else {
+				} else {
 					throw new MissingParametersException("No or not enough Parameters specified");
 				}
 				out.println(jsonBuilder.createJSON(publicQuestions));
@@ -310,8 +310,12 @@ public class GetRequest extends Request {
 
 			return;
 		}
+		matcher = regExSessionPattern.matcher(pathInfo);
+		if (matcher.find()) {
+		} else {
+			throw new ServletException("Invalid URI");
+		}
 
-		throw new ServletException("Invalid URI");
 	}
 
 }
