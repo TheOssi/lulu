@@ -20,10 +20,11 @@ public class ResultSetMapper<T> {
 		final List<T> outputList = new ArrayList<T>();
 
 		try {
-			if (resultSet != null) {
+			if (resultSet != null && resultSet.next()) {
 				if (outputClass.isAnnotationPresent(Entity.class)) {
 					final ResultSetMetaData metaData = resultSet.getMetaData();
 					final Field[] fields = outputClass.getDeclaredFields();
+					resultSet.beforeFirst();
 
 					while (resultSet.next()) {
 						final T bean = outputClass.newInstance();
