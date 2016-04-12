@@ -1,12 +1,9 @@
 package com.askit.face.innerclasses;
 
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 
@@ -23,8 +20,6 @@ import com.askit.exception.WrongHashException;
 import com.askit.face.JSONBuilder;
 import com.askit.queries.DatabaseQueryManager;
 import com.askit.queries.QueryManager;
-import com.sun.org.apache.bcel.internal.classfile.ConstantObject;
-import com.sun.org.apache.xml.internal.resolver.readers.OASISXMLCatalogReader;
 
 public class PostRequest extends Request {
 
@@ -38,6 +33,7 @@ public class PostRequest extends Request {
 	 * @see com.askit.face.innerclasses.Request#handleRequest() handles
 	 * PostRequest
 	 */
+	@Override
 	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
 			DatabaseLayerException, ServletException {
 		super.handleRequest();
@@ -168,19 +164,19 @@ public class PostRequest extends Request {
 				User user = new User(userID, passwordHash, phoneNumberHash, userName, accessionDate, profilePictureURI,
 						language, scoreOfGlobal);
 				queryManager.createUser(user);
-				out.println("{message: "+ "Sucessfully create User}");
+				out.println("{message: " + "Sucessfully create User}");
 			} else if (userID != null && contactID != null) {
 				queryManager.addContact(userID, contactID);
-				out.println("{message: "+ "Sucessfully added Contact}");
+				out.println("{message: " + "Sucessfully added Contact}");
 			} else if (userID != null && groupID != null) {
 				queryManager.addUserToGroup(groupID, userID);
-				out.println("{message: "+ "Sucessfully added User to Group}");
+				out.println("{message: " + "Sucessfully added User to Group}");
 			} else if (userID != null && questionID != null && isOneTime) {
 				queryManager.addUserToOneTimeQuestion(userID, questionID);
-				out.println("{message: "+ "Sucessfully added User to Question}");
+				out.println("{message: " + "Sucessfully added User to Question}");
 			} else if (userID != null && questionID != null && isPublic) {
 				queryManager.addUserToPublicQuestion(questionID, userID);
-				out.println("{message: "+ "Sucessfully added User to Question}");
+				out.println("{message: " + "Sucessfully added User to Question}");
 			} else {
 				throw new MissingParametersException("Missings Parameters");
 			}
@@ -199,7 +195,7 @@ public class PostRequest extends Request {
 				Date createDate = Calendar.getInstance().getTime();
 				Group group = new Group(createDate, adminID, groupName, pictureUrl);
 				queryManager.createNewGroup(group);
-				out.println("{message: "+ "Sucessfully created new Group}");
+				out.println("{message: " + "Sucessfully created new Group}");
 			} else {
 				throw new MissingParametersException("Missings Parameters");
 			}
@@ -217,29 +213,29 @@ public class PostRequest extends Request {
 		 */
 		matcher = regExQuestionPattern.matcher(pathInfo);
 		if (matcher.find()) {
-			if (adminID != null && groupName != null && pictureUrl != null) {
-				Date createDate = Calendar.getInstance().getTime();
-				if (isPublic && question != null && additionalInformation != null && hostID != null
-						&& pictureUrl != null && eDate != null && language != null) {
-					Date endDate = new Date(createDate.getTime() + eDate);
-					PublicQuestion publicQuestion = new PublicQuestion(question, additionalInformation, hostID,
-							pictureUrl, createDate, endDate, optionExtension, isExpired, language);
-					queryManager.createPublicQuestion(publicQuestion);
-				} else if (!isPublic && groupID != null) {
-					Date endDate = new Date(createDate.getTime() + eDate);
-					PrivateQuestion privateQuestion = new PrivateQuestion(question, additionalInformation, hostID,
-							pictureUrl, groupID, endDate, optionExtension, definitionOfEnd, sumOfUsersToAnswer,
-							isExpired, selectedAnswerID, language, isBet);
-					queryManager.createNewPrivateQuestionInGroup(privateQuestion);
-				} else if (!isPublic && isOneTime) {
-					Date endDate = new Date(createDate.getTime() + eDate);
-					PrivateQuestion privateQuestion = new PrivateQuestion(question, additionalInformation, hostID,
-							pictureUrl, groupID, endDate, optionExtension, definitionOfEnd, sumOfUsersToAnswer,
-							isExpired, selectedAnswerID, language, isBet);
-					queryManager.createOneTimeQuestion(privateQuestion);
-				}
 
-			} else {
+			Date createDate = Calendar.getInstance().getTime();
+			if (isPublic && question != null && additionalInformation != null && hostID != null && pictureUrl != null
+					&& eDate != null && language != null) {
+				Date endDate = new Date(createDate.getTime() + eDate);
+				PublicQuestion publicQuestion = new PublicQuestion(question, additionalInformation, hostID, pictureUrl,
+						createDate, endDate, optionExtension, isExpired, language);
+				queryManager.createPublicQuestion(publicQuestion);
+			} else if (!isPublic && groupID != null) {
+				Date endDate = new Date(createDate.getTime() + eDate);
+				PrivateQuestion privateQuestion = new PrivateQuestion(question, additionalInformation, hostID,
+						pictureUrl, groupID, endDate, optionExtension, definitionOfEnd, sumOfUsersToAnswer, isExpired,
+						selectedAnswerID, language, isBet);
+				queryManager.createNewPrivateQuestionInGroup(privateQuestion);
+			} else if (!isPublic && isOneTime) {
+				Date endDate = new Date(createDate.getTime() + eDate);
+				PrivateQuestion privateQuestion = new PrivateQuestion(question, additionalInformation, hostID,
+						pictureUrl, groupID, endDate, optionExtension, definitionOfEnd, sumOfUsersToAnswer, isExpired,
+						selectedAnswerID, language, isBet);
+				queryManager.createOneTimeQuestion(privateQuestion);
+			}
+
+			else {
 				throw new MissingParametersException("Missings Parameters");
 			}
 			return;

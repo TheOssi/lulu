@@ -12,7 +12,6 @@ import com.askit.exception.MissingParametersException;
 import com.askit.exception.WrongHashException;
 import com.askit.queries.DatabaseQueryManager;
 import com.askit.queries.QueryManager;
-import com.sun.xml.internal.org.jvnet.mimepull.MIMEParsingException;
 
 public class PutRequest extends Request {
 	

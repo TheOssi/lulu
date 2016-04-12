@@ -1,7 +1,6 @@
 package com.askit.face.innerclasses;
 
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,14 +9,10 @@ import javax.servlet.ServletException;
 
 import com.askit.etc.Constants;
 import com.askit.exception.DatabaseLayerException;
-import com.askit.exception.DriverNotFoundException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
 import com.askit.exception.WrongHashException;
-import com.askit.face.JSONBuilder;
 import com.askit.face.SessionManager;
-import com.askit.queries.DatabaseQueryManager;
-import com.askit.queries.QueryManager;
 
 public class Request {
 	String pathInfo;
