@@ -864,6 +864,7 @@ public class DatabaseQueryManager implements QueryManager {
 		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 		preparedStatement.setLong(1, userID);
 		final ResultSet resultSet = preparedStatement.executeQuery();
+		resultSet.next();
 		return resultSet.getString(1);
 	}
 
@@ -916,7 +917,9 @@ public class DatabaseQueryManager implements QueryManager {
 		final String statement = SQLFactory.buildSelectStatementWithWhereCondition(SCHEMA, Constants.TABLE_GROUPS, columns, whereCondition);
 		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 		preparedStatement.setLong(1, groupID);
-		return preparedStatement.executeQuery().getString(1);
+		final ResultSet resultSet = preparedStatement.executeQuery();
+		resultSet.next();
+		return resultSet.getString(1);
 	}
 
 	@SuppressWarnings("unchecked")

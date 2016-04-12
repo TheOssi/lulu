@@ -69,7 +69,6 @@ public class SQLFactory {
 		return statement.toString();
 	}
 
-	@SuppressWarnings("unused")
 	public static String buildInsertStatement(final String schema, final String table, final String[] columns) {
 		final StringBuilder statement = new StringBuilder();
 		statement.append("INSERT INTO ");
@@ -85,7 +84,7 @@ public class SQLFactory {
 		statement.append(")");
 		statement.append(" VALUES ( ");
 		statement.append("?");
-		for (final String column : columns) {
+		for (int i = 1; i < columns.length; i++) {
 			statement.append(",?");
 		}
 		statement.append(");");
