@@ -1,7 +1,7 @@
 package com.askit.queries;
 
 // TODO neue SQLFactory
-// TODO notifications 
+// TODO notifications
 // TODO limit mit ? realisieren
 // TODO trigegr for add admin to group after creat egroup & Question to User after Question creation (auch OTQ)
 // TODO set und update unterscheiden
@@ -420,7 +420,9 @@ public class DatabaseQueryManager implements QueryManager {
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			preparedStatement.setLong(2, userID);
-			return preparedStatement.executeQuery().getLong(1);
+			final ResultSet resultSet = preparedStatement.executeQuery();
+			resultSet.next();
+			return resultSet.getLong(1);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
@@ -475,7 +477,8 @@ public class DatabaseQueryManager implements QueryManager {
 			final int resultSetSize = Util.getSizeOfResultSet(resultSet);
 			long placeInRaking = 0;
 			for (int place = 1; place <= resultSetSize; place++) {
-				if (resultSet.getLong("userID") == userID) {
+				resultSet.next();
+				if (resultSet.getLong(User.USER_ID) == userID) {
 					placeInRaking = place;
 				}
 			}
