@@ -2,8 +2,6 @@ package com.askit.face;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,10 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.askit.exception.DatabaseLayerException;
-import com.askit.exception.DriverNotFoundException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
-import com.askit.exception.ModellToObjectException;
 import com.askit.exception.WrongHashException;
 import com.askit.face.innerclasses.DeleteRequest;
 import com.askit.face.innerclasses.GetRequest;
@@ -68,6 +64,7 @@ public class Faceservlet extends HttpServlet {
 		catch (final DatabaseLayerException e) {
 			JSONBuilder jb = new JSONBuilder();
 			out.print(jb.createJSON(e));
+			e.printStackTrace();
 			response.setStatus(500);
 		} catch (WrongHashException e) {
 			// TODO Auto-generated catch block
