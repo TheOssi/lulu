@@ -336,7 +336,11 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public String getUsername(final long userID) throws DatabaseLayerException {
 		try {
-			return getUserAttribute(User.USERNAME, userID);
+			final ResultSet resultSet = getUserAttribute(User.USERNAME, userID);
+			if (resultSet.next()) {
+				return resultSet.getString(1);
+			}
+			return null;
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
@@ -405,7 +409,11 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public Long getUserScoreOfGlobal(final long userID) throws DatabaseLayerException {
 		try {
-			return Long.parseLong(getUserAttribute(User.SCORE_OF_GLOBAL, userID));
+			final ResultSet resultSet = getUserAttribute(User.SCORE_OF_GLOBAL, userID);
+			if (resultSet.next()) {
+				return resultSet.getLong(1);
+			}
+			return null;
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
@@ -433,7 +441,11 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public String getPhoneNumberHash(final long userID) throws DatabaseLayerException {
 		try {
-			return getUserAttribute(User.PHONENUMBER_HASH, userID);
+			final ResultSet resultSet = getUserAttribute(User.PHONENUMBER_HASH, userID);
+			if (resultSet.next()) {
+				return resultSet.getString(1);
+			}
+			return null;
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
@@ -496,7 +508,11 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public String getPasswordHash(final long userID) throws DatabaseLayerException {
 		try {
-			return getUserAttribute(User.PHONENUMBER_HASH, userID);
+			final ResultSet resultSet = getUserAttribute(User.PHONENUMBER_HASH, userID);
+			if (resultSet.next()) {
+				return resultSet.getString(1);
+			}
+			return null;
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
@@ -505,7 +521,11 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public String getLanguage(final long userID) throws DatabaseLayerException {
 		try {
-			return getUserAttribute(User.LANGUAGE, userID);
+			final ResultSet resultSet = getUserAttribute(User.LANGUAGE, userID);
+			if (resultSet.next()) {
+				return resultSet.getString(1);
+			}
+			return null;
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
@@ -514,7 +534,11 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public String getProfilePictureURI(final long userID) throws DatabaseLayerException {
 		try {
-			return getUserAttribute(User.PROFILEPICTURE_URI, userID);
+			final ResultSet resultSet = getUserAttribute(User.PROFILEPICTURE_URI, userID);
+			if (resultSet.next()) {
+				return resultSet.getString(1);
+			}
+			return null;
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
@@ -865,17 +889,13 @@ public class DatabaseQueryManager implements QueryManager {
 		preparedStatement.executeUpdate();
 	}
 
-	private String getUserAttribute(final String column, final long userID) throws SQLException, DriverNotFoundException {
+	private ResultSet getUserAttribute(final String column, final long userID) throws SQLException, DriverNotFoundException {
 		final String[] columns = new String[] { column };
 		final String whereCondition = User.USER_ID + " = ?";
 		final String statement = SQLFactory.buildSelectStatementWithWhereCondition(SCHEMA, Constants.TABLE_USERS, columns, whereCondition);
 		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 		preparedStatement.setLong(1, userID);
-		final ResultSet resultSet = preparedStatement.executeQuery();
-		if (resultSet.next()) {
-			return resultSet.getString(1);
-		}
-		return null;
+		return preparedStatement.executeQuery();
 	}
 
 	private void addAnswerToAnswerTable(final Answer answer, final String table) throws SQLException, DriverNotFoundException {
