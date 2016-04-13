@@ -67,7 +67,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final String[] columns = new String[] { Group.CREATE_DATE, Group.ADMIN_ID, Group.GROUP_NAME, Group.GROUP_PICTURE_URI };
 			final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_GROUPS, columns);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
-			preparedStatement.setDate(1, new Date(System.currentTimeMillis()));
+			preparedStatement.setDate(1, new Date(group.getCreateDate().getTime()));
 			preparedStatement.setLong(2, group.getAdminID());
 			preparedStatement.setString(3, group.getGroupname());
 			preparedStatement.setString(4, group.getGroupPictureURI());
@@ -89,7 +89,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setString(2, question.getAdditionalInformation());
 			preparedStatement.setLong(3, question.getHostID());
 			preparedStatement.setString(4, question.getPictureURI());
-			preparedStatement.setDate(5, new Date(System.currentTimeMillis()));
+			preparedStatement.setDate(5, new Date(question.getCreateDate().getTime()));
 			preparedStatement.setDate(6, new Date(question.getEndDate().getTime()));
 			preparedStatement.setBoolean(7, question.getOptionExtension());
 			preparedStatement.setString(8, question.getLanguage());
@@ -113,7 +113,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(3, question.getHostID());
 			preparedStatement.setLong(4, question.getGroupID());
 			preparedStatement.setString(5, question.getPictureURI());
-			preparedStatement.setDate(6, new Date(System.currentTimeMillis()));
+			preparedStatement.setDate(6, new Date(question.getCreateDate().getTime()));
 			preparedStatement.setDate(7, new Date(question.getEndDate().getTime()));
 			preparedStatement.setBoolean(8, question.getOptionExtension());
 			preparedStatement.setInt(9, question.getDefinitionOfEnd());
@@ -138,7 +138,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setString(2, question.getAdditionalInformation());
 			preparedStatement.setLong(3, question.getHostID());
 			preparedStatement.setString(4, question.getPictureURI());
-			preparedStatement.setDate(5, new Date(System.currentTimeMillis()));
+			preparedStatement.setDate(5, new Date(question.getCreateDate().getTime()));
 			preparedStatement.setDate(6, new Date(question.getEndDate().getTime()));
 			preparedStatement.setBoolean(7, question.getOptionExtension());
 			preparedStatement.setInt(8, question.getDefinitionOfEnd());
@@ -161,7 +161,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setString(1, user.getPasswordHash());
 			preparedStatement.setString(2, user.getPhoneNumberHash());
 			preparedStatement.setString(3, user.getUsername());
-			preparedStatement.setDate(4, new Date(System.currentTimeMillis()));
+			preparedStatement.setDate(4, new Date(user.getAccessionDate().getTime()));
 			preparedStatement.setString(5, user.getProfilePictureURI());
 			preparedStatement.setString(6, user.getLanguage());
 			preparedStatement.executeUpdate();
