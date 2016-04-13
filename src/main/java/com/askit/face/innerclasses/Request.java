@@ -19,6 +19,7 @@ public class Request {
 	Map<String, String[]> parameters;
 	PrintWriter out;
 
+	// TODO maybe seperate pattern/matcher class
 	final static Pattern regExQuestionPattern = Pattern.compile("/QUESTION/([0-9]*)$|/QUESTION$");
 	final static Pattern regExQuestionsPattern = Pattern.compile("/QUESTION");
 
@@ -32,6 +33,7 @@ public class Request {
 	final static Pattern regExUserScorePattern = Pattern.compile("/USER/SCORE/([0-9]*)");
 	final static Pattern regExUsersPattern = Pattern.compile("/USERS");
 
+	// TODO why not static?
 	final Pattern regExSessionPattern = Pattern.compile("/SESSION");
 
 	Matcher matcher;
@@ -44,31 +46,33 @@ public class Request {
 	}
 
 	/*
-	 * Method for general request processing Checks for valid session and
-	 * handles request f0r sessionhashes
+	 * Method for general request processing, checks for valid session and
+	 * handles request for sessionhashes
 	 */
-	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
-			DatabaseLayerException, ServletException {
-		final String shash[] = this.parameters.get(Constants.PARAMETERS_SESSIONHASH);
+	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException, DatabaseLayerException,
+			ServletException {
+		final String sessionHash = parameters.get(Constants.PARAMETERS_SESSIONHASH)[0];
 		matcher = regExSessionPattern.matcher(pathInfo);
+		// TODO maybe no if in a if?
 		if (matcher.find()) {
-			String hash[];
 			if (!parameters.isEmpty()) {
-				hash = parameters.get("HASH");
-				out.println("{hash : " + SessionManager.getInstance().createSession(hash[0], "blala") + "}");
+				// TODO HASH in constant
+				final String passwordHash = parameters.get("HASH")[0];
+				// TODO blala?
+				// TODO using gson
+				out.println("{hash : " + SessionManager.getInstance().createSession(passwordHash, "blala") + "}");
 			} else {
-				throw new MissingParametersException("Missing Userhash");
+				throw new MissingParametersException("Missing PasswordHash");
 			}
-			return;
+			return; // TODO necessary?
 		} else {
-			if (shash != null) {
-				if (!SessionManager.getInstance().isValidSessionHash(shash[0])) {
+			if (sessionHash != null) {
+				if (!SessionManager.getInstance().isValidSessionHash(sessionHash)) {
 					throw new WrongHashException("Sessionhash not valid");
 				}
 			} else {
-				throw new MissingParametersException("Invalid URI");
+				throw new MissingParametersException("No SessionHash");
 			}
-
 		}
 	}
 }
