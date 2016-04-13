@@ -19,16 +19,16 @@ public class Request {
 	Map<String, String[]> parameters;
 	PrintWriter out;
 
-	final static Pattern regExQuestionPattern = Pattern.compile("/QUESTION/([0-9]*)|/QUESTION$");
+	final static Pattern regExQuestionPattern = Pattern.compile("/QUESTION/([0-9]*)$|/QUESTION$");
 	final static Pattern regExQuestionsPattern = Pattern.compile("/QUESTION");
 
-	final static Pattern regExGroupPattern = Pattern.compile("/GROUP/([0-9]*)|/GROUP$");
+	final static Pattern regExGroupPattern = Pattern.compile("/GROUP/([0-9]*)$|/GROUP$");
 	final static Pattern regExGroupsPattern = Pattern.compile("/GROUPS");
 
-	final static Pattern regExAnswerPattern = Pattern.compile("/ANSWER/([0-9]*)|/ANSWER$");
+	final static Pattern regExAnswerPattern = Pattern.compile("/ANSWER/([0-9]*)$|/ANSWER$");
 	final static Pattern regExAnswersPattern = Pattern.compile("/ANSWERS");
 
-	final static Pattern regExUserPattern = Pattern.compile("/USER/([0-9]*)|/USER$");
+	final static Pattern regExUserPattern = Pattern.compile("/USER/([0-9]*)$|/USER$");
 	final static Pattern regExUserScorePattern = Pattern.compile("/USER/SCORE/([0-9]*)");
 	final static Pattern regExUsersPattern = Pattern.compile("/USERS");
 
