@@ -37,6 +37,7 @@ public class GetRequest extends Request {
 	 * @see com.askit.face.innerclasses.Request#handleRequest() Processes Get
 	 * Request
 	 */
+	@Override
 	public void handleRequest() throws DatabaseLayerException, MissingParametersException, ServletException,
 			WrongHashException, DuplicateHashException {
 		final JSONBuilder jsonBuilder = new JSONBuilder();
@@ -93,8 +94,8 @@ public class GetRequest extends Request {
 		 */
 		matcher = regExGroupPattern.matcher(pathInfo);
 		if (matcher.find()) {
-			id = Integer.parseInt(matcher.group(1));
-			if (id != null) {
+			if (parameters.containsKey(Constants.PARAMETERS_GROUPID)) {
+				groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
 				this.out.println("{ groupName: " + queryManager.getGroupName(groupID) + ", pictureUrl: "
 						+ queryManager.getGroupPictureURI(groupID) + "}");
 			} else if (userID != null && searchPattern != null) {
@@ -102,9 +103,8 @@ public class GetRequest extends Request {
 				groups = queryManager.searchForGroup(userID, searchPattern);
 				this.out.println(jsonBuilder.createJSON(groups));
 			} else {
-				throw new MissingParametersException();
+				throw new MissingParametersException("Missing Parameters");
 			}
-
 			return;
 		}
 		// /GROUPS
@@ -129,6 +129,7 @@ public class GetRequest extends Request {
 		 */
 		matcher = regExUserPattern.matcher(pathInfo);
 		if (matcher.find()) {
+			this.out.println(matcher.group(1));
 			id = Integer.parseInt(matcher.group(1));
 			this.out.println(id);
 			if (id != null) {
@@ -149,9 +150,14 @@ public class GetRequest extends Request {
 		 */
 		matcher = regExUserScorePattern.matcher(pathInfo);
 		if (matcher.find()) {
+
 			if (parameters.containsKey(Constants.PARAMETERS_GROUPID)) {
 				groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
 			}
+			if (parameters.containsKey(Constants.PARAMETERS_USERID)) {
+				userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
+			}
+
 			Long userscore;
 			id = Integer.parseInt(matcher.group(1));
 			this.out.println("{Score of : " + id + "}");

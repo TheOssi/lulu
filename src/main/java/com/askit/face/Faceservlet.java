@@ -2,6 +2,7 @@ package com.askit.face;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -64,6 +65,7 @@ public class Faceservlet extends HttpServlet {
 		catch (final DatabaseLayerException e) {
 			JSONBuilder jb = new JSONBuilder();
 			out.print(jb.createJSON(e));
+			out.println("BLA");
 			e.printStackTrace();
 			response.setStatus(500);
 		} catch (WrongHashException e) {
