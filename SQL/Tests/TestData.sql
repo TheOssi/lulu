@@ -1,0 +1,2 @@
+INSERT INTO APP.`Users`(`userID`, `passwordHash`, `phoneNumberHash`, `username`, `accessionDate`, `scoreOfGlobal`, `profilePictureURI`, `language`) VALUES (1,"PASSWORDHASH","PHONENUMERHASH","USERNAME",'2016-01-01 00:00:00',1,"/PATH/TO/PICTURE","DE"); 
+INSERT INTO APP.`Groups`(`groupID`, `createDate`, `adminID`, `groupname`, `groupPictureURI`) VALUES (1,'2016-01-01 00:00:00',1,"GROUPNAME","/PATH/TO/PICTURE");
