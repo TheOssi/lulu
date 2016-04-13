@@ -52,34 +52,9 @@ public class Faceservlet extends HttpServlet {
 			final GetRequest resourceValues = new GetRequest(request.getPathInfo(), request.getParameterMap(), out);
 			resourceValues.handleRequest();
 
-		} catch (final ServletException e) {
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			response.setStatus(404);
-		} catch (final MissingParametersException e) {
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			response.setStatus(404);
-		}
-
-		catch (final DatabaseLayerException e) {
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			out.println("BLA");
-			e.printStackTrace();
-			response.setStatus(500);
-		} catch (WrongHashException e) {
-			// TODO Auto-generated catch block
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			response.setStatus(402);
-			e.printStackTrace();
-		} catch (DuplicateHashException e) {
-			// TODO Auto-generated catch block
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			response.setStatus(402);
-			e.printStackTrace();
+		} catch (final ServletException | MissingParametersException | DatabaseLayerException | WrongHashException
+				| DuplicateHashException e) {
+			handleException(e, out);
 		}
 
 		out.close();
@@ -101,32 +76,9 @@ public class Faceservlet extends HttpServlet {
 		final PostRequest post = new PostRequest(request.getPathInfo(), request.getParameterMap(), out);
 		try {
 			post.handleRequest();
-		} catch (final ServletException e) {
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			response.setStatus(404);
-		} catch (final MissingParametersException e) {
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			response.setStatus(404);
-		}
-
-		catch (final DatabaseLayerException e) {
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			response.setStatus(500);
-		} catch (WrongHashException e) {
-			// TODO Auto-generated catch block
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			response.setStatus(402);
-			e.printStackTrace();
-		} catch (DuplicateHashException e) {
-			// TODO Auto-generated catch block
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			response.setStatus(402);
-			e.printStackTrace();
+		} catch (final ServletException | MissingParametersException | DatabaseLayerException | WrongHashException
+				| DuplicateHashException e) {
+			handleException(e, out);
 		}
 		out.close();
 	}
@@ -145,32 +97,9 @@ public class Faceservlet extends HttpServlet {
 		final PutRequest put = new PutRequest(request.getPathInfo(), request.getParameterMap(), out);
 		try {
 			put.handleRequest();
-		} catch (final ServletException e) {
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			response.setStatus(404);
-		} catch (final MissingParametersException e) {
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			response.setStatus(404);
-		}
-
-		catch (final DatabaseLayerException e) {
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			response.setStatus(500);
-		} catch (WrongHashException e) {
-			// TODO Auto-generated catch block
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			response.setStatus(402);
-			e.printStackTrace();
-		} catch (DuplicateHashException e) {
-			// TODO Auto-generated catch block
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			response.setStatus(402);
-			e.printStackTrace();
+		} catch (final ServletException | MissingParametersException | DatabaseLayerException | WrongHashException
+				| DuplicateHashException e) {
+			handleException(e, out);
 		}
 		out.close();
 	}
@@ -188,34 +117,29 @@ public class Faceservlet extends HttpServlet {
 		final DeleteRequest delete = new DeleteRequest(request.getPathInfo(), request.getParameterMap(), out);
 		try {
 			delete.handleRequest();
-		} catch (final ServletException e) {
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			response.setStatus(404);
-		} catch (final MissingParametersException e) {
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			response.setStatus(404);
-		}
-
-		catch (final DatabaseLayerException e) {
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			response.setStatus(500);
-		} catch (WrongHashException e) {
-			// TODO Auto-generated catch block
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			response.setStatus(402);
-			e.printStackTrace();
-		} catch (DuplicateHashException e) {
-			// TODO Auto-generated catch block
-			JSONBuilder jb = new JSONBuilder();
-			out.print(jb.createJSON(e));
-			response.setStatus(402);
-			e.printStackTrace();
+		} catch (final ServletException | MissingParametersException | DatabaseLayerException | WrongHashException
+				| DuplicateHashException e) {
+			handleException(e, out);
 		}
 		out.close();
 
 	}
+
+	/*
+	 * handles various Exceptions and prints stacktrace to log
+	 */
+	private int handleException(Exception e, PrintWriter out) {
+		JSONBuilder jb = new JSONBuilder();
+		int status = 500;
+		out.print(jb.createJSON(e));
+		e.printStackTrace();
+		if (e.getClass().equals(DuplicateHashException.class) || e.getClass().equals(WrongHashException.class)) {
+			status = 402;
+		} else if (e.getClass().equals(ServletException.class)
+				|| e.getClass().equals(MissingParametersException.class)) {
+			status = 404;
+		}
+		return status;
+	}
+
 }
