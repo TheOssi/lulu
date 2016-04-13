@@ -1,5 +1,6 @@
 package com.askit.queries;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.sql.Date;
@@ -14,6 +15,9 @@ import com.askit.entities.Group;
 import com.askit.exception.DatabaseLayerException;
 
 public class DatabaseQueryManagerTest {
+
+	private static final String DEFAULT_PICTURE_URI = "/PATH/TO/PICTURE";
+	private static final long DEFAULT_SCORE_OF_GLOBAL = 1;
 
 	private final QueryManager queryManager = new DatabaseQueryManager();
 
@@ -151,13 +155,13 @@ public class DatabaseQueryManagerTest {
 	}
 
 	@Test
-	public void testGetUserScoreOfGlobal() {
-		fail("Not yet implemented");
+	public void testGetUserScoreOfGlobal() throws DatabaseLayerException {
+		assertThat("", queryManager.getUserScoreOfGlobal(1).equals(DEFAULT_SCORE_OF_GLOBAL));
 	}
 
 	@Test
-	public void testGetUserScoreInGroup() {
-		fail("Not yet implemented");
+	public void testGetUserScoreInGroup() throws DatabaseLayerException {
+		fail("not");
 	}
 
 	@Test
@@ -201,13 +205,13 @@ public class DatabaseQueryManagerTest {
 	}
 
 	@Test
-	public void testGetGroupPictureURI() {
-		fail("Not yet implemented");
+	public void testGetGroupPictureURI() throws DatabaseLayerException {
+		assertThat("Path is false", queryManager.getGroupPictureURI(1).equals(DEFAULT_PICTURE_URI));
 	}
 
 	@Test
-	public void testGetGroupName() {
-		fail("Not yet implemented");
+	public void testGetGroupName() throws DatabaseLayerException {
+		queryManager.getGroupName(1);
 	}
 
 	@Test
