@@ -3,15 +3,12 @@ package com.askit.queries;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
-import java.sql.Date;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.askit.entities.Group;
 import com.askit.exception.DatabaseLayerException;
 
 public class DatabaseQueryManagerTest {
@@ -45,8 +42,7 @@ public class DatabaseQueryManagerTest {
 
 	@Test
 	public void testCreateNewGroup() throws DatabaseLayerException {
-		final Group group = new Group(new Date(System.currentTimeMillis()), new Long(2), "", "");
-		queryManager.createNewGroup(group);
+		fail("Not yet implemented");
 	}
 
 	@Test
