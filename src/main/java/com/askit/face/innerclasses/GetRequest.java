@@ -193,7 +193,7 @@ public class GetRequest extends Request {
 				if (groupID != null && searchPattern.isEmpty() && questionID == null) {
 					users = queryManager.getUsersOfGroup(groupID);
 				} else if (!searchPattern.isEmpty() && groupID != null) {
-					users = queryManager.getUsersByUsername(searchPattern);
+					users = queryManager.searchUsersByUsername(searchPattern);
 				} else if (questionID != null && answerID == null && isPublic) {
 					users = queryManager.getUsersOfPublicQuestion(questionID);
 				} else if (questionID != null && answerID == null && !isPublic) {

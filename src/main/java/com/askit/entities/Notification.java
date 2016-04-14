@@ -1,17 +1,11 @@
 package com.askit.entities;
 
-import com.thirdparty.entities.Column;
-import com.thirdparty.entities.Entity;
-
-@Entity
 public class Notification {
 
 	public static final String NOTIFICATION_ID = "notificationID";
 	public static final String CODE = "code";
 
-	@Column(name = "notificationID")
 	private Long notificationID;
-	@Column(name = "code")
 	private String code;
 	private String[] parameter;
 

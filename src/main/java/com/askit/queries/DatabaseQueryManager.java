@@ -35,8 +35,6 @@ import com.askit.etc.Constants;
 import com.askit.etc.Util;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DriverNotFoundException;
-import com.askit.exception.ModellToObjectException;
-import com.thirdparty.modelToObject.ResultSetMapper;
 
 public class DatabaseQueryManager implements QueryManager {
 
@@ -262,9 +260,9 @@ public class DatabaseQueryManager implements QueryManager {
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setString(1, language);
 			final ResultSet resultSet = preparedStatement.executeQuery();
-			final List<PublicQuestion> publicQuestions = new ResultSetMapper<PublicQuestion>().mapResultSetToObject(resultSet, PublicQuestion.class);
+			final List<PublicQuestion> publicQuestions = ResultSetMapper.mapPublicQuestions(resultSet);
 			return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
-		} catch (DriverNotFoundException | SQLException | ModellToObjectException exception) {
+		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
@@ -277,9 +275,9 @@ public class DatabaseQueryManager implements QueryManager {
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			final ResultSet resultSet = preparedStatement.executeQuery();
-			final List<PublicQuestion> publicQuestions = new ResultSetMapper<PublicQuestion>().mapResultSetToObject(resultSet, PublicQuestion.class);
+			final List<PublicQuestion> publicQuestions = ResultSetMapper.mapPublicQuestions(resultSet);
 			return publicQuestions.get(0);
-		} catch (DriverNotFoundException | SQLException | ModellToObjectException exception) {
+		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
@@ -292,10 +290,9 @@ public class DatabaseQueryManager implements QueryManager {
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			final ResultSet resultSet = preparedStatement.executeQuery();
-			final List<PrivateQuestion> privateQuestions = new ResultSetMapper<PrivateQuestion>().mapResultSetToObject(resultSet,
-					PrivateQuestion.class);
+			final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
 			return privateQuestions.get(0);
-		} catch (DriverNotFoundException | SQLException | ModellToObjectException exception) {
+		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
@@ -311,24 +308,9 @@ public class DatabaseQueryManager implements QueryManager {
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			final ResultSet resultSet = preparedStatement.executeQuery();
-			final List<PrivateQuestion> privateQuestions = new ResultSetMapper<PrivateQuestion>().mapResultSetToObject(resultSet,
-					PrivateQuestion.class);
+			final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
 			return privateQuestions.toArray(new PrivateQuestion[privateQuestions.size()]);
-		} catch (DriverNotFoundException | SQLException | ModellToObjectException exception) {
-			throw new DatabaseLayerException(exception);
-		}
-	}
-
-	@Override
-	public User[] getUsersByUsername(final String searchPattern) throws DatabaseLayerException {
-		try {
-			final String seachPatternWithWildcards = "%" + searchPattern + "%";
-			final String whereCondition = User.USERNAME + " Like ? ORDER BY " + User.USERNAME + " ASC"; // TODO
-			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, Constants.TABLE_USERS, whereCondition);
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
-			preparedStatement.setString(1, seachPatternWithWildcards);
-			return getUserArrayFromReaderPreparedStatement(preparedStatement);
-		} catch (DriverNotFoundException | SQLException | ModellToObjectException exception) {
+		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
@@ -353,7 +335,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			return getUserArrayFromReaderPreparedStatement(preparedStatement);
-		} catch (DriverNotFoundException | SQLException | ModellToObjectException exception) {
+		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
@@ -365,7 +347,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			return getUserArrayFromReaderPreparedStatement(preparedStatement);
-		} catch (DriverNotFoundException | SQLException | ModellToObjectException exception) {
+		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
@@ -377,7 +359,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, answerID);
 			return getUserArrayFromReaderPreparedStatement(preparedStatement);
-		} catch (DriverNotFoundException | SQLException | ModellToObjectException exception) {
+		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
@@ -389,7 +371,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, answerID);
 			return getUserArrayFromReaderPreparedStatement(preparedStatement);
-		} catch (DriverNotFoundException | SQLException | ModellToObjectException exception) {
+		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
@@ -401,7 +383,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			return getUserArrayFromReaderPreparedStatement(preparedStatement);
-		} catch (DriverNotFoundException | SQLException | ModellToObjectException exception) {
+		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
@@ -455,7 +437,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public Answer getChoseAnswerInPublicQuestion(final long questionID, final long userID) throws DatabaseLayerException {
 		try {
 			return getChoseAnswer(questionID, userID, SCHEMA, Constants.TABLE_PUBLIC_QUESTIONS_TO_USERS);
-		} catch (DriverNotFoundException | SQLException | ModellToObjectException exception) {
+		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
@@ -464,7 +446,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public Answer getChoseAnswerInPrivateQuestion(final long questionID, final long userID) throws DatabaseLayerException {
 		try {
 			return getChoseAnswer(questionID, userID, SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS_TO_USERS);
-		} catch (DriverNotFoundException | SQLException | ModellToObjectException exception) {
+		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
@@ -476,7 +458,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			return mapSingleAnswerToObject(preparedStatement);
-		} catch (DriverNotFoundException | SQLException | ModellToObjectException exception) {
+		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
@@ -573,7 +555,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public Pair<Answer, Integer>[] getAnswersOfPublicQuestionAndCount(final long questionID) throws DatabaseLayerException {
 		try {
 			return getAnswersOfQuestionAndCount(questionID, Constants.TABLE_PUBLIC_QUESTIONS_TO_USERS, Constants.TABLE_ANSWERS_PUBLIC_QUESTIONS);
-		} catch (DriverNotFoundException | SQLException | ModellToObjectException exception) {
+		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
@@ -582,7 +564,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public Pair<Answer, Integer>[] getAnswersOfPrivateQuestionAndCount(final long questionID) throws DatabaseLayerException {
 		try {
 			return getAnswersOfQuestionAndCount(questionID, Constants.TABLE_PRIVATE_QUESTIONS_TO_USERS, Constants.TABLE_ANSWERS_PRIVATE_QUESTIONS);
-		} catch (DriverNotFoundException | SQLException | ModellToObjectException exception) {
+		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
@@ -591,7 +573,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public PublicQuestion[] getActivePublicQuestionsOfUser(final long userID, final int startIndex, final int quantity) throws DatabaseLayerException {
 		try {
 			return getPublicQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, false);
-		} catch (DriverNotFoundException | SQLException | ModellToObjectException exception) {
+		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
@@ -601,7 +583,7 @@ public class DatabaseQueryManager implements QueryManager {
 			throws DatabaseLayerException {
 		try {
 			return getPrivateQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, true);
-		} catch (DriverNotFoundException | SQLException | ModellToObjectException exception) {
+		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
@@ -610,7 +592,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public PublicQuestion[] getOldPublicQuestionsOfUser(final long userID, final int startIndex, final int quantity) throws DatabaseLayerException {
 		try {
 			return getPublicQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, false);
-		} catch (DriverNotFoundException | SQLException | ModellToObjectException exception) {
+		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 
@@ -620,15 +602,17 @@ public class DatabaseQueryManager implements QueryManager {
 	public PrivateQuestion[] getOldPrivateQuestionsOfUser(final long userID, final int startIndex, final int quantity) throws DatabaseLayerException {
 		try {
 			return getPrivateQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, true);
-		} catch (DriverNotFoundException | SQLException | ModellToObjectException exception) {
+		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
 
 	@Override
-	public Pair<Group, Integer>[] getAllGroupScoresAndGlobalScoreOfUser(final long userID) {
+	public Pair<String, Integer>[] getAllGroupScoresAndGlobalScoreOfUser(final long userID) {
 		// TODO sort
-		// TODO todo
+
+		final String statement = "SELECT G.*, GU.score FROM GroupsToUsers GU WHERE userID = ? JOIN Groups G ON G.groupID = GU.groupID";
+
 		return null;
 	}
 
@@ -859,20 +843,54 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public Group[] searchForGroup(final long userID, final String nameSearchPattern) throws DatabaseLayerException {
-		// TODO nur die Gruppen in denen ich schon bin
-		return null;
+		throw new DatabaseLayerException("not implemented");
 	}
 
 	@Override
 	public PrivateQuestion[] searchForPrivateQuestionInGroup(final long groupID, final String questionSearchPattern) throws DatabaseLayerException {
-		// TODO
-		return null;
+		try {
+			final String searchPattern = "%" + questionSearchPattern + "%";
+			final String whereCondition = PrivateQuestion.GROUP_ID + " = ? AND " + PrivateQuestion.QUESTION + " LIKE ?";
+			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS, whereCondition);
+			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement.setLong(1, groupID);
+			preparedStatement.setString(2, searchPattern);
+			final ResultSet resultSet = preparedStatement.executeQuery();
+			final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
+			return privateQuestions.toArray(new PrivateQuestion[privateQuestions.size()]);
+		} catch (SQLException | DriverNotFoundException exception) {
+			throw new DatabaseLayerException(exception);
+		}
 	}
 
 	@Override
 	public PublicQuestion[] searchForPublicQuestion(final String nameSearchPattern) throws DatabaseLayerException {
-		// TODO
-		return null;
+		try {
+			final String searchPattern = "%" + nameSearchPattern + "%";
+			final String whereCondition = PublicQuestion.QUESTION + " LIKE ?";
+			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, Constants.TABLE_PUBLIC_QUESTIONS, whereCondition);
+			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement.setString(1, searchPattern);
+			final ResultSet resultSet = preparedStatement.executeQuery();
+			final List<PublicQuestion> publicQuestions = ResultSetMapper.mapPublicQuestions(resultSet);
+			return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
+		} catch (SQLException | DriverNotFoundException exception) {
+			throw new DatabaseLayerException(exception);
+		}
+	}
+
+	@Override
+	public User[] searchUsersByUsername(final String searchPattern) throws DatabaseLayerException {
+		try {
+			final String seachPatternWithWildcards = "%" + searchPattern + "%";
+			final String whereCondition = User.USERNAME + " Like ? ORDER BY " + User.USERNAME + " ASC"; // TODO
+			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, Constants.TABLE_USERS, whereCondition);
+			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement.setString(1, seachPatternWithWildcards);
+			return getUserArrayFromReaderPreparedStatement(preparedStatement);
+		} catch (DriverNotFoundException | SQLException exception) {
+			throw new DatabaseLayerException(exception);
+		}
 	}
 
 	// ================================================================================
@@ -919,14 +937,14 @@ public class DatabaseQueryManager implements QueryManager {
 		return preparedStatement;
 	}
 
-	private User[] getUserArrayFromReaderPreparedStatement(final PreparedStatement preparedStatement) throws SQLException, ModellToObjectException {
+	private User[] getUserArrayFromReaderPreparedStatement(final PreparedStatement preparedStatement) throws SQLException {
 		final ResultSet resultSet = preparedStatement.executeQuery();
-		final List<User> users = new ResultSetMapper<User>().mapResultSetToObject(resultSet, User.class);
+		final List<User> users = ResultSetMapper.mapUsers(resultSet);
 		return users.toArray(new User[users.size()]);
 	}
 
 	private Answer getChoseAnswer(final long questionID, final long userID, final String schema, final String table) throws SQLException,
-			DriverNotFoundException, ModellToObjectException {
+			DriverNotFoundException {
 		final String whereCondition = Answer.QUESTION_ID + " = ? AND userID = ?";
 		final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, table, whereCondition);
 		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
@@ -935,9 +953,9 @@ public class DatabaseQueryManager implements QueryManager {
 		return mapSingleAnswerToObject(preparedStatement);
 	}
 
-	private Answer mapSingleAnswerToObject(final PreparedStatement preparedStatement) throws SQLException, ModellToObjectException {
+	private Answer mapSingleAnswerToObject(final PreparedStatement preparedStatement) throws SQLException {
 		final ResultSet resultSet = preparedStatement.executeQuery();
-		final List<Answer> answers = new ResultSetMapper<Answer>().mapResultSetToObject(resultSet, Answer.class);
+		final List<Answer> answers = ResultSetMapper.mapAnswers(resultSet);
 		return answers.get(0);
 	}
 
@@ -957,7 +975,7 @@ public class DatabaseQueryManager implements QueryManager {
 	// TODO empty
 	@SuppressWarnings("unchecked")
 	private Pair<Answer, Integer>[] getAnswersOfQuestionAndCount(final long questionID, final String questionToUserTable, final String answerTable)
-			throws SQLException, DriverNotFoundException, ModellToObjectException {
+			throws SQLException, DriverNotFoundException {
 		final String statement = "SELECT A.*, " + "( SELECT COUNT(*) FROM " + questionToUserTable
 				+ " PU WHERE PU.questionID = ? AND PU.choosedAnswerID = A.answerID) counter" + "FROM " + answerTable + " A "
 				+ "WHERE A.questionID = ? ORDER BY counter ASC;";
@@ -965,7 +983,7 @@ public class DatabaseQueryManager implements QueryManager {
 		preparedStatement.setLong(1, questionID);
 		preparedStatement.setLong(1, questionID);
 		final ResultSet resultSet = preparedStatement.executeQuery();
-		final List<Answer> answers = new ResultSetMapper<Answer>().mapResultSetToObject(resultSet, Answer.class);
+		final List<Answer> answers = ResultSetMapper.mapAnswers(resultSet);
 		final List<ImmutablePair<Answer, Integer>> answersWithCount = new ArrayList<ImmutablePair<Answer, Integer>>();
 		for (int answerCounter = 0; answerCounter < answers.size(); answerCounter++) {
 			final Answer answer = answers.get(answerCounter);
@@ -977,20 +995,20 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	private PublicQuestion[] getPublicQuestionsOfUserDependingOnStatus(final long userID, final int startIndex, final int quantity,
-			final boolean finished) throws SQLException, DriverNotFoundException, ModellToObjectException {
+			final boolean finished) throws SQLException, DriverNotFoundException {
 		final String statement = "SELECT P.* FROM " + Constants.TABLE_PUBLIC_QUESTIONS + " P JOIN " + Constants.TABLE_PUBLIC_QUESTIONS_TO_USERS
 				+ " PQU ON PQU.userID = ? AND PQU.questionID = P.questionID WHERE finihed = ?";
 		final ResultSet resultSet = getQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, finished, statement);
-		final List<PublicQuestion> publicQuestions = new ResultSetMapper<PublicQuestion>().mapResultSetToObject(resultSet, PublicQuestion.class);
+		final List<PublicQuestion> publicQuestions = ResultSetMapper.mapPublicQuestions(resultSet);
 		return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
 	}
 
 	private PrivateQuestion[] getPrivateQuestionsOfUserDependingOnStatus(final long userID, final int startIndex, final int quantity,
-			final boolean finished) throws SQLException, DriverNotFoundException, ModellToObjectException {
+			final boolean finished) throws SQLException, DriverNotFoundException {
 		final String statement = "SELECT P.* FROM " + Constants.TABLE_PRIVATE_QUESTIONS + " P JOIN " + Constants.TABLE_PRIVATE_QUESTIONS_TO_USERS
 				+ " PQU ON PQU.userID = ? AND PQU.questionID = P.questionID WHRER finihed = ?";
 		final ResultSet resultSet = getQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, finished, statement);
-		final List<PrivateQuestion> privateQuestions = new ResultSetMapper<PrivateQuestion>().mapResultSetToObject(resultSet, PrivateQuestion.class);
+		final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
 		return privateQuestions.toArray(new PrivateQuestion[privateQuestions.size()]);
 	}
 

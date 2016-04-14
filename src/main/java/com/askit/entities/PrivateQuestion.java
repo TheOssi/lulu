@@ -2,10 +2,6 @@ package com.askit.entities;
 
 import java.util.Date;
 
-import com.thirdparty.entities.Column;
-import com.thirdparty.entities.Entity;
-
-@Entity
 public class PrivateQuestion {
 
 	public final static String QUESTION_ID = "questionID";
@@ -24,35 +20,20 @@ public class PrivateQuestion {
 	public final static String LANGUAGE = "language";
 	public final static String IS_BET = "isBet";
 
-	@Column(name = "questionID")
 	private Long questionID;
-	@Column(name = "question")
 	private String question;
-	@Column(name = "additionalInformation")
 	private String additionalInformation;
-	@Column(name = "hostID")
 	private Long hostID;
-	@Column(name = "pictureURI")
 	private String pictureURI;
-	@Column(name = "groupID")
 	private Long groupID;
-	@Column(name = "createDate")
 	private Date createDate;
-	@Column(name = "endDate")
 	private Date endDate;
-	@Column(name = "optionExtension")
 	private Boolean optionExtension;
-	@Column(name = "definitionOfEnd")
 	private Integer definitionOfEnd;
-	@Column(name = "sumOfUsersToAnswer")
 	private Integer sumOfUsersToAnswer;
-	@Column(name = "finished")
 	private Boolean finished;
-	@Column(name = "selectedAnswerID")
 	private Long selectedAnswerID;
-	@Column(name = "language")
 	private String language;
-	@Column(name = "isBet")
 	private Boolean isBet;
 
 	public PrivateQuestion() {
@@ -78,10 +59,10 @@ public class PrivateQuestion {
 		this.language = language;
 		this.isBet = isBet;
 	}
-	public PrivateQuestion( final String question, final String additionalInformation, final Long hostID,
-			final String pictureURI, final Long groupID, final Date endDate, final Boolean optionExtension,
-			final Integer definitionOfEnd, final Integer sumOfUsersToAnswer, final Boolean finished, final Long selectedAnswerID,
-			final String language, final Boolean isBet) {	
+
+	public PrivateQuestion(final String question, final String additionalInformation, final Long hostID, final String pictureURI, final Long groupID,
+			final Date endDate, final Boolean optionExtension, final Integer definitionOfEnd, final Integer sumOfUsersToAnswer,
+			final Boolean finished, final Long selectedAnswerID, final String language, final Boolean isBet) {
 		this.question = question;
 		this.additionalInformation = additionalInformation;
 		this.hostID = hostID;
@@ -96,7 +77,6 @@ public class PrivateQuestion {
 		this.language = language;
 		this.isBet = isBet;
 	}
-
 
 	public Long getQuestionID() {
 		return questionID;

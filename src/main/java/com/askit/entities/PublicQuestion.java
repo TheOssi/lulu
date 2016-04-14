@@ -2,10 +2,6 @@ package com.askit.entities;
 
 import java.util.Date;
 
-import com.thirdparty.entities.Column;
-import com.thirdparty.entities.Entity;
-
-@Entity
 public class PublicQuestion {
 
 	public final static String QUESTION_ID = "questionID";
@@ -19,25 +15,15 @@ public class PublicQuestion {
 	public final static String FINISHED = "finished";
 	public final static String LANGUAGE = "language";
 
-	@Column(name = "questionID")
 	private Long questionID;
-	@Column(name = "question")
 	private String question;
-	@Column(name = "additionalInformation")
 	private String additionalInformation;
-	@Column(name = "hostID")
 	private Long hostID;
-	@Column(name = "pictureURI")
 	private String pictureURI;
-	@Column(name = "createDate")
 	private Date createDate;
-	@Column(name = "endDate")
 	private Date endDate;
-	@Column(name = "optionExtension")
 	private Boolean optionExtension;
-	@Column(name = "finished")
 	private Boolean finished;
-	@Column(name = "language")
 	private String language;
 
 	public PublicQuestion() {
@@ -58,9 +44,8 @@ public class PublicQuestion {
 		this.language = language;
 	}
 
-	public PublicQuestion(final String question, final String additionalInformation, final Long hostID,
-			final String pictureURI, final Date createDate, final Date endDate, final Boolean optionExtension, final Boolean finished,
-			final String language) {
+	public PublicQuestion(final String question, final String additionalInformation, final Long hostID, final String pictureURI,
+			final Date createDate, final Date endDate, final Boolean optionExtension, final Boolean finished, final String language) {
 		this.question = question;
 		this.additionalInformation = additionalInformation;
 		this.hostID = hostID;
