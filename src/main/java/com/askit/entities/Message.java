@@ -2,10 +2,6 @@ package com.askit.entities;
 
 import java.util.Date;
 
-import com.thirdparty.entities.Column;
-import com.thirdparty.entities.Entity;
-
-@Entity
 public class Message {
 
 	public final static String MESSAGE_ID = "messageID";
@@ -14,15 +10,10 @@ public class Message {
 	public final static String MESSSAGE = "message";
 	public final static String DATE = "date";
 
-	@Column(name = "messageID")
 	private Long messageID;
-	@Column(name = "groupID")
 	private Long groupID;
-	@Column(name = "userID")
 	private Long userID;
-	@Column(name = "message")
 	private String message;
-	@Column(name = "date")
 	private Date date;
 
 	public Message() {

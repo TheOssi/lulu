@@ -173,7 +173,7 @@ public interface QueryManager {
 	 * @return
 	 * @throws DatabaseLayerException
 	 */
-	public User[] getUsersByUsername(String searchPattern) throws DatabaseLayerException;
+	public User[] searchUsersByUsername(String searchPattern) throws DatabaseLayerException;
 
 	/**
 	 * returns the username of a user
@@ -403,7 +403,7 @@ public interface QueryManager {
 	 * @param userID
 	 * @return
 	 */
-	public Pair<Group, Integer>[] getAllGroupScoresAndGlobalScoreOfUser(long userID) throws DatabaseLayerException;;
+	public Pair<String, Integer>[] getAllGroupScoresAndGlobalScoreOfUser(long userID) throws DatabaseLayerException;;
 
 	/**
 	 *

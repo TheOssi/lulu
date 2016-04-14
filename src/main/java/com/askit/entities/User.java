@@ -2,10 +2,6 @@ package com.askit.entities;
 
 import java.util.Date;
 
-import com.thirdparty.entities.Column;
-import com.thirdparty.entities.Entity;
-
-@Entity
 public class User {
 
 	public final static String USER_ID = "userID";
@@ -17,21 +13,13 @@ public class User {
 	public final static String LANGUAGE = "language";
 	public final static String SCORE_OF_GLOBAL = "scoreOfGlobal";
 
-	@Column(name = "userID")
 	private Long userID;
-	@Column(name = "passwordHash")
 	private String passwordHash;
-	@Column(name = "phoneNumberHash")
 	private String phoneNumberHash;
-	@Column(name = "username")
 	private String username;
-	@Column(name = "accessionDate")
 	private Date accessionDate;
-	@Column(name = "profilePictureURI")
 	private String profilePictureURI;
-	@Column(name = "language")
 	private String language;
-	@Column(name = "scoreOfGlobal")
 	private int scoreOfGlobal;
 
 	public User() {

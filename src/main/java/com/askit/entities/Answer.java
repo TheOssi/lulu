@@ -1,22 +1,13 @@
 package com.askit.entities;
 
-import com.thirdparty.entities.Column;
-import com.thirdparty.entities.Entity;
-
-@Entity
 public class Answer {
 
 	public final static String ANSWER_ID = "answerID";
 	public final static String QUESTION_ID = "questionID";
 	public final static String ANSWER = "answer";
 
-	@Column(name = "answerID")
 	private Long answerID;
-
-	@Column(name = "questionID")
 	private Long questionID;
-
-	@Column(name = "answer")
 	private String answer;
 
 	public Answer() {

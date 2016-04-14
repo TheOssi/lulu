@@ -54,5 +54,10 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/commons-dbutils-1.6.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/BetTest/lib/javadoc/commons-dbutils-1.6-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

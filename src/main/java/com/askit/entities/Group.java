@@ -2,10 +2,6 @@ package com.askit.entities;
 
 import java.util.Date;
 
-import com.thirdparty.entities.Column;
-import com.thirdparty.entities.Entity;
-
-@Entity
 public class Group {
 
 	public final static String GROUP_ID = "groupID";
@@ -14,15 +10,10 @@ public class Group {
 	public final static String GROUP_NAME = "groupName";
 	public final static String GROUP_PICTURE_URI = "groupPictureURI";
 
-	@Column(name = "groupID")
 	private Long groupID;
-	@Column(name = "createDate")
 	private Date createDate;
-	@Column(name = "adminID")
 	private Long adminID;
-	@Column(name = "groupname")
 	private String groupname;
-	@Column(name = "groupPictureURI")
 	private String groupPictureURI;
 
 	public Group() {
