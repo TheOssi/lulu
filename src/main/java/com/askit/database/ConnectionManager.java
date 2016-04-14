@@ -7,19 +7,19 @@ import java.sql.SQLException;
 import com.askit.etc.Constants;
 import com.askit.exception.DriverNotFoundException;
 
-public class ConnectionFactory {
+public class ConnectionManager {
 	private final static String JDBC_PROTOCOLL = "jdbc:mysql";
 	private final static String PARAMETER_USER = "user";
 	private final static String PARAMETER_PASSWORD = "password";
 	private static final String IP_OF_DATABASE = "localhost";
 	private static final String MARIA_DB_DRIVER = "org.mariadb.jdbc.Driver";
-	private static ConnectionFactory instance;
+	private static ConnectionManager instance;
 
 	private Connection readerConnection;
 	private Connection writerConnection;
 	private Connection deleteConnection;
 
-	private ConnectionFactory() throws DriverNotFoundException {
+	private ConnectionManager() throws DriverNotFoundException {
 		try {
 			Class.forName(MARIA_DB_DRIVER);
 		} catch (final ClassNotFoundException e) {
@@ -35,9 +35,9 @@ public class ConnectionFactory {
 	 * @throws DriverNotFoundException
 	 *             if the driver wasn't found
 	 */
-	public static synchronized ConnectionFactory getInstance() throws DriverNotFoundException {
+	public static synchronized ConnectionManager getInstance() throws DriverNotFoundException {
 		if (instance == null) {
-			instance = new ConnectionFactory();
+			instance = new ConnectionManager();
 		}
 		return instance;
 	}

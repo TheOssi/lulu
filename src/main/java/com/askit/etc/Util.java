@@ -8,7 +8,7 @@ import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.askit.database.ConnectionFactory;
+import com.askit.database.ConnectionManager;
 
 public class Util {
 
@@ -21,7 +21,7 @@ public class Util {
 		File jarFile = null;
 		File parentPathOfJar = null;
 		try {
-			jarFile = new File(ConnectionFactory.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath().toString());
+			jarFile = new File(ConnectionManager.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath().toString());
 			parentPathOfJar = jarFile.getParentFile();
 		} catch (final URISyntaxException e) {
 			parentPathOfJar = new File(File.separator + ".");
@@ -58,15 +58,6 @@ public class Util {
 		final int size = resultSet.getRow();
 		resultSet.absolute(currentRow);
 		return size;
-	}
-
-	public static String[] getFromToFromArray(final String[] array, final int from, final int to) {
-		final int size = to - from + 1;
-		final String[] selectedValues = new String[size];
-		for (int i = 0; i < size; i++) {
-			selectedValues[i] = array[from + i];
-		}
-		return selectedValues;
 	}
 
 }

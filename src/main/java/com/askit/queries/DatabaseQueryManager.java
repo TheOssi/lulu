@@ -4,11 +4,9 @@ package com.askit.queries;
 // TODO notifications
 // TODO limit mit ? realisieren
 // TODO trigegr for add admin to group after creat egroup & Question to User after Question creation (auch OTQ)
-// TODO set und update unterscheiden
 // TODO Frage abbrechen -> was passiert und Public und/oder Private
-// TODO Sort überall beachten
-// TODO langu bei Active/Old PublicQuestions beachten?
-// TODO UTC
+// TODO Sort beachten
+// TODO langu beachten
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -21,7 +19,7 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.askit.database.ConnectionFactory;
+import com.askit.database.ConnectionManager;
 import com.askit.entities.Answer;
 import com.askit.entities.Contact;
 import com.askit.entities.Group;
@@ -545,10 +543,19 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	@Override
-	public PrivateQuestion[] getOldPrivateQuestions(final long groupID, final int startIndex, final int quantity) {
-		// TODO von nur einer Gruppe??
-		// TODO sort
-		return null;
+	public PrivateQuestion[] getOldPrivateQuestions(final long groupID, final int startIndex, final int quantity) throws DatabaseLayerException {
+		try {
+			final String statement = "SELECT * FROM PrivateQuestions WHERE groupID = ? ORDER BY createDate ASC LIMIT ?,?";
+			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement.setLong(1, groupID);
+			preparedStatement.setInt(2, startIndex);
+			preparedStatement.setInt(3, quantity);
+			final ResultSet resultSet = preparedStatement.executeQuery();
+			final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
+			return privateQuestions.toArray(new PrivateQuestion[privateQuestions.size()]);
+		} catch (DriverNotFoundException | SQLException exception) {
+			throw new DatabaseLayerException(exception);
+		}
 	}
 
 	@Override
@@ -607,20 +614,43 @@ public class DatabaseQueryManager implements QueryManager {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Pair<String, Integer>[] getAllGroupScoresAndGlobalScoreOfUser(final long userID) {
-		// TODO sort
-
-		final String statement = "SELECT G.*, GU.score FROM GroupsToUsers GU WHERE userID = ? JOIN Groups G ON G.groupID = GU.groupID";
-
-		return null;
+	public Pair<String, Integer>[] getAllGroupScoresAndGlobalScoreOfUser(final long userID) throws DatabaseLayerException {
+		try {
+			final String statement = "SELECT G.groupname, GU.score FROM GroupsToUsers GU WHERE userID = ? JOIN Groups G ON G.groupID = GU.groupID ORDER BY G.score";
+			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement.setLong(1, userID);
+			final ResultSet resultSet = preparedStatement.executeQuery();
+			final List<Pair<String, Integer>> list = new ArrayList<Pair<String, Integer>>();
+			while (resultSet.next()) {
+				final Pair<String, Integer> pair = new ImmutablePair<String, Integer>(resultSet.getString(1), resultSet.getInt(2));
+				list.add(pair);
+			}
+			return list.toArray((Pair<String, Integer>[]) new Pair[list.size()]);
+		} catch (SQLException | DriverNotFoundException exception) {
+			throw new DatabaseLayerException(exception);
+		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Pair<User, Integer>[] getUsersOfGroupsWithScore(final long groupID) {
-		// TODO todo
-		// TODO sort
-		return null;
+	public Pair<String, Integer>[] getUsersOfGroupsWithScore(final long groupID) throws DatabaseLayerException {
+		try {
+
+			final String statement = "SELECT U.username, GU.score FROM GroupsToUser GU JOIN Users U ON GU.userID = U.userID WHERE GU.groupID = ? ORDER BY GU.score";
+			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement.setLong(1, groupID);
+			final ResultSet resultSet = preparedStatement.executeQuery();
+			final List<Pair<String, Integer>> list = new ArrayList<Pair<String, Integer>>();
+			while (resultSet.next()) {
+				final Pair<String, Integer> pair = new ImmutablePair<String, Integer>(resultSet.getString(1), resultSet.getInt(2));
+				list.add(pair);
+			}
+			return list.toArray((Pair<String, Integer>[]) new Pair[list.size()]);
+		} catch (SQLException | DriverNotFoundException exception) {
+			throw new DatabaseLayerException(exception);
+		}
 	}
 
 	// ================================================================================
@@ -883,7 +913,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public User[] searchUsersByUsername(final String searchPattern) throws DatabaseLayerException {
 		try {
 			final String seachPatternWithWildcards = "%" + searchPattern + "%";
-			final String whereCondition = User.USERNAME + " Like ? ORDER BY " + User.USERNAME + " ASC"; // TODO
+			final String whereCondition = User.USERNAME + " Like ? ORDER BY " + User.USERNAME + " ASC";
 			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, Constants.TABLE_USERS, whereCondition);
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setString(1, seachPatternWithWildcards);
@@ -926,13 +956,13 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	private PreparedStatement getReaderPreparedStatement(final String statement) throws SQLException, DriverNotFoundException {
-		final Connection connection = ConnectionFactory.getInstance().getReaderConnection();
+		final Connection connection = ConnectionManager.getInstance().getReaderConnection();
 		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
 		return preparedStatement;
 	}
 
 	private PreparedStatement getWriterPreparedStatement(final String statement) throws SQLException, DriverNotFoundException {
-		final Connection connection = ConnectionFactory.getInstance().getWriterConnection();
+		final Connection connection = ConnectionManager.getInstance().getWriterConnection();
 		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
 		return preparedStatement;
 	}
