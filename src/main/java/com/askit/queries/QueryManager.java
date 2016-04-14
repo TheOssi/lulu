@@ -340,8 +340,9 @@ public interface QueryManager {
 	 * @param startIndex
 	 * @param quantity
 	 * @return
+	 * @throws DatabaseLayerException
 	 */
-	public PrivateQuestion[] getOldPrivateQuestions(long groupID, int startIndex, int quantity);
+	public PrivateQuestion[] getOldPrivateQuestions(long groupID, int startIndex, int quantity) throws DatabaseLayerException;
 
 	/**
 	 *
@@ -410,7 +411,7 @@ public interface QueryManager {
 	 * @param groupID
 	 * @return
 	 */
-	public Pair<User, Integer>[] getUsersOfGroupsWithScore(long groupID) throws DatabaseLayerException;;
+	public Pair<String, Integer>[] getUsersOfGroupsWithScore(long groupID) throws DatabaseLayerException;;
 
 	/*
 	 * Set Methods
