@@ -59,5 +59,15 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/BetTest/lib/javadoc/commons-dbutils-1.6-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/commons-dbcp2-2.1.1.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/BetTest/lib/javadoc/commons-dbcp2-2.1.1-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/commons-pool2-2.4.2.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/BetTest/lib/javadoc/commons-pool2-2.4.2-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
