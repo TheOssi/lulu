@@ -234,8 +234,9 @@ public class GetRequest extends Request {
 		/*
 		 * GET /QUESTIONS
 		 * 
-		 * @params: USERID QUANTITY LANGUAGE ACTIVE: Boolean START: StartIndex
-		 * Example: /QUESTIONS
+		 * @params: USERID QUANTITY: Integer LANGUAGE: String ACTIVE: Boolean
+		 * START: StartIndex GROUPID: Long ACTIVE: Boolean SEARCH: String,
+		 * seachPattern
 		 */
 		matcher = regExQuestionsPattern.matcher(pathInfo);
 		if (matcher.find()) {
@@ -296,7 +297,9 @@ public class GetRequest extends Request {
 		matcher = regExAnswersPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			Answer[] answers;
+			@SuppressWarnings("unused")
 			Pair<Answer, Integer>[] countedAnswers;
+			// TODO Answers
 
 			if (questionID != null && userID == null && !isPublic) {
 				countedAnswers = queryManager.getAnswersOfPrivateQuestionAndCount(questionID);

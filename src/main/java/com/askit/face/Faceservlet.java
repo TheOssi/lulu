@@ -17,8 +17,6 @@ import com.askit.face.innerclasses.DeleteRequest;
 import com.askit.face.innerclasses.GetRequest;
 import com.askit.face.innerclasses.PostRequest;
 import com.askit.face.innerclasses.PutRequest;
-import com.askit.queries.DatabaseQueryManager;
-import com.askit.queries.QueryManager;
 
 /**
  * Servlet implementation class Faceservlet
@@ -43,7 +41,6 @@ public class Faceservlet extends HttpServlet {
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
 
 		final PrintWriter out = response.getWriter();
-		final QueryManager qm = new DatabaseQueryManager();
 
 		// out.println("GET request handling");
 		out.println(request.getPathInfo());
@@ -86,12 +83,10 @@ public class Faceservlet extends HttpServlet {
 	@Override
 	protected void doPut(final HttpServletRequest request, final HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		PrintWriter out = null;
 		try {
 			out = response.getWriter();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		final PutRequest put = new PutRequest(request.getPathInfo(), request.getParameterMap(), out);
@@ -111,7 +106,6 @@ public class Faceservlet extends HttpServlet {
 		try {
 			out = response.getWriter();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		final DeleteRequest delete = new DeleteRequest(request.getPathInfo(), request.getParameterMap(), out);
@@ -131,12 +125,13 @@ public class Faceservlet extends HttpServlet {
 	private int handleException(Exception e, PrintWriter out) {
 		JSONBuilder jb = new JSONBuilder();
 		int status = 500;
+		// TODO nicht nach auﬂen geben
 		out.print(jb.createJSON(e));
 		e.printStackTrace();
-		if (e.getClass().equals(DuplicateHashException.class) || e.getClass().equals(WrongHashException.class)) {
+		if (e instanceof DuplicateHashException || e instanceof WrongHashException) {
 			status = 402;
-		} else if (e.getClass().equals(ServletException.class)
-				|| e.getClass().equals(MissingParametersException.class)) {
+		} else if (e instanceof ServletException || e instanceof MissingParametersException) {
+
 			status = 404;
 		}
 		return status;

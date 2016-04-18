@@ -17,7 +17,6 @@ import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
 import com.askit.exception.WrongHashException;
-import com.askit.face.JSONBuilder;
 import com.askit.queries.DatabaseQueryManager;
 import com.askit.queries.QueryManager;
 
@@ -38,7 +37,6 @@ public class PostRequest extends Request {
 			DatabaseLayerException, ServletException {
 		super.handleRequest();
 
-		final JSONBuilder jsonBuilder = new JSONBuilder();
 		final QueryManager queryManager = new DatabaseQueryManager();
 
 		Long groupID = null;
