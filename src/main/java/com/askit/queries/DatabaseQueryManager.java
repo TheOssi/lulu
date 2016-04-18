@@ -1,10 +1,7 @@
 package com.askit.queries;
 
 // TODO neue SQLFactory
-//TODO close prepare statement
-// TODO notifications
 // TODO limit mit ? realisieren
-// TODO trigegr for add admin to group after creat egroup & Question to User after Question creation (auch OTQ)
 // TODO Frage abbrechen -> was passiert und Public und/oder Private
 // TODO Sort beachten
 // TODO langu beachten
@@ -41,16 +38,38 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public boolean checkUser(final String username, final String passwordHash) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		try {
 			final String whereCondition = User.PASSWORD_HASH + " = ? AND " + User.USERNAME + " = ?";
 			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, User.TABLE_NAME, whereCondition);
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setString(1, passwordHash);
 			preparedStatement.setString(2, username);
-			final ResultSet result = preparedStatement.executeQuery();
-			return result.next();
+			resultSet = preparedStatement.executeQuery();
+			return resultSet.next();
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, resultSet);
+		}
+	}
+
+	private void closeSilently(final PreparedStatement preparedStatement, final ResultSet resultSet) {
+		Connection connection = null;
+		try {
+			if (resultSet != null) {
+				resultSet.close();
+			}
+			if (preparedStatement != null) {
+				connection = preparedStatement.getConnection();
+				preparedStatement.close();
+			}
+			if (connection != null) {
+				connection.close();
+			}
+		} catch (final SQLException exception) {
+			// TODO
 		}
 	}
 
@@ -60,10 +79,11 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public void createNewGroup(final Group group) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String[] columns = new String[] { Group.CREATE_DATE, Group.ADMIN_ID, Group.GROUP_NAME, Group.GROUP_PICTURE_URI };
 			final String statement = SQLFactory.buildInsertStatement(SCHEMA, Group.TABLE_NAME, columns);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setDate(1, new Date(group.getCreateDate().getTime()));
 			preparedStatement.setLong(2, group.getAdminID());
 			preparedStatement.setString(3, group.getGroupname());
@@ -71,17 +91,20 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.executeUpdate();
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public void createPublicQuestion(final PublicQuestion question) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String[] columns = new String[] { PublicQuestion.QUESTION, PublicQuestion.ADDITIONAL_INFORMATION, PublicQuestion.HOST_ID,
 					PublicQuestion.PICTURE_URI, PublicQuestion.CREATED_DATE, PublicQuestion.END_DATE, PublicQuestion.OPTION_EXTENSION,
 					PublicQuestion.LANGUAGE };
 			final String statement = SQLFactory.buildInsertStatement(SCHEMA, PrivateQuestion.TABLE_NAME, columns);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setString(1, question.getQuestion());
 			preparedStatement.setString(2, question.getAdditionalInformation());
 			preparedStatement.setLong(3, question.getHostID());
@@ -93,18 +116,21 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.executeUpdate();
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public void createNewPrivateQuestionInGroup(final PrivateQuestion question) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String[] columns = new String[] { PrivateQuestion.QUESTION, PrivateQuestion.ADDITIONAL_INFORMATION, PrivateQuestion.HOST_ID,
 					PrivateQuestion.GROUP_ID, PrivateQuestion.PICTURE_URI, PrivateQuestion.CREATED_DATE, PrivateQuestion.END_DATE,
 					PrivateQuestion.OPTION_EXTENSION, PrivateQuestion.DEFINITION_OF_END, PrivateQuestion.SUM_OF_USERS_TO_ANSWER,
 					PrivateQuestion.LANGUAGE, PrivateQuestion.IS_BET };
 			final String statement = SQLFactory.buildInsertStatement(SCHEMA, PrivateQuestion.TABLE_NAME, columns);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setString(1, question.getQuestion());
 			preparedStatement.setString(2, question.getAdditionalInformation());
 			preparedStatement.setLong(3, question.getHostID());
@@ -120,17 +146,20 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.executeUpdate();
 		} catch (SQLException | DriverNotFoundException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public void createOneTimeQuestion(final PrivateQuestion question) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String[] columns = new String[] { PrivateQuestion.QUESTION, PrivateQuestion.ADDITIONAL_INFORMATION, PrivateQuestion.HOST_ID,
 					PrivateQuestion.PICTURE_URI, PrivateQuestion.CREATED_DATE, PrivateQuestion.END_DATE, PrivateQuestion.OPTION_EXTENSION,
 					PrivateQuestion.DEFINITION_OF_END, PrivateQuestion.SUM_OF_USERS_TO_ANSWER, PrivateQuestion.LANGUAGE, PrivateQuestion.IS_BET };
 			final String statement = SQLFactory.buildInsertStatement(SCHEMA, PrivateQuestion.TABLE_NAME, columns);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setString(1, question.getQuestion());
 			preparedStatement.setString(2, question.getAdditionalInformation());
 			preparedStatement.setLong(3, question.getHostID());
@@ -145,16 +174,19 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.executeUpdate();
 		} catch (SQLException | DriverNotFoundException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public void createUser(final User user) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String[] columns = new String[] { User.PASSWORD_HASH, User.PHONENUMBER_HASH, User.USERNAME, User.ACCESSION_DATE,
 					User.PROFILEPICTURE_URI, User.LANGUAGE };
 			final String statement = SQLFactory.buildInsertStatement(SCHEMA, User.TABLE_NAME, columns);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setString(1, user.getPasswordHash());
 			preparedStatement.setString(2, user.getPhoneNumberHash());
 			preparedStatement.setString(3, user.getUsername());
@@ -164,6 +196,8 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.executeUpdate();
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
@@ -173,74 +207,92 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public void addUserToGroup(final long groupID, final long userID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String[] columns = new String[] { GroupToUser.GROUP_ID, GroupToUser.USER_ID };
 			final String statement = SQLFactory.buildInsertStatement(SCHEMA, GroupToUser.TABLE_NAME, columns);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			preparedStatement.setLong(2, userID);
 			preparedStatement.executeUpdate();
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public void addContact(final long userIDOfUser, final long userIDofContact) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String statement = SQLFactory.buildInsertAllStatement(SCHEMA, Contact.TABLE_NAME, 2);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, userIDOfUser);
 			preparedStatement.setLong(2, userIDofContact);
 			preparedStatement.executeUpdate();
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public void addUserToOneTimeQuestion(final long userID, final long questionID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String[] columns = new String[] { PrivateQuestionToUser.QUESTION_ID, PrivateQuestionToUser.USER_ID };
 			final String statement = SQLFactory.buildInsertStatement(SCHEMA, PrivateQuestionToUser.TABLE_NAME, columns);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			preparedStatement.setLong(2, userID);
 			preparedStatement.executeUpdate();
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public void addAnswerToPublicQuestion(final Answer answer) throws DatabaseLayerException {
+		final PreparedStatement preparedStatement = null;
 		try {
 			addAnswerToAnswerTable(answer, Answer.TABLE_NAME_PUBLIC);
 		} catch (SQLException | DriverNotFoundException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public void addAnswerToPrivateQuestion(final Answer answer) throws DatabaseLayerException {
+		final PreparedStatement preparedStatement = null;
 		try {
 			addAnswerToAnswerTable(answer, Answer.TABLE_NAME_PRIVATE);
 		} catch (SQLException | DriverNotFoundException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public void addUserToPublicQuestion(final long questionID, final long userID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String[] columns = new String[] { PublicQuestionToUser.QUESTION_ID, PublicQuestionToUser.USER_ID };
 			final String statement = SQLFactory.buildInsertStatement(SCHEMA, PublicQuestionToUser.TABLE_NAME, columns);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			preparedStatement.setLong(2, userID);
 			preparedStatement.executeUpdate();
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
@@ -250,225 +302,283 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public PublicQuestion[] getPublicQuestions(final int startIndex, final int quantity, final String language) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		try {
 			final String whereCondition = PublicQuestion.LANGUAGE + " = ?";
 			final String orderByClausel = SQLFactory.buildOrderByStatement(PublicQuestion.CREATED_DATE + " " + SQLFactory.ASCENDING);
 			final String limitClausel = SQLFactory.buildLimitStatement(startIndex, quantity);
 			final String statement = SQLFactory.buildSelectAllStatementWithWhereConditionLimitClauselOrderByClausel(SCHEMA,
 					PublicQuestion.TABLE_NAME, whereCondition, orderByClausel, limitClausel);
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setString(1, language);
-			final ResultSet resultSet = preparedStatement.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 			final List<PublicQuestion> publicQuestions = ResultSetMapper.mapPublicQuestions(resultSet);
 			return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, resultSet);
 		}
 	}
 
 	@Override
 	public PublicQuestion getPublicQuestion(final long questionID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		try {
 			final String whereCondition = PublicQuestion.QUESTION_ID + " = ?";
 			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, PublicQuestion.TABLE_NAME, whereCondition);
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
-			final ResultSet resultSet = preparedStatement.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 			final List<PublicQuestion> publicQuestions = ResultSetMapper.mapPublicQuestions(resultSet);
 			return publicQuestions.get(0);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, resultSet);
 		}
 	}
 
 	@Override
 	public PrivateQuestion getPrivateQuestion(final long questionID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		try {
 			final String whereCondition = PrivateQuestion.QUESTION_ID + " = ?";
 			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, PrivateQuestion.TABLE_NAME, whereCondition);
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
-			final ResultSet resultSet = preparedStatement.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 			final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
 			return privateQuestions.get(0);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, resultSet);
 		}
 	}
 
 	@Override
 	public PrivateQuestion[] getQuestionsOfGroup(final long groupID, final int startIndex, final int quantity) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		try {
 			final String orderByClausel = SQLFactory.buildOrderByStatement(PrivateQuestion.CREATED_DATE + " " + SQLFactory.ASCENDING);
 			final String limitClausel = SQLFactory.buildLimitStatement(startIndex, quantity);
 			final String whereCondition = PrivateQuestion.GROUP_ID + " = ?";
 			final String statement = SQLFactory.buildSelectAllStatementWithWhereConditionLimitClauselOrderByClausel(SCHEMA,
 					PrivateQuestion.TABLE_NAME, whereCondition, orderByClausel, limitClausel);
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
-			final ResultSet resultSet = preparedStatement.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 			final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
 			return privateQuestions.toArray(new PrivateQuestion[privateQuestions.size()]);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, resultSet);
 		}
 	}
 
 	@Override
 	public String getUsername(final long userID) throws DatabaseLayerException {
+		ResultSet resultSet = null;
 		try {
-			final ResultSet resultSet = getUserAttribute(User.USERNAME, userID);
+			resultSet = getUserAttribute(User.USERNAME, userID);
 			if (resultSet.next()) {
 				return resultSet.getString(1);
 			}
 			return null;
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(null, resultSet);
 		}
 	}
 
 	@Override
 	public User[] getUsersOfPublicQuestion(final long questionID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String statement = "SELECT U.* FROM Users U JOIN PublicQuestionsToUsers P ON questionID = ? AND P.userID = U.userID ORDER BY U.username";
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			return getUserArrayFromReaderPreparedStatement(preparedStatement);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public User[] getUsersOfPrivateQuestion(final long questionID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String statement = "SELECT U.* FROM Users U JOIN PrivateQuestionsToUsers P ON questionID = ? AND P.userID = U.userID ORDER BY U.username;";
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			return getUserArrayFromReaderPreparedStatement(preparedStatement);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public User[] getUsersOfAnswerPrivateQuestion(final long answerID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String statement = "SELECT U.* FROM Users U JOIN PrivateQuestionsToUsers P ON choosedAnswerID = ? AND P.userID = U.userID ORDER BY U.username;";
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, answerID);
 			return getUserArrayFromReaderPreparedStatement(preparedStatement);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public User[] getUsersOfAnswerPublicQuestion(final long answerID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String statement = "SELECT U.* FROM Users U JOIN PublicQuestionsToUsers P ON choosedAnswerID = ? AND P.userID = U.userID ORDER BY U.username;";
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, answerID);
 			return getUserArrayFromReaderPreparedStatement(preparedStatement);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public User[] getUsersOfGroup(final long groupID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String statement = "SELECT U.* FROM Users U JOIN GroupsToUsers G ON groupID = ? AND G.userID = U.userID ORDER BY U.username;";
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			return getUserArrayFromReaderPreparedStatement(preparedStatement);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public Long getUserScoreOfGlobal(final long userID) throws DatabaseLayerException {
+		final PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		try {
-			final ResultSet resultSet = getUserAttribute(User.SCORE_OF_GLOBAL, userID);
+			resultSet = getUserAttribute(User.SCORE_OF_GLOBAL, userID);
 			if (resultSet.next()) {
 				return resultSet.getLong(1);
 			}
 			return null;
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, resultSet);
 		}
 	}
 
 	@Override
 	public Long getUserScoreInGroup(final long userID, final long groupID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		try {
 			final String whereCondition = GroupToUser.GROUP_ID + " = ? AND " + GroupToUser.USER_ID + " = ?";
 			final String statement = SQLFactory.buildSelectStatementWithWhereCondition(SCHEMA, GroupToUser.TABLE_NAME,
 					new String[] { GroupToUser.SCORE }, whereCondition);
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			preparedStatement.setLong(2, userID);
-			final ResultSet resultSet = preparedStatement.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 			if (resultSet.next()) {
 				return resultSet.getLong(1);
 			}
 			return null;
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, resultSet);
 		}
 	}
 
 	@Override
 	public String getPhoneNumberHash(final long userID) throws DatabaseLayerException {
+		ResultSet resultSet = null;
 		try {
-			final ResultSet resultSet = getUserAttribute(User.PHONENUMBER_HASH, userID);
+			resultSet = getUserAttribute(User.PHONENUMBER_HASH, userID);
 			if (resultSet.next()) {
 				return resultSet.getString(1);
 			}
 			return null;
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(null, resultSet);
 		}
 	}
 
 	@Override
 	public Answer getChoseAnswerInPublicQuestion(final long questionID, final long userID) throws DatabaseLayerException {
+		final PreparedStatement preparedStatement = null;
+		final ResultSet resultSet = null;
 		try {
 			return getChoseAnswer(questionID, userID, SCHEMA, PublicQuestionToUser.TABLE_NAME);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, resultSet);
 		}
 	}
 
 	@Override
 	public Answer getChoseAnswerInPrivateQuestion(final long questionID, final long userID) throws DatabaseLayerException {
+		final PreparedStatement preparedStatement = null;
+		final ResultSet resultSet = null;
 		try {
 			return getChoseAnswer(questionID, userID, SCHEMA, PrivateQuestionToUser.TABLE_NAME);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, resultSet);
 		}
 	}
 
 	@Override
 	public Answer getSelectedAnswerInPrivateQuestion(final long questionID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String statement = "SELECT * FROM AnswersPrivateQuestions WHERE answerID = ( SELECT selectedAnswerID FROM PrivateQuestions WHERE questionID = ? );";
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			return mapSingleAnswerToObject(preparedStatement);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public Long getRankingInGroup(final long userID, final long groupID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		try {
 			final String statement = "SELECT * FROM GroupsToUsers WHERE groupID = ? ORDER BY score ASC;";
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
-			final ResultSet resultSet = preparedStatement.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 			final int resultSetSize = Util.getSizeOfResultSet(resultSet);
 			long placeInRaking = 0;
 			if (resultSet.next()) {
@@ -483,146 +593,189 @@ public class DatabaseQueryManager implements QueryManager {
 			return null;
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, resultSet);
 		}
 	}
 
 	@Override
 	public String getPasswordHash(final long userID) throws DatabaseLayerException {
+		ResultSet resultSet = null;
 		try {
-			final ResultSet resultSet = getUserAttribute(User.PHONENUMBER_HASH, userID);
+			resultSet = getUserAttribute(User.PHONENUMBER_HASH, userID);
 			if (resultSet.next()) {
 				return resultSet.getString(1);
 			}
 			return null;
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(null, resultSet);
 		}
 	}
 
 	@Override
 	public String getLanguage(final long userID) throws DatabaseLayerException {
+		ResultSet resultSet = null;
 		try {
-			final ResultSet resultSet = getUserAttribute(User.LANGUAGE, userID);
+			resultSet = getUserAttribute(User.LANGUAGE, userID);
 			if (resultSet.next()) {
 				return resultSet.getString(1);
 			}
 			return null;
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(null, resultSet);
 		}
 	}
 
 	@Override
 	public String getProfilePictureURI(final long userID) throws DatabaseLayerException {
+		ResultSet resultSet = null;
 		try {
-			final ResultSet resultSet = getUserAttribute(User.PROFILEPICTURE_URI, userID);
+			resultSet = getUserAttribute(User.PROFILEPICTURE_URI, userID);
 			if (resultSet.next()) {
 				return resultSet.getString(1);
 			}
 			return null;
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(null, resultSet);
 		}
 	}
 
 	@Override
 	public String getGroupPictureURI(final long groupID) throws DatabaseLayerException {
+		final PreparedStatement preparedStatement = null;
+		final ResultSet resultSet = null;
 		try {
 			return getGroupAttribute(Group.GROUP_PICTURE_URI, groupID);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, resultSet);
 		}
 	}
 
 	@Override
 	public String getGroupName(final long groupID) throws DatabaseLayerException {
+		final PreparedStatement preparedStatement = null;
+		final ResultSet resultSet = null;
 		try {
 			return getGroupAttribute(Group.GROUP_NAME, groupID);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, resultSet);
 		}
 	}
 
 	@Override
 	public PrivateQuestion[] getOldPrivateQuestions(final long groupID, final int startIndex, final int quantity) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		try {
 			final String statement = "SELECT * FROM PrivateQuestions WHERE groupID = ? ORDER BY createDate ASC LIMIT ?,?";
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			preparedStatement.setInt(2, startIndex);
 			preparedStatement.setInt(3, quantity);
-			final ResultSet resultSet = preparedStatement.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 			final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
 			return privateQuestions.toArray(new PrivateQuestion[privateQuestions.size()]);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, resultSet);
 		}
 	}
 
 	@Override
 	public Pair<Answer, Integer>[] getAnswersOfPublicQuestionAndCount(final long questionID) throws DatabaseLayerException {
+		final ResultSet resultSet = null;
 		try {
 			return getAnswersOfQuestionAndCount(questionID, PublicQuestionToUser.TABLE_NAME, Answer.TABLE_NAME_PUBLIC);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(null, resultSet);
 		}
 	}
 
 	@Override
 	public Pair<Answer, Integer>[] getAnswersOfPrivateQuestionAndCount(final long questionID) throws DatabaseLayerException {
+		final ResultSet resultSet = null;
 		try {
 			return getAnswersOfQuestionAndCount(questionID, PrivateQuestionToUser.TABLE_NAME, Answer.TABLE_NAME_PRIVATE);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(null, resultSet);
 		}
 	}
 
 	@Override
 	public PublicQuestion[] getActivePublicQuestionsOfUser(final long userID, final int startIndex, final int quantity) throws DatabaseLayerException {
+		final ResultSet resultSet = null;
 		try {
 			return getPublicQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, false);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(null, resultSet);
 		}
 	}
 
 	@Override
 	public PrivateQuestion[] getActivePrivateQuestionsOfUser(final long userID, final int startIndex, final int quantity)
 			throws DatabaseLayerException {
+		final ResultSet resultSet = null;
 		try {
 			return getPrivateQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, true);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(null, resultSet);
 		}
 	}
 
 	@Override
 	public PublicQuestion[] getOldPublicQuestionsOfUser(final long userID, final int startIndex, final int quantity) throws DatabaseLayerException {
+		final ResultSet resultSet = null;
 		try {
 			return getPublicQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, false);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(null, resultSet);
 		}
 
 	}
 
 	@Override
 	public PrivateQuestion[] getOldPrivateQuestionsOfUser(final long userID, final int startIndex, final int quantity) throws DatabaseLayerException {
+		final ResultSet resultSet = null;
 		try {
 			return getPrivateQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, true);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(null, resultSet);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Pair<String, Integer>[] getAllGroupScoresAndGlobalScoreOfUser(final long userID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		try {
 			final String statement = "SELECT G.groupname, GU.score FROM GroupsToUsers GU WHERE userID = ? JOIN Groups G ON G.groupID = GU.groupID ORDER BY G.score";
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, userID);
-			final ResultSet resultSet = preparedStatement.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 			final List<Pair<String, Integer>> list = new ArrayList<Pair<String, Integer>>();
 			while (resultSet.next()) {
 				final Pair<String, Integer> pair = new ImmutablePair<String, Integer>(resultSet.getString(1), resultSet.getInt(2));
@@ -631,18 +784,22 @@ public class DatabaseQueryManager implements QueryManager {
 			return list.toArray((Pair<String, Integer>[]) new Pair[list.size()]);
 		} catch (SQLException | DriverNotFoundException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, resultSet);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Pair<String, Integer>[] getUsersOfGroupsWithScore(final long groupID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		try {
 
 			final String statement = "SELECT U.username, GU.score FROM GroupsToUser GU JOIN Users U ON GU.userID = U.userID WHERE GU.groupID = ? ORDER BY GU.score";
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
-			final ResultSet resultSet = preparedStatement.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 			final List<Pair<String, Integer>> list = new ArrayList<Pair<String, Integer>>();
 			while (resultSet.next()) {
 				final Pair<String, Integer> pair = new ImmutablePair<String, Integer>(resultSet.getString(1), resultSet.getInt(2));
@@ -651,6 +808,8 @@ public class DatabaseQueryManager implements QueryManager {
 			return list.toArray((Pair<String, Integer>[]) new Pair[list.size()]);
 		} catch (SQLException | DriverNotFoundException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, resultSet);
 		}
 	}
 
@@ -678,21 +837,25 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public void setGroupPicture(final long groupID, final String newGroupPictureURI) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String setClausel = Group.GROUP_PICTURE_URI + " = ?";
 			final String whereCondition = Group.GROUP_ID + " = ?";
 			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, Group.TABLE_NAME, setClausel, whereCondition);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			preparedStatement.setString(2, newGroupPictureURI);
 			preparedStatement.executeUpdate();
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public void setPasswordHash(final long userID, final String newPasswordHash) throws DatabaseLayerException {
+
 		try {
 			updateUserAttributes(userID, User.PASSWORD_HASH, newPasswordHash);
 		} catch (DriverNotFoundException | SQLException exception) {
@@ -702,111 +865,137 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public void setChoosedAnswerOfPublicQuestion(final long userID, final long questionID, final long answerID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String setClausel = PublicQuestionToUser.CHOOSEN_ANSWER_ID + " = ?";
 			final String whereCondition = PublicQuestionToUser.QUESTION_ID + " = ? AND " + PublicQuestionToUser.USER_ID + " = ?";
 			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, PublicQuestionToUser.TABLE_NAME, setClausel, whereCondition);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, answerID);
 			preparedStatement.setLong(2, userID);
 			preparedStatement.setLong(3, questionID);
 			preparedStatement.executeUpdate();
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public void setChoosedAnswerOfPrivateQuestion(final long userID, final long questionID, final long answerID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String setClausel = PrivateQuestionToUser.CHOOSEN_ANSWER_ID + " = ?";
 			final String whereCondition = PrivateQuestionToUser.QUESTION_ID + " = ? AND " + PrivateQuestionToUser.USER_ID + " = ?";
 			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, PrivateQuestionToUser.TABLE_NAME, setClausel, whereCondition);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, answerID);
 			preparedStatement.setLong(2, userID);
 			preparedStatement.setLong(3, questionID);
 			preparedStatement.executeUpdate();
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public void setSelectedAnswerOfPrivateQuestion(final long questionID, final long answerID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String setClausel = PrivateQuestion.SELECTED_ANSWER_ID + " = ?";
 			final String whereCondition = PrivateQuestion.QUESTION_ID + " = ?";
 			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, PrivateQuestion.TABLE_NAME, setClausel, whereCondition);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, answerID);
 			preparedStatement.setLong(2, questionID);
 			preparedStatement.executeUpdate();
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public void setGroupAdmin(final long groupID, final long newAdmminID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String setClausel = Group.ADMIN_ID + " = ?";
 			final String whereCondition = Group.GROUP_ID + " = ?";
 			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, Group.TABLE_NAME, setClausel, whereCondition);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, newAdmminID);
 			preparedStatement.setLong(2, groupID);
 			preparedStatement.executeUpdate();
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public void setPhoneNumberHash(final long userID, final String newPhoneNumberHash) throws DatabaseLayerException {
+		final PreparedStatement preparedStatement = null;
+		final ResultSet resultSet = null;
 		try {
 			updateUserAttributes(userID, User.PHONENUMBER_HASH, newPhoneNumberHash);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, resultSet);
 		}
 	}
 
 	@Override
 	public void setGroupName(final long groupID, final String newGroupName) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String setClausel = Group.GROUP_NAME + " = ?";
 			final String whereCondition = Group.GROUP_ID + " = ?";
 			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, Group.TABLE_NAME, setClausel, whereCondition);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setString(1, newGroupName);
 			preparedStatement.setLong(2, groupID);
 			preparedStatement.executeUpdate();
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public void setUsername(final long userID, final String newUsername) throws DatabaseLayerException {
+		final PreparedStatement preparedStatement = null;
+		final ResultSet resultSet = null;
 		try {
 			updateUserAttributes(userID, User.USERNAME, newUsername);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, resultSet);
 		}
 	}
 
 	@Override
 	public void setPrivateQuestionToFinish(final long questionID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String setClausel = PrivateQuestion.FINISHED + " = ?";
 			final String whereCondition = PrivateQuestion.QUESTION_ID + " = ?";
 			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, PrivateQuestion.TABLE_NAME, setClausel, whereCondition);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setBoolean(1, true);
 			preparedStatement.setLong(2, questionID);
 			preparedStatement.executeUpdate();
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
@@ -816,55 +1005,67 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public void deletePrivateQuestion(final long questionID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String whereCondition = PrivateQuestion.QUESTION_ID + " = ?";
 			final String statement = SQLFactory.buildDeleteStatement(SCHEMA, PrivateQuestion.TABLE_NAME, whereCondition);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			preparedStatement.executeUpdate();
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public void deleteUserFromGroup(final long groupID, final long userID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String whereCondition = Group.GROUP_ID + " = ? AND " + User.USER_ID + " = ?";
 			final String statement = SQLFactory.buildDeleteStatement(SCHEMA, GroupToUser.TABLE_NAME, whereCondition);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			preparedStatement.setLong(2, userID);
 			preparedStatement.executeUpdate();
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public void deleteGroup(final long groupID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String whereCondition = Group.GROUP_ID + " = ?";
 			final String statement = SQLFactory.buildDeleteStatement(SCHEMA, Group.TABLE_NAME, whereCondition);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			preparedStatement.executeUpdate();
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
 	@Override
 	public void deleteContact(final long userID, final long contactID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String whereCondition = User.USER_ID + " = ? AND" + Contact.CONTACT_ID + " = ?";
 			final String statement = SQLFactory.buildDeleteStatement(SCHEMA, Contact.TABLE_NAME, whereCondition);
-			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, userID);
 			preparedStatement.setLong(2, userID);
 			preparedStatement.executeUpdate();
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
@@ -879,48 +1080,59 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@Override
 	public PrivateQuestion[] searchForPrivateQuestionInGroup(final long groupID, final String questionSearchPattern) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		try {
 			final String searchPattern = "%" + questionSearchPattern + "%";
 			final String whereCondition = PrivateQuestion.GROUP_ID + " = ? AND " + PrivateQuestion.QUESTION + " LIKE ?";
 			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, PrivateQuestion.TABLE_NAME, whereCondition);
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			preparedStatement.setString(2, searchPattern);
-			final ResultSet resultSet = preparedStatement.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 			final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
 			return privateQuestions.toArray(new PrivateQuestion[privateQuestions.size()]);
 		} catch (SQLException | DriverNotFoundException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, resultSet);
 		}
 	}
 
 	@Override
 	public PublicQuestion[] searchForPublicQuestion(final String nameSearchPattern) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 		try {
 			final String searchPattern = "%" + nameSearchPattern + "%";
 			final String whereCondition = PublicQuestion.QUESTION + " LIKE ?";
 			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, PublicQuestion.TABLE_NAME, whereCondition);
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setString(1, searchPattern);
-			final ResultSet resultSet = preparedStatement.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 			final List<PublicQuestion> publicQuestions = ResultSetMapper.mapPublicQuestions(resultSet);
 			return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
 		} catch (SQLException | DriverNotFoundException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, resultSet);
 		}
 	}
 
 	@Override
 	public User[] searchUsersByUsername(final String searchPattern) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
 		try {
 			final String seachPatternWithWildcards = "%" + searchPattern + "%";
 			final String whereCondition = User.USERNAME + " Like ? ORDER BY " + User.USERNAME + " ASC";
 			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, User.TABLE_NAME, whereCondition);
-			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
+			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setString(1, seachPatternWithWildcards);
 			return getUserArrayFromReaderPreparedStatement(preparedStatement);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			closeSilently(preparedStatement, null);
 		}
 	}
 
@@ -936,6 +1148,7 @@ public class DatabaseQueryManager implements QueryManager {
 		preparedStatement.setString(1, newValue);
 		preparedStatement.setLong(2, userID);
 		preparedStatement.executeUpdate();
+		closeSilently(preparedStatement, null);
 	}
 
 	private ResultSet getUserAttribute(final String column, final long userID) throws SQLException, DriverNotFoundException {
