@@ -48,7 +48,8 @@ public class JSONBuilder {
 		for (final Object currentObject : objectArray) {
 			jsonArray.add(gson.toJsonTree(currentObject));
 		}
-		jsonObject.add(objectArray.getClass().getSimpleName().substring(0, objectArray.getClass().getSimpleName().length() - 2), jsonArray);
+		jsonObject.add(objectArray.getClass().getSimpleName().substring(0,
+				objectArray.getClass().getSimpleName().length() - 2), jsonArray);
 		return gson.toJson(jsonObject);
 	}
 
@@ -59,6 +60,7 @@ public class JSONBuilder {
 	 *            the JSON to edit
 	 * @return a JSON without null's
 	 */
+	@SuppressWarnings("unused")
 	private String removeNulls(final String json) {
 		final Type type = new TypeToken<Map<String, Object>>() {
 		}.getType();

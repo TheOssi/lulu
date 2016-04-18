@@ -23,73 +23,174 @@ public class Steuerung {
 
 
 	// POST /USER
-	@params: USERNAME: String PHONEHASH: String PASSWORDHASH: String
-	 LANGUAGE: String
+	@parameters: USERNAME: String 
+	PHONEHASH: String 
+	PASSWORDHASH: String 
+	LANGUAGE: String
     // Füge einen Benutzer hinzu.
     public void addUser(){
 
     }
-	
+	/*
+		 * POST /GROUP
+		 * 
+		 * @params: GROUPNAME: String ADMINID: Long PICTUREURL: String
+		 */
     // Füge eine Gruppe hinzu
     public void addGroup(){
 
     }
-
+    /*
+		 * POST /GROUP
+		 * 
+		 * @params: GROUPID: Long 
+		 USERID: Long
+		 */
     // Einen Benutzer zu einer Gruppe hinzufügen.
     public void addUserToGroup(){
 
     }
-
+	 /*
+		 * POST /USER
+		 * 
+		 * @params: CONTACTID: Long 
+		 USERID: Long
+		 */
     // Füge einen anderen User zu der Freundesliste hinzu.
     public void addNewFriend(){
 
     }
-
+	 /*
+		 * POST /USER
+		 * 
+		 * @params: USERID: Long 
+		 QUESTIONID: Long 
+		 PUBLIC: Boolean(true in this case)
+		 */
     // Füge eine Benutzer zu einer öffentlchen Frage hinzu.
     public void addUserToQuestion(){
 
     }
-
+	/*
+		 * POST /QUESTION
+		 * 
+		 * @params: USERID: Long, Host of Question 
+		 QUESTIONID: Long 
+		 PUBLIC: Boolean(true in this case)
+		 QUESTION: String, Question Text may need to escape whitespace
+		 INFORMATION: String
+		 ENDDATE: Date
+		 LANGUAGE: String
+		 */
     // Füge eine öffentliche Wette oder Frage hinzu. (Attribut wo (DE oder INT) wird mitgeschickt).
     public void addPublicQuestion() {
 
     }
-
+	/*
+		 * POST /QUESTION
+		 * 
+		 * @params: USERID: Long, Host of Question 
+		 QUESTIONID: Long 
+		 GROUPID: Long
+		 PUBLIC: Boolean(false in this case)
+		 QUESTION: String, Question Text may need to escape whitespace
+		 INFORMATION: String
+		 ENDDATE: Long, Offset in ms
+		 LANGUAGE: String
+		 EXTENSION: Boolean
+		 DEFINITIONEND: Integer
+		 SUMANSWERS: Integer
+		 ACTIVE: Boolean
+		 SELECTEDANSWER: Long, AnswerID
+		 ISBET: Boolean
+		 */
     //Füge eine Wette in einer Gruppe hinzu
     public void addQuestionInGroup(){
 
     }
-
+	/*
+		 * POST /QUESTION
+		 * 
+		 * @params: USERID: Long, Host of Question 
+		 QUESTIONID: Long 
+		 GROUPID: Long
+		 PUBLIC: Boolean(false in this case)
+		 QUESTION: String, Question Text may need to escape whitespace
+		 INFORMATION: String
+		 ENDDATE: Long, Offset in ms
+		 LANGUAGE: String
+		 EXTENSION: Boolean
+		 DEFINITIONEND: Integer
+		 SUMANSWERS: Integer
+		 ACTIVE: Boolean
+		 SELECTEDANSWER: Long, AnswerID
+		 ISBET: Boolean
+		 ONETIME: Boolean(true)
+		 */
     // Erstelle eine private Frage. (Wird nur unter Aktiv angezeigt)
     public void addOneTimeQuestion(){
 
     }
-
+	/*
+		 * POST /ANSWER
+		 * 
+		 * @params: PUBLIC: Boolean, defines if related to Public or Private Question 
+		 *QUESTIONID: Long 
+		 *ANSWER: String, answer as Text 
+		 *ANSWERID: Long, when related to another answer
+		 */
     // Füge zu der Frage eine mögliche Antwort hinzu.
     public void addAnswer(){
 
     }
-
+	/*
+		 * GET /QUESTION/ID
+		 * 
+		 * @params: PUBLIC: boolean Example: /QUESTION/123?PUBLIC=TRUE
+		 */
     //Liefert eine Frage mit allen dazugehörigen Daten zurück.
     public void getQuestion(){
 
     }
-
+	/*
+		 * GET /QUESTIONS
+		 * 
+		 * @params: USERID QUANTITY: Integer LANGUAGE: String ACTIVE: Boolean
+		 * START: StartIndex GROUPID: Long ACTIVE: Boolean SEARCH: String,
+		 * seachPattern
+		 */
     // Liefert alle Fragen einer Gruppe zurück und deren Metdaten.
     public void getGroupQuestion(){
 
     }
-
+	/*
+		 * GET /QUESTIONS
+		 * 
+		 * @params: USERID QUANTITY: Integer LANGUAGE: String ACTIVE: Boolean
+		 * START: StartIndex GROUPID: Long ACTIVE: Boolean SEARCH: String,
+		 * seachPattern
+		 */
     // Liefert eine Liste aller Fragen im Public Bereich (DE oder INT wird mitgeschickt).
     public void getPublicQuestions(){
 
     }
-
+	// /USERS + Parameters
+		// returns Users
+		// Answer Parameter + Question = getUsersofAnswer
+		// Public Flag --> true when "TRUE" , FALSE --> when not set
+		/*
+		 * GET /USER
+		 * 
+		 * @params: GROUPID: Long SEARCH: String, SearchPattern QUESTIONID: Long
+		 * ANSWERID: Long PUBLIC: Boolean Example:
+		 * /USER?QUESTIONID=32&ANSWERID=23&PUBLIC="TRUE"
+		 */
+	
     // Dem Server wird ein UserName übergeben und es sollen alle ausgegeben werden, die in Frage kommen.
     public void getUserWithName(){
 
     }
-
+	/ GET /USER/ID
     // Liefert den Nutzernamen eines Benutzers zurück.
     public void getUserName(){
 
