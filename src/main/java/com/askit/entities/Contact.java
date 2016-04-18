@@ -2,6 +2,7 @@ package com.askit.entities;
 
 public class Contact {
 
+	public final static String TABLE_NAME = "Contacts";
 	public final static String USER_ID = "userID";
 	public final static String CONTACT_ID = "contactID";
 
@@ -9,6 +10,7 @@ public class Contact {
 	private String contactID;
 
 	public Contact() {
+		this(null, null);
 	}
 
 	public Contact(final String userID, final String contactID) {

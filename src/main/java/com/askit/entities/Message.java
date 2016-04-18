@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class Message {
 
+	public final static String TABLE_NAME = "Messages";
 	public final static String MESSAGE_ID = "messageID";
 	public final static String GROUP_ID = "groupID";
 	public final static String USER_ID = "userID";
@@ -17,6 +18,7 @@ public class Message {
 	private Date date;
 
 	public Message() {
+		this(null, null, null, null);
 	}
 
 	public Message(final Long groupID, final Long userID, final String message, final Date date) {

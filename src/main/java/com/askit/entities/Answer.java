@@ -2,6 +2,9 @@ package com.askit.entities;
 
 public class Answer {
 
+	public static final String TABLE_NAME_PRIVATE = "AnswersPrivateQuestions";
+	public static final String TABLE_NAME_PUBLIC = "AnswersPublicQuestions";
+
 	public final static String ANSWER_ID = "answerID";
 	public final static String QUESTION_ID = "questionID";
 	public final static String ANSWER = "answer";
