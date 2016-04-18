@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+
 //TODO drivernotfoundexception
 import com.askit.etc.Constants;
 
@@ -26,50 +27,37 @@ public class ConnectionManager {
 
 	private void setReaderDataSource() {
 		readerDataSource = new BasicDataSource();
-		readerDataSource.setDriverClassName(MARIA_DB_DRIVER);
+		setDefaultSettings(readerDataSource);
 		readerDataSource.setUsername(DatabaseUser.READ_USER.getUsername());
 		readerDataSource.setPassword(DatabaseUser.READ_USER.getPassword());
-		readerDataSource.setUrl(URL);
-		readerDataSource.setDefaultAutoCommit(true);
 		readerDataSource.setDefaultReadOnly(true);
-
-		// TODO
-		readerDataSource.setMinIdle(20);
-		readerDataSource.setMaxIdle(25);
-		readerDataSource.setMaxTotal(-1);
-		readerDataSource.setMaxOpenPreparedStatements(180);
 	}
 
 	private void setWriterDataSource() {
 		writerDataSource = new BasicDataSource();
-		writerDataSource.setDriverClassName(MARIA_DB_DRIVER);
+		setDefaultSettings(writerDataSource);
 		writerDataSource.setUsername(DatabaseUser.READ_USER.getUsername());
 		writerDataSource.setPassword(DatabaseUser.READ_USER.getPassword());
-		writerDataSource.setUrl(URL);
-		readerDataSource.setDefaultAutoCommit(true);
-		readerDataSource.setDefaultReadOnly(false);
-
-		// TODO
-		writerDataSource.setMinIdle(20);
-		writerDataSource.setMaxIdle(25);
-		writerDataSource.setMaxTotal(-1);
-		writerDataSource.setMaxOpenPreparedStatements(180);
+		writerDataSource.setDefaultReadOnly(false);
 	}
 
 	private void setDeleterDataSource() {
 		deleterDataSource = new BasicDataSource();
-		deleterDataSource.setDriverClassName(MARIA_DB_DRIVER);
+		setDefaultSettings(deleterDataSource);
 		deleterDataSource.setUsername(DatabaseUser.READ_USER.getUsername());
 		deleterDataSource.setPassword(DatabaseUser.READ_USER.getPassword());
-		deleterDataSource.setUrl(URL);
 		readerDataSource.setDefaultAutoCommit(true);
-		readerDataSource.setDefaultReadOnly(false);
+	}
 
+	private void setDefaultSettings(final BasicDataSource basicDataSource) {
+		basicDataSource.setDriverClassName(MARIA_DB_DRIVER);
+		basicDataSource.setUrl(URL);
+		basicDataSource.setDefaultAutoCommit(true);
 		// TODO
-		deleterDataSource.setMinIdle(20);
-		deleterDataSource.setMaxIdle(25);
-		deleterDataSource.setMaxTotal(-1);
-		deleterDataSource.setMaxOpenPreparedStatements(180);
+		basicDataSource.setMinIdle(20);
+		basicDataSource.setMaxIdle(25);
+		basicDataSource.setMaxTotal(-1);
+		basicDataSource.setMaxOpenPreparedStatements(180);
 	}
 
 	public static synchronized ConnectionManager getInstance() {
