@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class Group {
 
+	public final static String TABLE_NAME = "Groups";
 	public final static String GROUP_ID = "groupID";
 	public final static String CREATE_DATE = "createDate";
 	public final static String ADMIN_ID = "adminID";
@@ -71,5 +72,4 @@ public class Group {
 	public void setGroupPictureURI(final String groupPictureURI) {
 		this.groupPictureURI = groupPictureURI;
 	}
-
 }

@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class PublicQuestion {
 
+	public final static String TABLE_NAME = "PublicQuestions";
 	public final static String QUESTION_ID = "questionID";
 	public final static String QUESTION = "question";
 	public final static String ADDITIONAL_INFORMATION = "additionalInformation";

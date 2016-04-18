@@ -1,6 +1,7 @@
 package com.askit.queries;
 
 // TODO neue SQLFactory
+//TODO close prepare statement
 // TODO notifications
 // TODO limit mit ? realisieren
 // TODO trigegr for add admin to group after creat egroup & Question to User after Question creation (auch OTQ)
@@ -42,7 +43,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public boolean checkUser(final String username, final String passwordHash) throws DatabaseLayerException {
 		try {
 			final String whereCondition = User.PASSWORD_HASH + " = ? AND " + User.USERNAME + " = ?";
-			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, Constants.TABLE_USERS, whereCondition);
+			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, User.TABLE_NAME, whereCondition);
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setString(1, passwordHash);
 			preparedStatement.setString(2, username);
@@ -61,7 +62,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public void createNewGroup(final Group group) throws DatabaseLayerException {
 		try {
 			final String[] columns = new String[] { Group.CREATE_DATE, Group.ADMIN_ID, Group.GROUP_NAME, Group.GROUP_PICTURE_URI };
-			final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_GROUPS, columns);
+			final String statement = SQLFactory.buildInsertStatement(SCHEMA, Group.TABLE_NAME, columns);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setDate(1, new Date(group.getCreateDate().getTime()));
 			preparedStatement.setLong(2, group.getAdminID());
@@ -79,7 +80,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final String[] columns = new String[] { PublicQuestion.QUESTION, PublicQuestion.ADDITIONAL_INFORMATION, PublicQuestion.HOST_ID,
 					PublicQuestion.PICTURE_URI, PublicQuestion.CREATED_DATE, PublicQuestion.END_DATE, PublicQuestion.OPTION_EXTENSION,
 					PublicQuestion.LANGUAGE };
-			final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS, columns);
+			final String statement = SQLFactory.buildInsertStatement(SCHEMA, PrivateQuestion.TABLE_NAME, columns);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setString(1, question.getQuestion());
 			preparedStatement.setString(2, question.getAdditionalInformation());
@@ -102,7 +103,7 @@ public class DatabaseQueryManager implements QueryManager {
 					PrivateQuestion.GROUP_ID, PrivateQuestion.PICTURE_URI, PrivateQuestion.CREATED_DATE, PrivateQuestion.END_DATE,
 					PrivateQuestion.OPTION_EXTENSION, PrivateQuestion.DEFINITION_OF_END, PrivateQuestion.SUM_OF_USERS_TO_ANSWER,
 					PrivateQuestion.LANGUAGE, PrivateQuestion.IS_BET };
-			final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS, columns);
+			final String statement = SQLFactory.buildInsertStatement(SCHEMA, PrivateQuestion.TABLE_NAME, columns);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setString(1, question.getQuestion());
 			preparedStatement.setString(2, question.getAdditionalInformation());
@@ -128,7 +129,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final String[] columns = new String[] { PrivateQuestion.QUESTION, PrivateQuestion.ADDITIONAL_INFORMATION, PrivateQuestion.HOST_ID,
 					PrivateQuestion.PICTURE_URI, PrivateQuestion.CREATED_DATE, PrivateQuestion.END_DATE, PrivateQuestion.OPTION_EXTENSION,
 					PrivateQuestion.DEFINITION_OF_END, PrivateQuestion.SUM_OF_USERS_TO_ANSWER, PrivateQuestion.LANGUAGE, PrivateQuestion.IS_BET };
-			final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS, columns);
+			final String statement = SQLFactory.buildInsertStatement(SCHEMA, PrivateQuestion.TABLE_NAME, columns);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setString(1, question.getQuestion());
 			preparedStatement.setString(2, question.getAdditionalInformation());
@@ -152,7 +153,7 @@ public class DatabaseQueryManager implements QueryManager {
 		try {
 			final String[] columns = new String[] { User.PASSWORD_HASH, User.PHONENUMBER_HASH, User.USERNAME, User.ACCESSION_DATE,
 					User.PROFILEPICTURE_URI, User.LANGUAGE };
-			final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_USERS, columns);
+			final String statement = SQLFactory.buildInsertStatement(SCHEMA, User.TABLE_NAME, columns);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setString(1, user.getPasswordHash());
 			preparedStatement.setString(2, user.getPhoneNumberHash());
@@ -174,7 +175,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public void addUserToGroup(final long groupID, final long userID) throws DatabaseLayerException {
 		try {
 			final String[] columns = new String[] { GroupToUser.GROUP_ID, GroupToUser.USER_ID };
-			final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_GROUPS_TO_USERS, columns);
+			final String statement = SQLFactory.buildInsertStatement(SCHEMA, GroupToUser.TABLE_NAME, columns);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			preparedStatement.setLong(2, userID);
@@ -187,7 +188,7 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public void addContact(final long userIDOfUser, final long userIDofContact) throws DatabaseLayerException {
 		try {
-			final String statement = SQLFactory.buildInsertAllStatement(SCHEMA, Constants.TABLE_CONTACTS, 2);
+			final String statement = SQLFactory.buildInsertAllStatement(SCHEMA, Contact.TABLE_NAME, 2);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, userIDOfUser);
 			preparedStatement.setLong(2, userIDofContact);
@@ -201,7 +202,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public void addUserToOneTimeQuestion(final long userID, final long questionID) throws DatabaseLayerException {
 		try {
 			final String[] columns = new String[] { PrivateQuestionToUser.QUESTION_ID, PrivateQuestionToUser.USER_ID };
-			final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS_TO_USERS, columns);
+			final String statement = SQLFactory.buildInsertStatement(SCHEMA, PrivateQuestionToUser.TABLE_NAME, columns);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			preparedStatement.setLong(2, userID);
@@ -214,7 +215,7 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public void addAnswerToPublicQuestion(final Answer answer) throws DatabaseLayerException {
 		try {
-			addAnswerToAnswerTable(answer, Constants.TABLE_ANSWERS_PUBLIC_QUESTIONS);
+			addAnswerToAnswerTable(answer, Answer.TABLE_NAME_PUBLIC);
 		} catch (SQLException | DriverNotFoundException exception) {
 			throw new DatabaseLayerException(exception);
 		}
@@ -223,7 +224,7 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public void addAnswerToPrivateQuestion(final Answer answer) throws DatabaseLayerException {
 		try {
-			addAnswerToAnswerTable(answer, Constants.TABLE_ANSWERS_PRIVATE_QUESTIONS);
+			addAnswerToAnswerTable(answer, Answer.TABLE_NAME_PRIVATE);
 		} catch (SQLException | DriverNotFoundException exception) {
 			throw new DatabaseLayerException(exception);
 		}
@@ -233,7 +234,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public void addUserToPublicQuestion(final long questionID, final long userID) throws DatabaseLayerException {
 		try {
 			final String[] columns = new String[] { PublicQuestionToUser.QUESTION_ID, PublicQuestionToUser.USER_ID };
-			final String statement = SQLFactory.buildInsertStatement(SCHEMA, Constants.TABLE_PUBLIC_QUESTIONS_TO_USERS, columns);
+			final String statement = SQLFactory.buildInsertStatement(SCHEMA, PublicQuestionToUser.TABLE_NAME, columns);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			preparedStatement.setLong(2, userID);
@@ -254,7 +255,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final String orderByClausel = SQLFactory.buildOrderByStatement(PublicQuestion.CREATED_DATE + " " + SQLFactory.ASCENDING);
 			final String limitClausel = SQLFactory.buildLimitStatement(startIndex, quantity);
 			final String statement = SQLFactory.buildSelectAllStatementWithWhereConditionLimitClauselOrderByClausel(SCHEMA,
-					Constants.TABLE_PUBLIC_QUESTIONS, whereCondition, orderByClausel, limitClausel);
+					PublicQuestion.TABLE_NAME, whereCondition, orderByClausel, limitClausel);
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setString(1, language);
 			final ResultSet resultSet = preparedStatement.executeQuery();
@@ -269,7 +270,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public PublicQuestion getPublicQuestion(final long questionID) throws DatabaseLayerException {
 		try {
 			final String whereCondition = PublicQuestion.QUESTION_ID + " = ?";
-			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, Constants.TABLE_PUBLIC_QUESTIONS, whereCondition);
+			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, PublicQuestion.TABLE_NAME, whereCondition);
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			final ResultSet resultSet = preparedStatement.executeQuery();
@@ -284,7 +285,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public PrivateQuestion getPrivateQuestion(final long questionID) throws DatabaseLayerException {
 		try {
 			final String whereCondition = PrivateQuestion.QUESTION_ID + " = ?";
-			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS, whereCondition);
+			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, PrivateQuestion.TABLE_NAME, whereCondition);
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			final ResultSet resultSet = preparedStatement.executeQuery();
@@ -302,7 +303,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final String limitClausel = SQLFactory.buildLimitStatement(startIndex, quantity);
 			final String whereCondition = PrivateQuestion.GROUP_ID + " = ?";
 			final String statement = SQLFactory.buildSelectAllStatementWithWhereConditionLimitClauselOrderByClausel(SCHEMA,
-					Constants.TABLE_PRIVATE_QUESTIONS, whereCondition, orderByClausel, limitClausel);
+					PrivateQuestion.TABLE_NAME, whereCondition, orderByClausel, limitClausel);
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			final ResultSet resultSet = preparedStatement.executeQuery();
@@ -403,7 +404,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public Long getUserScoreInGroup(final long userID, final long groupID) throws DatabaseLayerException {
 		try {
 			final String whereCondition = GroupToUser.GROUP_ID + " = ? AND " + GroupToUser.USER_ID + " = ?";
-			final String statement = SQLFactory.buildSelectStatementWithWhereCondition(SCHEMA, Constants.TABLE_GROUPS_TO_USERS,
+			final String statement = SQLFactory.buildSelectStatementWithWhereCondition(SCHEMA, GroupToUser.TABLE_NAME,
 					new String[] { GroupToUser.SCORE }, whereCondition);
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
@@ -434,7 +435,7 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public Answer getChoseAnswerInPublicQuestion(final long questionID, final long userID) throws DatabaseLayerException {
 		try {
-			return getChoseAnswer(questionID, userID, SCHEMA, Constants.TABLE_PUBLIC_QUESTIONS_TO_USERS);
+			return getChoseAnswer(questionID, userID, SCHEMA, PublicQuestionToUser.TABLE_NAME);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
@@ -443,7 +444,7 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public Answer getChoseAnswerInPrivateQuestion(final long questionID, final long userID) throws DatabaseLayerException {
 		try {
-			return getChoseAnswer(questionID, userID, SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS_TO_USERS);
+			return getChoseAnswer(questionID, userID, SCHEMA, PrivateQuestionToUser.TABLE_NAME);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
@@ -561,7 +562,7 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public Pair<Answer, Integer>[] getAnswersOfPublicQuestionAndCount(final long questionID) throws DatabaseLayerException {
 		try {
-			return getAnswersOfQuestionAndCount(questionID, Constants.TABLE_PUBLIC_QUESTIONS_TO_USERS, Constants.TABLE_ANSWERS_PUBLIC_QUESTIONS);
+			return getAnswersOfQuestionAndCount(questionID, PublicQuestionToUser.TABLE_NAME, Answer.TABLE_NAME_PUBLIC);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
@@ -570,7 +571,7 @@ public class DatabaseQueryManager implements QueryManager {
 	@Override
 	public Pair<Answer, Integer>[] getAnswersOfPrivateQuestionAndCount(final long questionID) throws DatabaseLayerException {
 		try {
-			return getAnswersOfQuestionAndCount(questionID, Constants.TABLE_PRIVATE_QUESTIONS_TO_USERS, Constants.TABLE_ANSWERS_PRIVATE_QUESTIONS);
+			return getAnswersOfQuestionAndCount(questionID, PrivateQuestionToUser.TABLE_NAME, Answer.TABLE_NAME_PRIVATE);
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
@@ -680,7 +681,7 @@ public class DatabaseQueryManager implements QueryManager {
 		try {
 			final String setClausel = Group.GROUP_PICTURE_URI + " = ?";
 			final String whereCondition = Group.GROUP_ID + " = ?";
-			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, Constants.TABLE_GROUPS, setClausel, whereCondition);
+			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, Group.TABLE_NAME, setClausel, whereCondition);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			preparedStatement.setString(2, newGroupPictureURI);
@@ -704,7 +705,7 @@ public class DatabaseQueryManager implements QueryManager {
 		try {
 			final String setClausel = PublicQuestionToUser.CHOOSEN_ANSWER_ID + " = ?";
 			final String whereCondition = PublicQuestionToUser.QUESTION_ID + " = ? AND " + PublicQuestionToUser.USER_ID + " = ?";
-			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, Constants.TABLE_PUBLIC_QUESTIONS_TO_USERS, setClausel, whereCondition);
+			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, PublicQuestionToUser.TABLE_NAME, setClausel, whereCondition);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, answerID);
 			preparedStatement.setLong(2, userID);
@@ -720,7 +721,7 @@ public class DatabaseQueryManager implements QueryManager {
 		try {
 			final String setClausel = PrivateQuestionToUser.CHOOSEN_ANSWER_ID + " = ?";
 			final String whereCondition = PrivateQuestionToUser.QUESTION_ID + " = ? AND " + PrivateQuestionToUser.USER_ID + " = ?";
-			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS_TO_USERS, setClausel, whereCondition);
+			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, PrivateQuestionToUser.TABLE_NAME, setClausel, whereCondition);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, answerID);
 			preparedStatement.setLong(2, userID);
@@ -736,7 +737,7 @@ public class DatabaseQueryManager implements QueryManager {
 		try {
 			final String setClausel = PrivateQuestion.SELECTED_ANSWER_ID + " = ?";
 			final String whereCondition = PrivateQuestion.QUESTION_ID + " = ?";
-			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS, setClausel, whereCondition);
+			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, PrivateQuestion.TABLE_NAME, setClausel, whereCondition);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, answerID);
 			preparedStatement.setLong(2, questionID);
@@ -751,7 +752,7 @@ public class DatabaseQueryManager implements QueryManager {
 		try {
 			final String setClausel = Group.ADMIN_ID + " = ?";
 			final String whereCondition = Group.GROUP_ID + " = ?";
-			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, Constants.TABLE_GROUPS, setClausel, whereCondition);
+			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, Group.TABLE_NAME, setClausel, whereCondition);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, newAdmminID);
 			preparedStatement.setLong(2, groupID);
@@ -775,7 +776,7 @@ public class DatabaseQueryManager implements QueryManager {
 		try {
 			final String setClausel = Group.GROUP_NAME + " = ?";
 			final String whereCondition = Group.GROUP_ID + " = ?";
-			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, Constants.TABLE_GROUPS, setClausel, whereCondition);
+			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, Group.TABLE_NAME, setClausel, whereCondition);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setString(1, newGroupName);
 			preparedStatement.setLong(2, groupID);
@@ -799,7 +800,7 @@ public class DatabaseQueryManager implements QueryManager {
 		try {
 			final String setClausel = PrivateQuestion.FINISHED + " = ?";
 			final String whereCondition = PrivateQuestion.QUESTION_ID + " = ?";
-			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS, setClausel, whereCondition);
+			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, PrivateQuestion.TABLE_NAME, setClausel, whereCondition);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setBoolean(1, true);
 			preparedStatement.setLong(2, questionID);
@@ -817,7 +818,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public void deletePrivateQuestion(final long questionID) throws DatabaseLayerException {
 		try {
 			final String whereCondition = PrivateQuestion.QUESTION_ID + " = ?";
-			final String statement = SQLFactory.buildDeleteStatement(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS, whereCondition);
+			final String statement = SQLFactory.buildDeleteStatement(SCHEMA, PrivateQuestion.TABLE_NAME, whereCondition);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			preparedStatement.executeUpdate();
@@ -830,7 +831,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public void deleteUserFromGroup(final long groupID, final long userID) throws DatabaseLayerException {
 		try {
 			final String whereCondition = Group.GROUP_ID + " = ? AND " + User.USER_ID + " = ?";
-			final String statement = SQLFactory.buildDeleteStatement(SCHEMA, Constants.TABLE_GROUPS_TO_USERS, whereCondition);
+			final String statement = SQLFactory.buildDeleteStatement(SCHEMA, GroupToUser.TABLE_NAME, whereCondition);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			preparedStatement.setLong(2, userID);
@@ -844,7 +845,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public void deleteGroup(final long groupID) throws DatabaseLayerException {
 		try {
 			final String whereCondition = Group.GROUP_ID + " = ?";
-			final String statement = SQLFactory.buildDeleteStatement(SCHEMA, Constants.TABLE_GROUPS, whereCondition);
+			final String statement = SQLFactory.buildDeleteStatement(SCHEMA, Group.TABLE_NAME, whereCondition);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			preparedStatement.executeUpdate();
@@ -857,7 +858,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public void deleteContact(final long userID, final long contactID) throws DatabaseLayerException {
 		try {
 			final String whereCondition = User.USER_ID + " = ? AND" + Contact.CONTACT_ID + " = ?";
-			final String statement = SQLFactory.buildDeleteStatement(SCHEMA, Constants.TABLE_CONTACTS, whereCondition);
+			final String statement = SQLFactory.buildDeleteStatement(SCHEMA, Contact.TABLE_NAME, whereCondition);
 			final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, userID);
 			preparedStatement.setLong(2, userID);
@@ -881,7 +882,7 @@ public class DatabaseQueryManager implements QueryManager {
 		try {
 			final String searchPattern = "%" + questionSearchPattern + "%";
 			final String whereCondition = PrivateQuestion.GROUP_ID + " = ? AND " + PrivateQuestion.QUESTION + " LIKE ?";
-			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, Constants.TABLE_PRIVATE_QUESTIONS, whereCondition);
+			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, PrivateQuestion.TABLE_NAME, whereCondition);
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			preparedStatement.setString(2, searchPattern);
@@ -898,7 +899,7 @@ public class DatabaseQueryManager implements QueryManager {
 		try {
 			final String searchPattern = "%" + nameSearchPattern + "%";
 			final String whereCondition = PublicQuestion.QUESTION + " LIKE ?";
-			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, Constants.TABLE_PUBLIC_QUESTIONS, whereCondition);
+			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, PublicQuestion.TABLE_NAME, whereCondition);
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setString(1, searchPattern);
 			final ResultSet resultSet = preparedStatement.executeQuery();
@@ -914,7 +915,7 @@ public class DatabaseQueryManager implements QueryManager {
 		try {
 			final String seachPatternWithWildcards = "%" + searchPattern + "%";
 			final String whereCondition = User.USERNAME + " Like ? ORDER BY " + User.USERNAME + " ASC";
-			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, Constants.TABLE_USERS, whereCondition);
+			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, User.TABLE_NAME, whereCondition);
 			final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setString(1, seachPatternWithWildcards);
 			return getUserArrayFromReaderPreparedStatement(preparedStatement);
@@ -930,7 +931,7 @@ public class DatabaseQueryManager implements QueryManager {
 	private void updateUserAttributes(final long userID, final String column, final String newValue) throws SQLException, DriverNotFoundException {
 		final String setClausel = column + " = ?";
 		final String whereCondition = User.USER_ID + " = ?";
-		final String statement = SQLFactory.buildUpdateStatement(SCHEMA, Constants.TABLE_USERS, setClausel, whereCondition);
+		final String statement = SQLFactory.buildUpdateStatement(SCHEMA, User.TABLE_NAME, setClausel, whereCondition);
 		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 		preparedStatement.setString(1, newValue);
 		preparedStatement.setLong(2, userID);
@@ -940,7 +941,7 @@ public class DatabaseQueryManager implements QueryManager {
 	private ResultSet getUserAttribute(final String column, final long userID) throws SQLException, DriverNotFoundException {
 		final String[] columns = new String[] { column };
 		final String whereCondition = User.USER_ID + " = ?";
-		final String statement = SQLFactory.buildSelectStatementWithWhereCondition(SCHEMA, Constants.TABLE_USERS, columns, whereCondition);
+		final String statement = SQLFactory.buildSelectStatementWithWhereCondition(SCHEMA, User.TABLE_NAME, columns, whereCondition);
 		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 		preparedStatement.setLong(1, userID);
 		return preparedStatement.executeQuery();
@@ -992,7 +993,7 @@ public class DatabaseQueryManager implements QueryManager {
 	private String getGroupAttribute(final String column, final long groupID) throws SQLException, DriverNotFoundException {
 		final String[] columns = new String[] { column };
 		final String whereCondition = Group.GROUP_ID + " = ?";
-		final String statement = SQLFactory.buildSelectStatementWithWhereCondition(SCHEMA, Constants.TABLE_GROUPS, columns, whereCondition);
+		final String statement = SQLFactory.buildSelectStatementWithWhereCondition(SCHEMA, Group.TABLE_NAME, columns, whereCondition);
 		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
 		preparedStatement.setLong(1, groupID);
 		final ResultSet resultSet = preparedStatement.executeQuery();
@@ -1026,7 +1027,7 @@ public class DatabaseQueryManager implements QueryManager {
 
 	private PublicQuestion[] getPublicQuestionsOfUserDependingOnStatus(final long userID, final int startIndex, final int quantity,
 			final boolean finished) throws SQLException, DriverNotFoundException {
-		final String statement = "SELECT P.* FROM " + Constants.TABLE_PUBLIC_QUESTIONS + " P JOIN " + Constants.TABLE_PUBLIC_QUESTIONS_TO_USERS
+		final String statement = "SELECT P.* FROM " + PublicQuestion.TABLE_NAME + " P JOIN " + PublicQuestionToUser.TABLE_NAME
 				+ " PQU ON PQU.userID = ? AND PQU.questionID = P.questionID WHERE finihed = ?";
 		final ResultSet resultSet = getQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, finished, statement);
 		final List<PublicQuestion> publicQuestions = ResultSetMapper.mapPublicQuestions(resultSet);
@@ -1035,7 +1036,7 @@ public class DatabaseQueryManager implements QueryManager {
 
 	private PrivateQuestion[] getPrivateQuestionsOfUserDependingOnStatus(final long userID, final int startIndex, final int quantity,
 			final boolean finished) throws SQLException, DriverNotFoundException {
-		final String statement = "SELECT P.* FROM " + Constants.TABLE_PRIVATE_QUESTIONS + " P JOIN " + Constants.TABLE_PRIVATE_QUESTIONS_TO_USERS
+		final String statement = "SELECT P.* FROM " + PrivateQuestion.TABLE_NAME + " P JOIN " + PrivateQuestionToUser.TABLE_NAME
 				+ " PQU ON PQU.userID = ? AND PQU.questionID = P.questionID WHRER finihed = ?";
 		final ResultSet resultSet = getQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, finished, statement);
 		final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);

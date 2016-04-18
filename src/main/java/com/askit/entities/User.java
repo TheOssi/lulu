@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class User {
 
+	public final static String TABLE_NAME = "Users";
 	public final static String USER_ID = "userID";
 	public final static String PASSWORD_HASH = "passwordHash";
 	public final static String PHONENUMBER_HASH = "phoneNumberHash";
