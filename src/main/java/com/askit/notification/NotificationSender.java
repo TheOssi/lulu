@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.askit.exception.NotificationException;
 import com.google.gson.Gson;
@@ -22,25 +21,13 @@ public class NotificationSender implements Runnable {
 
 	private final GsonBuilder gsonBuilder = new GsonBuilder();
 	private final Gson gson = gsonBuilder.setPrettyPrinting().create();
-	private final ConcurrentLinkedQueue<Notification> notifications = new ConcurrentLinkedQueue<Notification>();
+	private final NotificationHandler notificationHandler = NotificationHandler.getInstace();
 
 	private NotificationSender() {
 	}
 
 	public static synchronized NotificationSender getInstace() {
 		return INSTANCE;
-	}
-
-	public void sendNotification(final Notification notification) {
-		notifications.offer(notification);
-	}
-
-	private Notification getNextNotificationAndDelete() {
-		return notifications.poll();
-	}
-
-	private boolean hasNotifications() {
-		return notifications.isEmpty();
 	}
 
 	private void send(final Notification notification) throws NotificationException {
@@ -52,7 +39,7 @@ public class NotificationSender implements Runnable {
 			connection.setRequestProperty("Authorization", "key=" + AUTH_KEY);
 			connection.setDoOutput(true);
 			final DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
-			final String content = gson.toJson(getNextNotificationAndDelete());
+			final String content = gson.toJson(notificationHandler.getNextNotificationAndDelete());
 			dataOutputStream.writeBytes(content);
 			dataOutputStream.flush();
 			dataOutputStream.close();
@@ -86,9 +73,9 @@ public class NotificationSender implements Runnable {
 	@Override
 	public void run() {
 		while (true) {
-			if (hasNotifications()) {
+			if (notificationHandler.hasNotifications()) {
 				try {
-					send(getNextNotificationAndDelete());
+					send(notificationHandler.getNextNotificationAndDelete());
 				} catch (final NotificationException e) {
 					e.printStackTrace(); // TODO
 				}
