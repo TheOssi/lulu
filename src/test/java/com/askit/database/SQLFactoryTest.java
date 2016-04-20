@@ -1,4 +1,4 @@
-package com.askit.queries;
+package com.askit.database;
 
 import org.junit.After;
 import org.junit.AfterClass;

@@ -1,4 +1,4 @@
-package com.askit.queries;
+package com.askit.database;
 
 public class SQLFactory {
 

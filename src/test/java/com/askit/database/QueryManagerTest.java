@@ -1,4 +1,4 @@
-package com.askit.queries;
+package com.askit.database;
 
 import java.sql.SQLException;
 
@@ -8,9 +8,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.askit.database.DatabaseQueryManager;
+import com.askit.database.QueryManager;
 import com.askit.exception.DriverNotFoundException;
-import com.askit.queries.DatabaseQueryManager;
-import com.askit.queries.QueryManager;
 
 public class QueryManagerTest {
 
