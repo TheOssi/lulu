@@ -12,10 +12,10 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 import com.askit.database.ConnectionManager;
+import com.askit.database.SQLFactory;
 import com.askit.etc.Constants;
 import com.askit.etc.Util;
 import com.askit.exception.DriverNotFoundException;
-import com.askit.queries.SQLFactory;
 
 public class TestUtil {
 	private static final String DIR = Util.getRunntimeDirectory().getParent() + File.separator + "SQL" + File.separator;

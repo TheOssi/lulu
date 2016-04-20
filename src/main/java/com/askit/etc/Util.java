@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Array;
 import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -58,6 +60,24 @@ public class Util {
 		final int size = resultSet.getRow();
 		resultSet.absolute(currentRow);
 		return size;
+	}
+
+	public static void closeSilentlySQL(final PreparedStatement preparedStatement, final ResultSet resultSet) {
+		Connection connection = null;
+		try {
+			if (resultSet != null) {
+				resultSet.close();
+			}
+			if (preparedStatement != null) {
+				connection = preparedStatement.getConnection();
+				preparedStatement.close();
+			}
+			if (connection != null) {
+				connection.close();
+			}
+		} catch (final SQLException exception) {
+			// TODO
+		}
 	}
 
 }

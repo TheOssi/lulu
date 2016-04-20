@@ -1,4 +1,4 @@
-package com.askit.queries;
+package com.askit.database;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.askit.database.DatabaseQueryManager;
+import com.askit.database.QueryManager;
 import com.askit.exception.DatabaseLayerException;
 
 public class DatabaseQueryManagerTest {

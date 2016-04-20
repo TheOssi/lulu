@@ -1,4 +1,4 @@
-package com.askit.etc;
+package com.askit.database;
 
 public enum DefinitionOfEnd {
 
