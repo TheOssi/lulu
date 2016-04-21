@@ -1,7 +1,5 @@
 package com.askit;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import org.junit.Test;
 
 import com.askit.entities.Answer;
@@ -14,9 +12,11 @@ public class JSONBuilderTest {
 		final Answer answer = new Answer(new Long(2325), "Hello");
 		final JSONBuilder jsonBuilder = new JSONBuilder();
 		final String jsonString = normalizeJSONString(jsonBuilder.createJSON(answer));
-		final String jsonExpected = "{\"Answer\":{\"questionID\":" + answer.getQuestionID().intValue()
-				+ ",\"answer\":\"" + answer.getAnswer() + "\"}}";
-		//assertThat("The json doens't match the expected JSON", jsonExpected.equals(jsonString));
+		// final String jsonExpected = "{\"Answer\":{\"questionID\":" +
+		// answer.getQuestionID().intValue()
+		// + ",\"answer\":\"" + answer.getAnswer() + "\"}}";
+		// assertThat("The json doens't match the expected JSON",
+		// jsonExpected.equals(jsonString));
 		System.out.println(jsonString);
 	}
 
