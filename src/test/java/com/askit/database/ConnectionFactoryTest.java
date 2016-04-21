@@ -8,9 +8,6 @@ import java.sql.SQLException;
 
 import org.junit.Test;
 
-import com.askit.database.ConnectionManager;
-import com.askit.exception.DriverNotFoundException;
-
 public class ConnectionFactoryTest {
 
 	@Test
@@ -21,7 +18,7 @@ public class ConnectionFactoryTest {
 			ConnectionManager.getInstance().getDeleteConnection().setReadOnly(true);
 			assertThat("Theres another instance", ConnectionManager.getInstance().getDeleteConnection().isReadOnly() == true);
 			ConnectionManager.getInstance().getDeleteConnection().setReadOnly(false);
-		} catch (final DriverNotFoundException | SQLException e) {
+		} catch (final SQLException e) {
 			fail("A exception occured: ");
 			e.printStackTrace();
 		}
@@ -34,7 +31,7 @@ public class ConnectionFactoryTest {
 			assertThat("Instance is not instance of Connection", ConnectionManager.getInstance().getReaderConnection() instanceof Connection);
 			ConnectionManager.getInstance().getReaderConnection().close();
 			assertThat("Connection is closed", ConnectionManager.getInstance().getReaderConnection().isClosed() == false);
-		} catch (SQLException | DriverNotFoundException e) {
+		} catch (final SQLException e) {
 			fail("A exception occured: ");
 			e.printStackTrace();
 		}

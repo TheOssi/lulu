@@ -2,10 +2,13 @@ package com.askit.database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.askit.etc.Util;
 import com.askit.exception.DatabaseLayerException;
+
+//TODO timer für zeit ende
 
 public class Trigger {
 
@@ -83,4 +86,94 @@ public class Trigger {
 		}
 	}
 
+	public static void setPointsForAnsweringAPrivateQuestion(final long groupID, final long userID) throws DatabaseLayerException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			final int pointsToAdd = Points.POINTS_PRIVATE_QUESTION_ANSWERED.getPoints();
+			connection = ConnectionManager.getInstance().getWriterConnection();
+			final String statement = "UPDATE APP.GroupsToUsers SET score = (score + ?) WHERE groupID = ( SELECT groupID FROM PrivateQuestions WHERE questionID ="
+					+ "?) AND userID = ?;";
+			preparedStatement = connection.prepareStatement(statement);
+			preparedStatement.setInt(1, pointsToAdd);
+			preparedStatement.setLong(2, groupID);
+			preparedStatement.setLong(3, userID);
+			preparedStatement.executeUpdate();
+		} catch (final SQLException exception) {
+			throw new DatabaseLayerException(exception);
+		} finally {
+			Util.closeSilentlySQL(preparedStatement, null);
+		}
+	}
+
+	public static void d(final long questionID) throws DatabaseLayerException {
+		ResultSet resultSet = null;
+		String statement = "";
+
+		try {
+			// get definition of end
+			statement = " SELECT definitionOfEnd FROM final APP.PrivateQuestions WHERE questionID = ? INTO l_definitionOfEnd;";
+			resultSet = executeStatementWithQuestionID(questionID, statement);
+			resultSet.next();
+			final int definitionOfEnd = resultSet.getInt(1);
+
+			if (definitionOfEnd != DefinitionOfEnd.END_BY_TIME.getID()) {
+
+				// Count all Users whitch have allready answerd the questionID
+				statement = "SELECT Count(*) FROM APP.PrivateQuestionsToUsers WHERE questionID = ? AND" + "choosedAnswerID <> 0;";
+				resultSet = executeStatementWithQuestionID(questionID, statement);
+				resultSet.next();
+				final int allreadyAnswered = resultSet.getInt(1);
+
+				// Count all Users of this question
+				statement = "SELECT Count(*) FROM APP.PrivateQuestionsToUsers WHERE questionID = ?;";
+				resultSet = executeStatementWithQuestionID(questionID, statement);
+				resultSet.next();
+				final int countAllUsers = resultSet.getInt(1);
+
+				boolean allUsersHaveAnswered = false;
+				boolean sumOfAnsweredUsersReached = false;
+
+				if (countAllUsers == allreadyAnswered) {
+					allUsersHaveAnswered = true;
+				}
+
+				if (definitionOfEnd == DefinitionOfEnd.END_BY_SUM_ANERWERED.getID()) {
+					statement = "SELECT sumOfUsersToAnswer FROM APP.PrivateQuestions WHERE questionID = ?;";
+					resultSet = executeStatementWithQuestionID(questionID, statement);
+					resultSet.next();
+					final int countUsersToAnswer = resultSet.getInt(1);
+					if (countUsersToAnswer == allreadyAnswered) {
+						sumOfAnsweredUsersReached = true;
+					}
+				}
+
+				if (sumOfAnsweredUsersReached && definitionOfEnd == DefinitionOfEnd.END_BY_SUM_ANERWERED.getID() || allUsersHaveAnswered
+						&& definitionOfEnd == DefinitionOfEnd.END_BY_ALL_ANSWERED.getID()) {
+					statement = "UPDATE APP.PrivateQuestions SET finished = 1 final WHERE questionID = ?;";
+					final Connection connection = ConnectionManager.getInstance().getWriterConnection();
+					final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+					preparedStatement.setLong(1, questionID);
+					preparedStatement.executeUpdate();
+				}
+			}
+		} catch (final SQLException exception) {
+			throw new DatabaseLayerException(exception);
+		}
+	}
+
+	private static ResultSet executeStatementWithQuestionID(final long questionID, final String statement) throws DatabaseLayerException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			connection = ConnectionManager.getInstance().getWriterConnection();
+			preparedStatement = connection.prepareStatement(statement);
+			preparedStatement.setLong(1, questionID);
+			return preparedStatement.executeQuery();
+		} catch (final SQLException exception) {
+			throw new DatabaseLayerException(exception);
+		} finally {
+			Util.closeSilentlySQL(preparedStatement, null);
+		}
+	}
 }
