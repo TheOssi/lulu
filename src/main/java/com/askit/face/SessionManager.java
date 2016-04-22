@@ -4,11 +4,11 @@ import java.util.Calendar;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.askit.database.DatabaseQueryManager;
+import com.askit.database.QueryManager;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.WrongHashException;
-import com.askit.queries.DatabaseQueryManager;
-import com.askit.queries.QueryManager;
 
 public class SessionManager implements Runnable {
 

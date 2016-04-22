@@ -33,6 +33,7 @@ public class Request {
 	final static Pattern regExUsersPattern = Pattern.compile("/USERS");
 
 	final static Pattern regExSessionPattern = Pattern.compile("/SESSION");
+	final static Pattern regExGCMPattern = Pattern.compile("/GCM");
 
 	Matcher matcher;
 	Integer id;

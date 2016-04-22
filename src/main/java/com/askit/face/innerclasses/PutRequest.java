@@ -5,29 +5,31 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 
+import com.askit.database.DatabaseQueryManager;
+import com.askit.database.QueryManager;
 import com.askit.etc.Constants;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
 import com.askit.exception.WrongHashException;
-import com.askit.queries.DatabaseQueryManager;
-import com.askit.queries.QueryManager;
 
 public class PutRequest extends Request {
-	
+
 	/*
-	 *Constructor
-	 *Calls super() Constructor, see Request; 
+	 * Constructor Calls super() Constructor, see Request;
 	 */
 	public PutRequest(String pathInfo, Map<String, String[]> parameters, PrintWriter out) {
 		super(pathInfo, parameters, out);
 
 	}
+
 	/*
 	 * (non-Javadoc)
-	 * @see com.askit.face.innerclasses.Request#handleRequest()
-	 * Processes PutRequest and handles required Actions
+	 * 
+	 * @see com.askit.face.innerclasses.Request#handleRequest() Processes
+	 * PutRequest and handles required Actions
 	 */
+	@Override
 	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
 			DatabaseLayerException, ServletException {
 		super.handleRequest();
@@ -46,15 +48,9 @@ public class PutRequest extends Request {
 		String groupName = null;
 		String pictureUrl = null;
 
-		/* PUT
-		 * /USER
-		 * Parameters:
-		 * USERID: Long
-		 * USERNAME: String
-		 * LANGUAGE: String
-		 * PASSWORDHASH: String
-		 * PHONEHASH: String
-		 * PICTUREURL: String
+		/*
+		 * PUT /USER Parameters: USERID: Long USERNAME: String LANGUAGE: String
+		 * PASSWORDHASH: String PHONEHASH: String PICTUREURL: String
 		 */
 		matcher = regExUserPattern.matcher(this.pathInfo);
 		if (matcher.find()) {
@@ -88,13 +84,9 @@ public class PutRequest extends Request {
 			}
 			return;
 		}
-		/* PUT
-		 * /QUESTION
-		 * Parameters:
-		 * QUESTIONID: Long
-		 * ANSWERID: Long
-		 * PUBLIC: Boolean
-		 * USERID: Long
+		/*
+		 * PUT /QUESTION Parameters: QUESTIONID: Long ANSWERID: Long PUBLIC:
+		 * Boolean USERID: Long
 		 */
 		matcher = regExQuestionPattern.matcher(this.pathInfo);
 		if (matcher.find()) {
@@ -127,12 +119,8 @@ public class PutRequest extends Request {
 			}
 			return;
 		}
-		/* PUT
-		 * /GROUP
-		 * Parameters:
-		 * USERID: Long
-		 * GROUPID: Long
-		 * GROUNAME: String
+		/*
+		 * PUT /GROUP Parameters: USERID: Long GROUPID: Long GROUNAME: String
 		 * PICTUREURL: String
 		 */
 		matcher = regExGroupPattern.matcher(this.pathInfo);

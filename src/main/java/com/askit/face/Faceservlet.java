@@ -30,7 +30,6 @@ public class Faceservlet extends HttpServlet {
 	 */
 	public Faceservlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -67,7 +66,6 @@ public class Faceservlet extends HttpServlet {
 		try {
 			out = response.getWriter();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		final PostRequest post = new PostRequest(request.getPathInfo(), request.getParameterMap(), out);

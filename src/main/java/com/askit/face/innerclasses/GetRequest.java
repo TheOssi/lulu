@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.askit.database.DatabaseQueryManager;
+import com.askit.database.QueryManager;
 import com.askit.entities.Answer;
 import com.askit.entities.Group;
 import com.askit.entities.PrivateQuestion;
@@ -18,8 +20,7 @@ import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
 import com.askit.exception.WrongHashException;
 import com.askit.face.JSONBuilder;
-import com.askit.queries.DatabaseQueryManager;
-import com.askit.queries.QueryManager;
+import com.askit.notification.RegIDHandler;
 
 public class GetRequest extends Request {
 	private Integer id;
@@ -314,6 +315,18 @@ public class GetRequest extends Request {
 
 			return;
 		}
+
+		matcher = regExGCMPattern.matcher(pathInfo);
+		if (matcher.find()) {
+			if (userID != null) {
+				String regID = RegIDHandler.getInstance().getRegIDFromUser(userID);
+				out.println(new JSONBuilder().createJSON(regID));
+			} else {
+				throw new MissingParametersException("No UserID specified");
+			}
+			return;
+		}
+
 		matcher = regExSessionPattern.matcher(pathInfo);
 		if (matcher.find()) {
 		} else {

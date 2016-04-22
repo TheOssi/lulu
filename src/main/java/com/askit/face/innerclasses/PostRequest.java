@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 
+import com.askit.database.DatabaseQueryManager;
+import com.askit.database.QueryManager;
 import com.askit.entities.Answer;
 import com.askit.entities.Group;
 import com.askit.entities.PrivateQuestion;
@@ -17,8 +19,7 @@ import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
 import com.askit.exception.WrongHashException;
-import com.askit.queries.DatabaseQueryManager;
-import com.askit.queries.QueryManager;
+import com.askit.notification.RegIDHandler;
 
 public class PostRequest extends Request {
 
@@ -64,6 +65,7 @@ public class PostRequest extends Request {
 		boolean isOneTime = false;
 		String answerText = null;
 		Long contactID = null;
+		String regID = null;
 
 		if (parameters.containsKey(Constants.PARAMETERS_GROUPID)) {
 			groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
@@ -139,6 +141,9 @@ public class PostRequest extends Request {
 		}
 		if (parameters.containsKey(Constants.PARAMETERS_CONTACTID)) {
 			contactID = Long.parseLong(parameters.get(Constants.PARAMETERS_CONTACTID)[0]);
+		}
+		if (parameters.containsKey(Constants.PARAMETERS_REGID)) {
+			regID = parameters.get(Constants.PARAMETERS_REGID)[0];
 		}
 		/*
 		 * POST /USER
@@ -265,6 +270,16 @@ public class PostRequest extends Request {
 
 			return;
 		}
+		matcher = regExGCMPattern.matcher(pathInfo);
+		if (matcher.find()) {
+			if (regID != null && userID != null) {
+				RegIDHandler.getInstance().setRegID(userID, regID);
+			} else {
+				throw new MissingParametersException();
+			}
+
+		}
+
 		throw new ServletException();
 	}
 }

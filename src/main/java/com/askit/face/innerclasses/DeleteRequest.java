@@ -5,24 +5,27 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 
+import com.askit.database.DatabaseQueryManager;
+import com.askit.database.QueryManager;
 import com.askit.etc.Constants;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
 import com.askit.exception.WrongHashException;
-import com.askit.queries.DatabaseQueryManager;
-import com.askit.queries.QueryManager;
 
 public class DeleteRequest extends Request {
 
 	public DeleteRequest(String pathInfo, Map<String, String[]> parameters, PrintWriter out) {
 		super(pathInfo, parameters, out);
 	}
-		/*
-		 * (non-Javadoc)
-		 * @see com.askit.face.innerclasses.Request#handleRequest()
-		 * Processes Delete Request
-		 */
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.askit.face.innerclasses.Request#handleRequest() Processes Delete
+	 * Request
+	 */
+	@Override
 	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
 			DatabaseLayerException, ServletException {
 		super.handleRequest();
@@ -76,7 +79,8 @@ public class DeleteRequest extends Request {
 		 */
 		matcher = regExGroupPattern.matcher(pathInfo);
 		if (matcher.find()) {
-			if (parameters.containsKey(Constants.PARAMETERS_QUESTIONID) && parameters.containsKey(Constants.PARAMETERS_PUBLIC)) {
+			if (parameters.containsKey(Constants.PARAMETERS_QUESTIONID)
+					&& parameters.containsKey(Constants.PARAMETERS_PUBLIC)) {
 				questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
 				isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
 				if (!isPublic) {
@@ -88,7 +92,7 @@ public class DeleteRequest extends Request {
 
 			return;
 		}
-		
+
 		throw new ServletException();
 
 	}
