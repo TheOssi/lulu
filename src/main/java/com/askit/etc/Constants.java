@@ -39,5 +39,5 @@ public class Constants {
 	public static final String PARAMETERS_ONETIME = "ONETIME";
 	public static final String PARAMETERS_ANSWER = "ANSWER";
 	public static final String PARAMETERS_CONTACTID = "CONTACTID";
-
+	public static final String PARAMETERS_REGID = "REGID";
 }
