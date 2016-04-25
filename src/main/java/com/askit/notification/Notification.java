@@ -10,11 +10,10 @@ public class Notification implements Serializable {
 
 	@SuppressWarnings("unused")
 	private final String to;
-	private final Map<String, String> notification = new HashMap<String, String>();
+	private final Map<String, String> data = new HashMap<String, String>();
 
-	public Notification(final String receiverID, final String title, final String message) {
+	public Notification(final String receiverID, final String code) {
 		to = receiverID;
-		notification.put("title", title);
-		notification.put("message", message);
+		data.put("code", code);
 	}
 }
