@@ -266,3 +266,18 @@ CREATE DEFINER = 'appAdmin'@'localhost'
 	    
     END \\
 DELIMITER ;
+
+
+========================= Constants ==============================
+
+INSERT INTO APP.AppConstants VALUES (
+	"POINTS_QUESTION_PUPLIC",'10',"unsigned integer");
+	
+INSERT INTO APP.AppConstants VALUES (
+	"POINTS_QUESTION_ANS_PUBLIC",'1',"unsigned integer");
+	
+INSERT INTO APP.AppConstants VALUES (
+	"POINTS_QUESTION_ANS_HOST_PUBLIC",'1',"unsigned integer");
+	
+INSERT INTO APP.AppConstants VALUES (
+	"POINTS_QUESTION_ANS_PRIVATE",'1',"unsigned integer");
