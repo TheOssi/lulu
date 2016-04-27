@@ -38,5 +38,4 @@ public class ResultSetMapper {
 		final BeanListHandler<Answer> listHandler = new BeanListHandler<Answer>(Answer.class);
 		return listHandler.handle(resultSet);
 	}
-
 }

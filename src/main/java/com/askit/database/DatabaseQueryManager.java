@@ -1,7 +1,5 @@
 package com.askit.database;
 
-// TODO neue SQLFactory
-// TODO limit mit ? realisieren
 // TODO Frage abbrechen -> was passiert und Public und/oder Private
 // TODO Sort beachten
 // TODO langu beachten
@@ -102,7 +100,6 @@ public class DatabaseQueryManager implements QueryManager {
 		}
 	}
 
-	// TODO add user to private quesion (Trigger?)
 	@Override
 	public void createNewPrivateQuestionInGroup(final PrivateQuestion question) throws DatabaseLayerException {
 		PreparedStatement preparedStatement = null;
@@ -289,11 +286,13 @@ public class DatabaseQueryManager implements QueryManager {
 		try {
 			final String whereCondition = PublicQuestion.LANGUAGE + " = ?";
 			final String orderByClausel = SQLFactory.buildOrderByStatement(PublicQuestion.CREATED_DATE + " " + SQLFactory.ASCENDING);
-			final String limitClausel = SQLFactory.buildLimitStatement(startIndex, quantity);
+			final String limitClausel = SQLFactory.buildLimitStatement();
 			final String statement = SQLFactory.buildSelectAllStatementWithWhereConditionLimitClauselOrderByClausel(SCHEMA,
 					PublicQuestion.TABLE_NAME, whereCondition, orderByClausel, limitClausel);
 			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setString(1, language);
+			preparedStatement.setInt(2, startIndex);
+			preparedStatement.setInt(3, quantity);
 			resultSet = preparedStatement.executeQuery();
 			final List<PublicQuestion> publicQuestions = ResultSetMapper.mapPublicQuestions(resultSet);
 			return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
@@ -348,12 +347,14 @@ public class DatabaseQueryManager implements QueryManager {
 		ResultSet resultSet = null;
 		try {
 			final String orderByClausel = SQLFactory.buildOrderByStatement(PrivateQuestion.CREATED_DATE + " " + SQLFactory.ASCENDING);
-			final String limitClausel = SQLFactory.buildLimitStatement(startIndex, quantity);
+			final String limitClausel = SQLFactory.buildLimitStatement();
 			final String whereCondition = PrivateQuestion.GROUP_ID + " = ?";
 			final String statement = SQLFactory.buildSelectAllStatementWithWhereConditionLimitClauselOrderByClausel(SCHEMA,
 					PrivateQuestion.TABLE_NAME, whereCondition, orderByClausel, limitClausel);
 			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
+			preparedStatement.setInt(2, startIndex);
+			preparedStatement.setInt(3, quantity);
 			resultSet = preparedStatement.executeQuery();
 			final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
 			return privateQuestions.toArray(new PrivateQuestion[privateQuestions.size()]);
@@ -1241,11 +1242,13 @@ public class DatabaseQueryManager implements QueryManager {
 	private ResultSet getQuestionsOfUserDependingOnStatus(final long userID, final int startIndex, final int quantity, final boolean finished,
 			final String statement) throws SQLException, DriverNotFoundException {
 		final String orderByClausel = SQLFactory.buildOrderByStatement("P.createDate " + SQLFactory.ASCENDING);
-		final String limitClausel = SQLFactory.buildLimitStatement(startIndex, quantity);
+		final String limitClausel = SQLFactory.buildLimitStatement();
 		final String finalStatement = statement + " " + orderByClausel + " " + limitClausel + ";";
 		final PreparedStatement preparedStatement = getReaderPreparedStatement(finalStatement);
 		preparedStatement.setLong(1, userID);
 		preparedStatement.setBoolean(2, finished);
+		preparedStatement.setInt(3, startIndex);
+		preparedStatement.setInt(4, quantity);
 		return preparedStatement.executeQuery();
 	}
 }
