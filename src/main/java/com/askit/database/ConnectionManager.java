@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 //TODO drivernotfoundexception
+//TODO set min und max idle; puffer size
 import com.askit.etc.Constants;
 
 public class ConnectionManager {
@@ -53,7 +54,6 @@ public class ConnectionManager {
 		basicDataSource.setDriverClassName(MARIA_DB_DRIVER);
 		basicDataSource.setUrl(URL);
 		basicDataSource.setDefaultAutoCommit(true);
-		// TODO
 		basicDataSource.setMinIdle(20);
 		basicDataSource.setMaxIdle(25);
 		basicDataSource.setMaxTotal(-1);

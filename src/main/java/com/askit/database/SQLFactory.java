@@ -163,13 +163,7 @@ public class SQLFactory {
 		return statement.toString();
 	}
 
-	public static String buildLimitStatement(final int startIndex, final int quantity) {
-		final StringBuilder statement = new StringBuilder();
-		statement.append("LIMIT ");
-		statement.append(String.valueOf(startIndex));
-		statement.append(",");
-		statement.append(String.valueOf(quantity));
-		return statement.toString();
+	public static String buildLimitStatement() {
+		return "LIMIT ?;? ";
 	}
-
 }

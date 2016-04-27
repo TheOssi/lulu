@@ -8,8 +8,6 @@ import java.sql.SQLException;
 import com.askit.etc.Util;
 import com.askit.exception.DatabaseLayerException;
 
-//TODO timer für zeit ende
-
 public class Trigger {
 
 	public static void setPointsForRightAnswerInPrivateBet(final long selectedAnswerID, final long questionID, final long groupID)
