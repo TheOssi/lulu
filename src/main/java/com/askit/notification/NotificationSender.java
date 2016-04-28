@@ -1,9 +1,7 @@
 package com.askit.notification;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -43,24 +41,10 @@ public class NotificationSender implements Runnable {
 			dataOutputStream.writeBytes(content);
 			dataOutputStream.flush();
 			dataOutputStream.close();
-
-			// TODO output
-			final int responseCode = connection.getResponseCode();
-			System.out.println("Response Code : " + responseCode);
-
-			final BufferedReader responseReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			String inputLine;
-
-			while ((inputLine = responseReader.readLine()) != null) {
-				System.out.println(inputLine);
-			}
-			responseReader.close();
-
 		} catch (final IOException e) {
 			e.printStackTrace();
 			throw new NotificationException(e);
 		}
-
 	}
 
 	public void startThread() {
@@ -77,7 +61,7 @@ public class NotificationSender implements Runnable {
 				try {
 					send(notificationHandler.getNextNotificationAndDelete());
 				} catch (final NotificationException e) {
-					e.printStackTrace(); // TODO
+					e.printStackTrace();
 				}
 			} else {
 				try {

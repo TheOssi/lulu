@@ -1,4 +1,4 @@
-package com.askit.database;
+package com.askit.database.trigger;
 
 public enum Points {
 

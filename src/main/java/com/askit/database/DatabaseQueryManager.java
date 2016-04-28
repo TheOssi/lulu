@@ -15,6 +15,9 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.askit.database.sqlHelper.ResultSetMapper;
+import com.askit.database.sqlHelper.SQLFactory;
+import com.askit.database.sqlHelper.SQLUtil;
 import com.askit.entities.Answer;
 import com.askit.entities.Contact;
 import com.askit.entities.Group;
@@ -25,7 +28,6 @@ import com.askit.entities.PublicQuestion;
 import com.askit.entities.PublicQuestionToUser;
 import com.askit.entities.User;
 import com.askit.etc.Constants;
-import com.askit.etc.Util;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DriverNotFoundException;
 
@@ -48,7 +50,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, resultSet);
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
 	}
 
@@ -71,7 +73,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -96,7 +98,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -126,7 +128,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (SQLException | DriverNotFoundException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -154,7 +156,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (SQLException | DriverNotFoundException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -176,7 +178,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -197,7 +199,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -213,7 +215,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -230,7 +232,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -242,7 +244,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (SQLException | DriverNotFoundException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -254,7 +256,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (SQLException | DriverNotFoundException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -271,7 +273,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -299,7 +301,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, resultSet);
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
 	}
 
@@ -318,7 +320,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, resultSet);
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
 	}
 
@@ -337,7 +339,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, resultSet);
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
 	}
 
@@ -361,7 +363,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, resultSet);
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
 	}
 
@@ -377,7 +379,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(null, resultSet);
+			SQLUtil.closeSilentlySQL(null, resultSet);
 		}
 	}
 
@@ -392,7 +394,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -407,7 +409,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -422,7 +424,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -437,7 +439,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -452,7 +454,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -469,7 +471,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, resultSet);
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
 	}
 
@@ -492,7 +494,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, resultSet);
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
 	}
 
@@ -508,7 +510,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(null, resultSet);
+			SQLUtil.closeSilentlySQL(null, resultSet);
 		}
 	}
 
@@ -521,7 +523,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, resultSet);
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
 	}
 
@@ -534,7 +536,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, resultSet);
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
 	}
 
@@ -549,7 +551,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -562,7 +564,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			resultSet = preparedStatement.executeQuery();
-			final int resultSetSize = Util.getSizeOfResultSet(resultSet);
+			final int resultSetSize = SQLUtil.getSizeOfResultSet(resultSet);
 			long placeInRaking = 0;
 			if (resultSet.next()) {
 				for (int place = 1; place <= resultSetSize; place++) {
@@ -577,7 +579,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, resultSet);
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
 	}
 
@@ -593,7 +595,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(null, resultSet);
+			SQLUtil.closeSilentlySQL(null, resultSet);
 		}
 	}
 
@@ -609,7 +611,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(null, resultSet);
+			SQLUtil.closeSilentlySQL(null, resultSet);
 		}
 	}
 
@@ -625,7 +627,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(null, resultSet);
+			SQLUtil.closeSilentlySQL(null, resultSet);
 		}
 	}
 
@@ -638,7 +640,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, resultSet);
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
 	}
 
@@ -651,7 +653,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, resultSet);
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
 	}
 
@@ -671,7 +673,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, resultSet);
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
 	}
 
@@ -683,7 +685,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(null, resultSet);
+			SQLUtil.closeSilentlySQL(null, resultSet);
 		}
 	}
 
@@ -695,7 +697,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(null, resultSet);
+			SQLUtil.closeSilentlySQL(null, resultSet);
 		}
 	}
 
@@ -707,7 +709,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(null, resultSet);
+			SQLUtil.closeSilentlySQL(null, resultSet);
 		}
 	}
 
@@ -720,7 +722,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(null, resultSet);
+			SQLUtil.closeSilentlySQL(null, resultSet);
 		}
 	}
 
@@ -732,7 +734,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(null, resultSet);
+			SQLUtil.closeSilentlySQL(null, resultSet);
 		}
 
 	}
@@ -745,7 +747,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(null, resultSet);
+			SQLUtil.closeSilentlySQL(null, resultSet);
 		}
 	}
 
@@ -768,7 +770,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (SQLException | DriverNotFoundException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, resultSet);
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
 	}
 
@@ -792,7 +794,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (SQLException | DriverNotFoundException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, resultSet);
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
 	}
 
@@ -832,7 +834,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -861,7 +863,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -880,7 +882,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -898,7 +900,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -916,7 +918,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -929,7 +931,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, resultSet);
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
 	}
 
@@ -947,7 +949,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -960,7 +962,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, resultSet);
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
 	}
 
@@ -978,7 +980,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -998,7 +1000,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -1015,7 +1017,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -1031,7 +1033,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -1048,7 +1050,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -1078,7 +1080,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (SQLException | DriverNotFoundException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, resultSet);
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
 	}
 
@@ -1098,7 +1100,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (SQLException | DriverNotFoundException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, resultSet);
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
 	}
 
@@ -1115,7 +1117,7 @@ public class DatabaseQueryManager implements QueryManager {
 		} catch (DriverNotFoundException | SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -1131,7 +1133,7 @@ public class DatabaseQueryManager implements QueryManager {
 		preparedStatement.setString(1, newValue);
 		preparedStatement.setLong(2, userID);
 		preparedStatement.executeUpdate();
-		Util.closeSilentlySQL(preparedStatement, null);
+		SQLUtil.closeSilentlySQL(preparedStatement, null);
 	}
 
 	private ResultSet getUserAttribute(final String column, final long userID) throws SQLException, DriverNotFoundException {
@@ -1199,7 +1201,6 @@ public class DatabaseQueryManager implements QueryManager {
 		return null;
 	}
 
-	// TODO empty
 	@SuppressWarnings("unchecked")
 	private Pair<Answer, Integer>[] getAnswersOfQuestionAndCount(final long questionID, final String questionToUserTable, final String answerTable)
 			throws SQLException, DriverNotFoundException {

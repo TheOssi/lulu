@@ -9,8 +9,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.askit.database.DatabaseQueryManager;
-import com.askit.database.QueryManager;
 import com.askit.exception.DatabaseLayerException;
 
 public class DatabaseQueryManagerTest {
@@ -313,8 +311,8 @@ public class DatabaseQueryManagerTest {
 	}
 
 	@Test
-	public void testSetPrivateQuestionToFinish() {
-		fail("Not yet implemented");
+	public void testSetPrivateQuestionToFinish() throws DatabaseLayerException {
+		queryManager.setPrivateQuestionToFinish(1);
 	}
 
 	@Test

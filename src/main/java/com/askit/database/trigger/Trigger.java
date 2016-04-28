@@ -1,11 +1,12 @@
-package com.askit.database;
+package com.askit.database.trigger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.askit.etc.Util;
+import com.askit.database.ConnectionManager;
+import com.askit.database.sqlHelper.SQLUtil;
 import com.askit.exception.DatabaseLayerException;
 
 public class Trigger {
@@ -28,7 +29,7 @@ public class Trigger {
 		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -46,11 +47,10 @@ public class Trigger {
 		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
-	// TODO if one goes wrong?
 	public static void setPointsForAnsweringAPublicQuestion(final long userID, final long hostID) throws DatabaseLayerException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
@@ -66,7 +66,7 @@ public class Trigger {
 		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 
 		try {
@@ -80,7 +80,7 @@ public class Trigger {
 		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -100,7 +100,7 @@ public class Trigger {
 		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 
@@ -171,7 +171,7 @@ public class Trigger {
 		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			Util.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
 		}
 	}
 }
