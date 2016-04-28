@@ -1,4 +1,4 @@
-package com.askit.database;
+package com.askit.database.sqlHelper;
 
 public class SQLFactory {
 
@@ -113,11 +113,11 @@ public class SQLFactory {
 
 	public static String buildUpdateStatement(final String schema, final String table, final String setClausel, final String whereCondition) {
 		final StringBuilder statement = new StringBuilder();
-		statement.append("UPDATE  ");
+		statement.append("UPDATE ");
 		statement.append(schema);
 		statement.append(".");
 		statement.append(table);
-		statement.append("SET ");
+		statement.append(" SET ");
 		statement.append(setClausel);
 		statement.append(" WHERE ");
 		statement.append(whereCondition);

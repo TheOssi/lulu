@@ -37,17 +37,17 @@ public class ConnectionManager {
 	private void setWriterDataSource() {
 		writerDataSource = new BasicDataSource();
 		setDefaultSettings(writerDataSource);
-		writerDataSource.setUsername(DatabaseUser.READ_USER.getUsername());
-		writerDataSource.setPassword(DatabaseUser.READ_USER.getPassword());
+		writerDataSource.setUsername(DatabaseUser.WRITE_USER.getUsername());
+		writerDataSource.setPassword(DatabaseUser.WRITE_USER.getPassword());
 		writerDataSource.setDefaultReadOnly(false);
 	}
 
 	private void setDeleterDataSource() {
 		deleterDataSource = new BasicDataSource();
 		setDefaultSettings(deleterDataSource);
-		deleterDataSource.setUsername(DatabaseUser.READ_USER.getUsername());
-		deleterDataSource.setPassword(DatabaseUser.READ_USER.getPassword());
-		readerDataSource.setDefaultAutoCommit(true);
+		deleterDataSource.setUsername(DatabaseUser.DELETE_USER.getUsername());
+		deleterDataSource.setPassword(DatabaseUser.DELETE_USER.getPassword());
+		deleterDataSource.setDefaultAutoCommit(true);
 	}
 
 	private void setDefaultSettings(final BasicDataSource basicDataSource) {
@@ -57,6 +57,7 @@ public class ConnectionManager {
 		basicDataSource.setMinIdle(20);
 		basicDataSource.setMaxIdle(25);
 		basicDataSource.setMaxTotal(-1);
+		basicDataSource.setInitialSize(0);
 		basicDataSource.setMaxOpenPreparedStatements(180);
 	}
 

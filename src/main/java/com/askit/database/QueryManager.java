@@ -11,10 +11,6 @@ import com.askit.exception.DatabaseLayerException;
 
 public interface QueryManager {
 
-	/*
-	 * Private Methods
-	 */
-
 	/**
 	 * @param username
 	 * @param passwordHash

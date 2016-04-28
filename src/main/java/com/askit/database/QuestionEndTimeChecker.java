@@ -22,11 +22,11 @@ public class QuestionEndTimeChecker extends Thread {
 
 	private static final QuestionEndTimeChecker INSTANCE = new QuestionEndTimeChecker();
 	private static final long SLEEP_TIME = 5000L;
-	private static final String STATEMENT = "SELECT R.questionID, R.endDate, R.type FROM ("
-			+ "SELECT PR.questionID, PR.endDate, 'PRIVATE' as \"type\" FROM APP.PrivateQuestions AS PR"
-			+ "WHERE PR.endDate IS NOT NULL AND PR.finished <> 1 AND PR.definitionOfEnd = 1 " + "UNION ALL"
-			+ "SELECT PU.questionID, PU.endDate, 'PUBLIC' as \"type\" FROM APP.PublicQuestions PU"
-			+ "WHERE PU.endDate IS NOT NULL AND PU.finished <> 1 )  AS R" + "ORDER BY R.endDate ASC LIMIT 1;";
+	private static final String STATEMENT = "SELECT R.questionID, R.endDate, R.type FROM ( SELECT PR.questionID, PR.endDate, '"
+			+ PrivateQuestion.TABLE_NAME + "' as \"type\" FROM APP.PrivateQuestions AS PR "
+			+ "WHERE PR.endDate IS NOT NULL AND PR.finished <> 1 AND PR.definitionOfEnd = 1 " + "UNION ALL SELECT PU.questionID, PU.endDate, '"
+			+ PublicQuestion.TABLE_NAME + "' as \"type\" FROM APP.PublicQuestions PU " + "WHERE PU.endDate IS NOT NULL AND PU.finished <> 1 )  AS R "
+			+ "ORDER BY R.endDate ASC LIMIT 1;";
 
 	private AbstractQuestion currentQuestion;
 
@@ -43,7 +43,6 @@ public class QuestionEndTimeChecker extends Thread {
 		}
 	}
 
-	// TODO better idea than type
 	private AbstractQuestion getNext() throws SQLException {
 		final Connection connection = ConnectionManager.getInstance().getReaderConnection();
 		final PreparedStatement preparedStatement = connection.prepareStatement(STATEMENT);
@@ -52,13 +51,7 @@ public class QuestionEndTimeChecker extends Thread {
 		if (resultSet.next()) {
 			final long id = resultSet.getLong(1);
 			final long endDate = resultSet.getDate(2).getTime();
-			final String type = resultSet.getString(3);
-			String tableName = "";
-			if (type.equals("PRIVATE")) {
-				tableName = PrivateQuestion.TABLE_NAME;
-			} else if (type.equals("PUBLIC")) {
-				tableName = PublicQuestion.TABLE_NAME;
-			}
+			final String tableName = resultSet.getString(3);
 			return new AbstractQuestion(id, endDate, tableName);
 		}
 		return null;

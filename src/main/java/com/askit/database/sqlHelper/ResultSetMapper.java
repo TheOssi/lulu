@@ -1,4 +1,4 @@
-package com.askit.database;
+package com.askit.database.sqlHelper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
