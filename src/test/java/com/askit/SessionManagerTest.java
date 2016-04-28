@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DriverNotFoundException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.WrongHashException;
@@ -24,14 +25,14 @@ public class SessionManagerTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws IOException, SQLException, DriverNotFoundException {
 		for (int i = 0; i < usernames.length; i++) {
-			TestUtil.createDatabase();
-			TestUtil.createUser(usernames[i], passwordHashes[i]);
+			//TestUtil.createDatabase();
+			//TestUtil.createUser(usernames[i], passwordHashes[i]);
 		}
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws SQLException, DriverNotFoundException {
-		TestUtil.deleteDatabase();
+		//TestUtil.deleteDatabase();
 	}
 
 	@Before
@@ -53,7 +54,7 @@ public class SessionManagerTest {
 	public void testCreateSessionSimple() {
 		try {
 			SessionManager.getInstance().createSession(usernames[0], passwordHashes[0]);
-		} catch (WrongHashException | DuplicateHashException e) {
+		} catch (WrongHashException | DuplicateHashException | DatabaseLayerException e) {
 			e.printStackTrace();
 			fail("a exception appeared: " + e.getMessage());
 		}
@@ -68,7 +69,7 @@ public class SessionManagerTest {
 	public void testCreateSessionWithNullHash() {
 		try {
 			SessionManager.getInstance().createSession(null, null);
-		} catch (WrongHashException | DuplicateHashException e) {
+		} catch (WrongHashException | DuplicateHashException | DatabaseLayerException e) {
 			e.printStackTrace();
 			fail("a exception appeared: " + e.getMessage());
 		}
@@ -78,7 +79,7 @@ public class SessionManagerTest {
 	public void testCreateSessionWithFalseHash() throws WrongHashException {
 		try {
 			SessionManager.getInstance().createSession("THISISNOTAUSER", "THISISNOTAHASH");
-		} catch (DuplicateHashException e) {
+		} catch (DuplicateHashException | DatabaseLayerException e) {
 			e.printStackTrace();
 			fail("a exception appeared: " + e.getMessage());
 		}

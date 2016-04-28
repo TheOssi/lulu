@@ -10,6 +10,7 @@ public class RegIDHandler {
 	private final Map<Long, String> regIDs = new HashMap<Long, String>();
 
 	private RegIDHandler() {
+		
 	}
 
 	public static synchronized RegIDHandler getInstance() {

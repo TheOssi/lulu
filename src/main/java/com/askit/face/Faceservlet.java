@@ -3,6 +3,7 @@ package com.askit.face;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,6 +18,9 @@ import com.askit.face.innerclasses.DeleteRequest;
 import com.askit.face.innerclasses.GetRequest;
 import com.askit.face.innerclasses.PostRequest;
 import com.askit.face.innerclasses.PutRequest;
+import com.askit.notification.NotificationHandler;
+import com.askit.notification.NotificationSender;
+import com.askit.notification.RegIDHandler;
 
 /**
  * Servlet implementation class Faceservlet
@@ -30,6 +34,23 @@ public class Faceservlet extends HttpServlet {
 	 */
 	public Faceservlet() {
 		super();
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
+	 * Init: Runs all the basic methods at the beginning.
+	 */
+	@Override
+	public void init(ServletConfig config) {
+		try {
+			super.init();
+		} catch (ServletException e) {
+			e.printStackTrace();
+		}
+		SessionManager.getInstance().start();
+		NotificationSender.getInstace().startThread();
+		RegIDHandler.getInstance();
+		NotificationHandler.getInstace();
 	}
 
 	/**
