@@ -24,10 +24,8 @@ public class testRequestTest {
 			sessionhash = SessionManager.getInstance().createSession("1234", "bla");
 			ar[0] = sessionhash;
 		} catch (final WrongHashException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (final DuplicateHashException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		parameters.put("SESSIONHASH", ar);
