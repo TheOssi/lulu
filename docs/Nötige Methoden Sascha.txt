@@ -195,27 +195,55 @@ public class Steuerung {
     public void getUserName(){
 
     }
-
+	/*
+		 * GET /USER
+		 * 
+		 * @params: GROUPID: Long SEARCH: String, SearchPattern QUESTIONID: Long
+		 * ANSWERID: Long PUBLIC: Boolean Example:
+		 * /USER?QUESTIONID=32&ANSWERID=23&PUBLIC="TRUE"
+		 */
     // Liefert alle Nutzernamen einer Frage zurück.
     public void getAllUserNamesQuestion(){
 
     }
-
+	/*
+		 * GET /USER
+		 * 
+		 * @params: GROUPID: Long SEARCH: String, SearchPattern QUESTIONID: Long
+		 * ANSWERID: Long PUBLIC: Boolean Example:
+		 * /USER?QUESTIONID=32&ANSWERID=23&PUBLIC="TRUE"
+		 */
     //Liefert die Nutzernamen, die eine bestimmte Antwort ausgewählt haben.
     public void getUserNamesAnswer(){
 
     }
-
+	/*
+		 * GET /USER
+		 * 
+		 * @params: GROUPID: Long SEARCH: String, SearchPattern QUESTIONID: Long
+		 * ANSWERID: Long PUBLIC: Boolean Example:
+		 * /USER?QUESTIONID=32&ANSWERID=23&PUBLIC="TRUE"
+		 */
     // Liefert alle Nutzernamen der Gruppe.
     public void getGroupUserNames(){
 
     }
-
+	// /USER/SCORE/ID + GROUPID=ID Pattern returns Global or Group Score
+		/*
+		 * GET /USER/SCORE/ID
+		 * 
+		 * @params: GROUPID: Long Example: /USER/SCORE/1234?GROUPID=423
+		 */
     // Liefert den globalen Score eines Benutzers zurück.
     public void getUserGlobalScore(){
 
     }
-
+	// /USER/SCORE/ID + GROUPID=ID Pattern returns Global or Group Score
+		/*
+		 * GET /USER/SCORE/ID
+		 * 
+		 * @params: GROUPID: Long Example: /USER/SCORE/1234?GROUPID=423
+		 */
     // Liefert den Score eines Benutzers einer Gruppe zurück.
     public void getUserGroupScore(){
 
@@ -236,142 +264,230 @@ public class Steuerung {
     public void getPhoneNumber(){
 
     }
-
+	*
+		 * GET /ANSWERS
+		 * 
+		 * @params: QUESTIONID USERID PUBLIC Example: /ANSWERS?USERID=123&QUESTIONID=123
+		 */
     // Liefert die ausgewählte Antwort vom User zurück.
     public void getSelectedAnswer() {
 
     }
-
+	*
+		 * GET /ANSWERS
+		 * 
+		 * @params: QUESTIONID USERID PUBLIC Example: /ANSWERS?QUESTIONID=123
+		 */
     // Gibt alle möglichen Antworten zurück und die Anzahl, wie oft eine Antwort angeklickt worden ist.
     public void getAllAnswersAndCount(){
 
     }
-
+	//Gibts nicht
     // Liefert den Platz in der Gruppe zurück.
     public void getRankingInGroup(){
 
     }
-
+	//existiert nicht
     // Liefert den Hash vom Passwort
     public void getPassword(){
 
     }
-
+	//same
     // Liefert alle aktive Fragen des Benutzers zurück.
     public void getAktivQuestions(){
 
     }
-
+	//same
     // Liefert alle vergangene Fragen des Benutzers zurück.
     public void getArchivQuestions(){
 
     }
-
+	//same
     // Liefert alle vergangenen Fragen einer Gruppe zurück.
     public void getArchivQuestionsGroup(){
 
     }
-
+	/*
+		 * GET /QUESTIONS
+		 * 
+		 * @params: USERID QUANTITY: Integer LANGUAGE: String ACTIVE: Boolean
+		 * START: StartIndex GROUPID: Long ACTIVE: Boolean SEARCH: String,
+		 * seachPattern
+		 */
     // Liefert das Bild einer Gruppe zurück
     public void getGroupPicture(){
 
     }
-
+    // Answer Parameter + Question = getUsersofAnswer
+		// Public Flag --> true when "TRUE" , FALSE --> when not set
+	/*
+		 * GET /USER
+		 * 
+		 * @params: GROUPID: Long SEARCH: String, SearchPattern QUESTIONID: Long
+		 * ANSWERID: Long PUBLIC: Boolean Example:
+		 * /USER?QUESTIONID=32&ANSWERID=23&PUBLIC="TRUE"
+		 */
     // Liefret das Profilbild des Users zurück.
     public void getUserProfilPicture(){
 
     }
-
+	// Answer Parameter + Question = getUsersofAnswer
+		// Public Flag --> true when "TRUE" , FALSE --> when not set
     // Liefert die ausgewählte Sprache.
     public void getLanguage(){
 
     }
-
+	/*
+		 * PUT /USER Parameters: USERID: Long USERNAME: String LANGUAGE: String
+		 * PASSWORDHASH: String PHONEHASH: String PICTUREURL: String
+		 */
+	
     // Setze die ausgewählte Sprache.
     public void setLanguage(){
 
     }
-
+	/*
+		 * PUT /USER Parameters: USERID: Long USERNAME: String LANGUAGE: String
+		 * PASSWORDHASH: String PHONEHASH: String PICTUREURL: String
+		 */
+	
     // Setze ein neues Bild als Profilbild.
     public void setUserProfilPicture(){
 
     }
-
+	/*
+		 * PUT /GROUP Parameters: USERID: Long GROUPID: Long GROUNAME: String
+		 * PICTUREURL: String
+		 */
     // Setze ein neues Bild als Gruppenbild.
     public void setGroupPicture(){
 
     }
-
+	/*
+		 * PUT /USER Parameters: USERID: Long USERNAME: String LANGUAGE: String
+		 * PASSWORDHASH: String PHONEHASH: String PICTUREURL: String
+		 */
     // Setzt ein neues Passwort.
     public void setPassword(){
 
     }
-
+	* POST /ANSWER
+		 * 
+		 * @params: PUBLIC: Boolean, defines if related to Public or Private
+		 * Question QUESTIONID: Long ANSWER: String, answer as Text ANSWERID:
+		 * Long, when related to another answer
+		 */
     // Setze die vom User gewählte Antwort.
     public void setSelectedAnswer(){
 
     }
-
+	* POST /ANSWER
+		 * 
+		 * @params: PUBLIC: Boolean, defines if related to Public or Private
+		 * Question QUESTIONID: Long ANSWER: String, answer as Text ANSWERID:
+		 * Long, when related to another answer
+		 */
     //Nach Ende der Wette, kann der Admin die richtige Antwort setzen. Nur in Gruppen !
     public void setRightAnswer(){
 
     }
-
+	/*
+		 * PUT /GROUP Parameters: USERID: Long GROUPID: Long GROUNAME: String
+		 * PICTUREURL: String
+		 */
     // Setze einen anderen User der Gruppe als Admin.
     public void setGroupAdmin(){
 
     }
-
+	/*
+		 * PUT /USER Parameters: USERID: Long USERNAME: String LANGUAGE: String
+		 * PASSWORDHASH: String PHONEHASH: String PICTUREURL: String
+		 */
     // Setze eine neue Handynummer
     public void setPhoneNumber(){
 
     }
-
+	/*
+		 * PUT /GROUP Parameters: USERID: Long GROUPID: Long GROUNAME: String
+		 * PICTUREURL: String
+		 */
     // Setze den Namen einer Gruppe.
     public void setGroupName(){
 
     }
-
+	/*
+		 * PUT /USER Parameters: USERID: Long USERNAME: String LANGUAGE: String
+		 * PASSWORDHASH: String PHONEHASH: String PICTUREURL: String
+		 */
     // Setze einen neuen Usernamen
     public void setUsername(){
 
     }
-
+	/*
+		 * DELETE /QUESTION PARAMETERS: QUESTIONID: Long PUBLIC: Boolean Deletes
+		 * Deletes Private Question
+		 */
     // Der Admin hat die Möglichkeit eine Frage zu löschen.
     public void deleteBet(){
 
     }
-
+	/*
+		 * DELETE /USER PARAMETERS: USERID: Long, CONTACTID: Long Deletes
+		 * Contact from User OR Deletes User from Group
+		 */
     // Verlassen einer Gruppe. Oder der Admin löscht jemanden.
     public void deleteFromGroup(){
 
     }
-
+	/*
+		 * DELETE /GROUP PARAMETERS: GROUPID: Long Deletes Group
+		 */
     // Die gesamte Gruppe löschen. Kann nur der Admin der Gruppe.
     public void deleteGroup(){
 
     }
-
+	/*
+		 * DELETE /USER PARAMETERS: USERID: Long, CONTACTID: Long Deletes
+		 * Contact from User OR Deletes User from Group
+		 */
     // Lösche einen anderen User von der Freundesliste.
     public void deleteFriend(){
 
     }
-
+	/*
+		 * GET /QUESTIONS
+		 * 
+		 * @params: USERID QUANTITY: Integer LANGUAGE: String ACTIVE: Boolean
+		 * START: StartIndex GROUPID: Long ACTIVE: Boolean SEARCH: String,
+		 * seachPattern
+		 */
     // Suche in eigenen Gruppen.
     public void searchInMyGroups(){
 
     }
-
+	/*
+		 * GET /QUESTIONS
+		 * 
+		 * @params: USERID QUANTITY: Integer LANGUAGE: String ACTIVE: Boolean
+		 * START: StartIndex GROUPID: Long ACTIVE: Boolean SEARCH: String,
+		 * seachPattern
+		 */
     // Suche in einer Gruppe nach einer Frage.
     public void searchInGroupForBet(){
 
     }
-
+	/*
+		 * GET /QUESTIONS
+		 * 
+		 * @params: USERID QUANTITY: Integer LANGUAGE: String ACTIVE: Boolean
+		 * START: StartIndex GROUPID: Long ACTIVE: Boolean SEARCH: String,
+		 * seachPattern
+		 */
     // Suche öffentlich nach Fragen, die mit dem Wort/ Filter was zu tun haben (DE oder INT wird mitgeschickt).
     public void seachPublicQuestion(){
 
     }
-
+	
     // Der Admin kann eine Frage sofort beenden. Nur in Gruppen möglich.
     public void finishQuestion(){
 
