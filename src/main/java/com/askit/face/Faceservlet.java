@@ -18,12 +18,17 @@ import com.askit.face.innerclasses.DeleteRequest;
 import com.askit.face.innerclasses.GetRequest;
 import com.askit.face.innerclasses.PostRequest;
 import com.askit.face.innerclasses.PutRequest;
+import com.askit.face.innerclasses.Request;
 import com.askit.notification.NotificationHandler;
 import com.askit.notification.NotificationSender;
 import com.askit.notification.RegIDHandler;
 
 /**
- * Servlet implementation class Faceservlet
+ * @author Max Lenk
+ * @version 1.0.0.0
+ * @since 1.0.0.0
+ * 
+ *        Servlet implementation class Faceservlet
  */
 @WebServlet("/Face/*")
 public class Faceservlet extends HttpServlet {
@@ -35,16 +40,18 @@ public class Faceservlet extends HttpServlet {
 	public Faceservlet() {
 		super();
 	}
+
 	/*
 	 * (non-Javadoc)
-	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
-	 * Init: Runs all the basic methods at the beginning.
+	 * 
+	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig) Init:
+	 * Runs all the basic methods at the beginning.
 	 */
 	@Override
-	public void init(ServletConfig config) {
+	public void init(final ServletConfig config) {
 		try {
 			super.init();
-		} catch (ServletException e) {
+		} catch (final ServletException e) {
 			e.printStackTrace();
 		}
 		SessionManager.getInstance().start();
@@ -58,22 +65,16 @@ public class Faceservlet extends HttpServlet {
 	 *      response)
 	 */
 	@Override
-	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) {
+		// TODO what if out = null (check this everywhere)
+		final PrintWriter out = getPrintWriterSlienty(response);
 
-		final PrintWriter out = response.getWriter();
-
+		// TODO check, if this comment out is okay -> delete it
 		// out.println("GET request handling");
-		out.println(request.getPathInfo());
+		// out.println(request.getPathInfo());
 		// out.println(request.getParameterMap());
-		try {
-			final GetRequest resourceValues = new GetRequest(request.getPathInfo(), request.getParameterMap(), out);
-			resourceValues.handleRequest();
-
-		} catch (final ServletException | MissingParametersException | DatabaseLayerException | WrongHashException
-				| DuplicateHashException e) {
-			handleException(e, out);
-		}
-
+		final GetRequest resourceValues = new GetRequest(request.getPathInfo(), request.getParameterMap(), out);
+		handleRequest(resourceValues, response, out);
 		out.close();
 	}
 
@@ -83,57 +84,25 @@ public class Faceservlet extends HttpServlet {
 	 */
 	@Override
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) {
-		PrintWriter out = null;
-		try {
-			out = response.getWriter();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		final PrintWriter out = getPrintWriterSlienty(response);
 		final PostRequest post = new PostRequest(request.getPathInfo(), request.getParameterMap(), out);
-		try {
-			post.handleRequest();
-		} catch (final ServletException | MissingParametersException | DatabaseLayerException | WrongHashException
-				| DuplicateHashException e) {
-			handleException(e, out);
-		}
+		handleRequest(post, response, out);
 		out.close();
 	}
 
 	@Override
-	protected void doPut(final HttpServletRequest request, final HttpServletResponse response)
-			throws ServletException, IOException {
-		PrintWriter out = null;
-		try {
-			out = response.getWriter();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	protected void doPut(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+		final PrintWriter out = getPrintWriterSlienty(response);
 		final PutRequest put = new PutRequest(request.getPathInfo(), request.getParameterMap(), out);
-		try {
-			put.handleRequest();
-		} catch (final ServletException | MissingParametersException | DatabaseLayerException | WrongHashException
-				| DuplicateHashException e) {
-			handleException(e, out);
-		}
+		handleRequest(put, response, out);
 		out.close();
 	}
 
 	@Override
-	protected void doDelete(final HttpServletRequest request, final HttpServletResponse response)
-			throws ServletException, IOException {
-		PrintWriter out = null;
-		try {
-			out = response.getWriter();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	protected void doDelete(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+		final PrintWriter out = getPrintWriterSlienty(response);
 		final DeleteRequest delete = new DeleteRequest(request.getPathInfo(), request.getParameterMap(), out);
-		try {
-			delete.handleRequest();
-		} catch (final ServletException | MissingParametersException | DatabaseLayerException | WrongHashException
-				| DuplicateHashException e) {
-			handleException(e, out);
-		}
+		handleRequest(delete, response, out);
 		out.close();
 
 	}
@@ -141,19 +110,36 @@ public class Faceservlet extends HttpServlet {
 	/*
 	 * handles various Exceptions and prints stacktrace to log
 	 */
-	private int handleException(Exception e, PrintWriter out) {
-		JSONBuilder jb = new JSONBuilder();
-		int status = 500;
+	private void handleException(final Exception exception, final HttpServletResponse response, final PrintWriter out) {
+		final JSONBuilder jsonBuilder = new JSONBuilder();
+		int status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 		// TODO nicht nach auﬂen geben
-		out.print(jb.createJSON(e));
-		e.printStackTrace();
-		if (e instanceof DuplicateHashException || e instanceof WrongHashException) {
-			status = 402;
-		} else if (e instanceof ServletException || e instanceof MissingParametersException) {
+		out.print(jsonBuilder.createJSON(exception));
+		exception.printStackTrace();
 
-			status = 404;
+		if (exception instanceof DuplicateHashException || exception instanceof WrongHashException) {
+			status = HttpServletResponse.SC_PAYMENT_REQUIRED;
+		} else if (exception instanceof ServletException || exception instanceof MissingParametersException) {
+			status = HttpServletResponse.SC_NOT_FOUND;
 		}
-		return status;
+		response.setStatus(status);
 	}
 
+	private PrintWriter getPrintWriterSlienty(final HttpServletResponse response) {
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
+		return out;
+	}
+
+	private void handleRequest(final Request request, final HttpServletResponse response, final PrintWriter out) {
+		try {
+			request.handleRequest();
+		} catch (final ServletException | MissingParametersException | DatabaseLayerException | WrongHashException | DuplicateHashException e) {
+			handleException(e, response, out);
+		}
+	}
 }
