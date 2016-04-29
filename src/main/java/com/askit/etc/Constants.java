@@ -2,11 +2,6 @@ package com.askit.etc;
 
 public class Constants {
 	/*
-	 * schema constants
-	 */
-	public static final String SCHEMA_NAME = "APP";
-
-	/*
 	 * Parameters Constants
 	 */
 

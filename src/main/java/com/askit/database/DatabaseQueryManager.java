@@ -15,6 +15,7 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.askit.database.sqlHelper.Constants;
 import com.askit.database.sqlHelper.ResultSetMapper;
 import com.askit.database.sqlHelper.SQLFactory;
 import com.askit.database.sqlHelper.SQLUtil;
@@ -27,7 +28,6 @@ import com.askit.entities.PrivateQuestionToUser;
 import com.askit.entities.PublicQuestion;
 import com.askit.entities.PublicQuestionToUser;
 import com.askit.entities.User;
-import com.askit.etc.Constants;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DriverNotFoundException;
 
