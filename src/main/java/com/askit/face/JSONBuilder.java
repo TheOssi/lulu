@@ -1,4 +1,4 @@
-package com.askit.face;
+package com.askit.face; //TODO better naming for package?
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 /**
- * @author D062391
+ * @author Max Lenk
  *
  */
 public class JSONBuilder {
@@ -21,7 +21,7 @@ public class JSONBuilder {
 
 	/**
 	 * Generates a JSON for a single object
-	 * 
+	 *
 	 * @param object
 	 *            the object which should be a JSON
 	 * @return a JSON object
@@ -37,7 +37,7 @@ public class JSONBuilder {
 
 	/**
 	 * Generates a JSON from a collection
-	 * 
+	 *
 	 * @param objectArray
 	 *            a array of object which should be a JSON
 	 * @return a JSON object
@@ -48,19 +48,19 @@ public class JSONBuilder {
 		for (final Object currentObject : objectArray) {
 			jsonArray.add(gson.toJsonTree(currentObject));
 		}
-		jsonObject.add(objectArray.getClass().getSimpleName().substring(0,
-				objectArray.getClass().getSimpleName().length() - 2), jsonArray);
+		jsonObject.add(objectArray.getClass().getSimpleName().substring(0, objectArray.getClass().getSimpleName().length() - 2), jsonArray);
 		return gson.toJson(jsonObject);
 	}
 
 	/**
 	 * Removes all null's of a JSON
-	 * 
+	 *
 	 * @param json
 	 *            the JSON to edit
 	 * @return a JSON without null's
 	 */
 	@SuppressWarnings("unused")
+	// TODO use this method and delete annotoation
 	private String removeNulls(final String json) {
 		final Type type = new TypeToken<Map<String, Object>>() {
 		}.getType();

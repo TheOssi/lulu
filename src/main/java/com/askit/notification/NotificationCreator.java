@@ -6,27 +6,30 @@ import com.askit.entities.User;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.NotificationException;
 
+//TODO better class name
+//TODO implement all methods
+
 public class NotificationCreator {
 
 	public NotificationCreator() {
 
 	}
 
-	public void sendNotificationToAllMembersOfAGroup(Notification not, Long groupID) throws DatabaseLayerException, NotificationException {
+	public void sendNotificationToAllMembersOfAGroup(final Notification not, final Long groupID) throws DatabaseLayerException, NotificationException {
 		final QueryManager queryManager = new DatabaseQueryManager();
-		User[] users = queryManager.getUsersOfGroup(groupID);
-		RegIDHandler regIDHandler = RegIDHandler.getInstance();
-		NotificationHandler notificationHandler = NotificationHandler.getInstace();
-		for (User user : users) {
+		final User[] users = queryManager.getUsersOfGroup(groupID);
+		final RegIDHandler regIDHandler = RegIDHandler.getInstance();
+		final NotificationHandler notificationHandler = NotificationHandler.getInstace();
+		for (final User user : users) {
 			if (not.getTo() == null) {
-				Long userID = user.getUserID();
-				String regID = regIDHandler.getRegIDFromUser(userID);
-				if(regID!=null){
+				final Long userID = user.getUserID();
+				final String regID = regIDHandler.getRegIDFromUser(userID);
+				if (regID != null) {
 					not.setTo(regID);
-				}else{
+				} else {
 					throw new NotificationException("No regID for User: " + userID);
 				}
-				
+
 			}
 			notificationHandler.addNotification(not);
 		}

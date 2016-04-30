@@ -1,5 +1,8 @@
 package com.askit.face;
 
+//TODO add trigger calls
+//TODO add notification calls
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -27,7 +30,7 @@ import com.askit.notification.RegIDHandler;
  * @author Max Lenk
  * @version 1.0.0.0
  * @since 1.0.0.0
- * 
+ *
  *        Servlet implementation class Faceservlet
  */
 @WebServlet("/Face/*")
@@ -43,7 +46,7 @@ public class Faceservlet extends HttpServlet {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig) Init:
 	 * Runs all the basic methods at the beginning.
 	 */

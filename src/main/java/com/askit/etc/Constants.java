@@ -1,5 +1,7 @@
 package com.askit.etc;
 
+//TODO move!
+
 public class Constants {
 	/*
 	 * Parameters Constants
