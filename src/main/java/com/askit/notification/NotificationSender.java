@@ -1,5 +1,7 @@
 package com.askit.notification;
 
+//TODO what if the gcm server changes the regID and the client doesn't handle this?
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -12,7 +14,7 @@ import com.google.gson.GsonBuilder;
 public class NotificationSender implements Runnable {
 
 	private static final NotificationSender INSTANCE = new NotificationSender();
-	private static final String AUTH_KEY = "";
+	private static final String AUTH_KEY = ""; // TODO get this from S.
 	private final static String GCM_URL = "https://android.googleapis.com/gcm/send";
 
 	private Thread sendNotificationThread;

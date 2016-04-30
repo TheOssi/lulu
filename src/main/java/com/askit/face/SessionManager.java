@@ -13,6 +13,7 @@ import com.askit.exception.WrongHashException;
 public class SessionManager implements Runnable {
 
 	private static final SessionManager INSTANCE = new SessionManager();
+	// TODO necessray anymore
 	private static final long SESSIONTIME = 10 * 60 * 1000; // Min * 60 * 1000
 
 	private static Thread checkSessionsThread;
@@ -20,7 +21,6 @@ public class SessionManager implements Runnable {
 	private final QueryManager queryManager = new DatabaseQueryManager();
 
 	private SessionManager() {
-
 	}
 
 	public void start() {
@@ -44,14 +44,14 @@ public class SessionManager implements Runnable {
 		}
 	}
 
-	public String createSession(final String username, final String passwordHash)
-			throws WrongHashException, DuplicateHashException, DatabaseLayerException {
-		start();
+	public String createSession(final String username, final String passwordHash) throws WrongHashException, DuplicateHashException,
+			DatabaseLayerException {
+		start(); // TODO move this in the init method of the server
 		if (checkHash(username, passwordHash)) {
+			// TODO think about that
 			final String sessionHash = createSessionHash();
 			if (!sessionMap.containsKey(sessionHash)) {
-				sessionMap.put(sessionHash,
-						new MappedUserHash(username, Calendar.getInstance().getTimeInMillis() + SESSIONTIME));
+				sessionMap.put(sessionHash, new MappedUserHash(username, Calendar.getInstance().getTimeInMillis() + SESSIONTIME));
 				return sessionHash;
 			} else {
 				throw new DuplicateHashException("Hash already existing");
@@ -79,12 +79,12 @@ public class SessionManager implements Runnable {
 		queryManager.checkUser(username, passwordHash);
 		return true;
 		// TODO Hashüberprüfung
-		// return queryManager.checkUser(username, passwordHash);
 	}
 
+	// really unique?; maybe Math-random and dele the String word!!
 	private String createSessionHash() {
 		long hash = Calendar.getInstance().getTimeInMillis();
-		String word = "HalloSaschaKaiIstBloed";
+		final String word = "HalloSaschaKaiIstBloed";
 		for (int i = 0; i < 11; i++) {
 			hash = hash * 31 + word.charAt(i);
 		}
