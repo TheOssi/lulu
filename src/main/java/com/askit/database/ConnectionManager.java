@@ -5,9 +5,10 @@ import java.sql.SQLException;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
+import com.askit.database.sqlHelper.Constants;
+
 //TODO drivernotfoundexception
 //TODO set min und max idle; puffer size
-import com.askit.etc.Constants;
 
 public class ConnectionManager {
 	private static final String MARIA_DB_DRIVER = "org.mariadb.jdbc.Driver";
