@@ -50,10 +50,14 @@ public class Request {
 	 */
 	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
 			DatabaseLayerException, ServletException {
-		final String sessionHash = parameters.get(Constants.PARAMETERS_SESSIONHASH)[0];
+		String sessionHash = null;
+		if (parameters.containsKey(Constants.PARAMETERS_SESSIONHASH)) {
+			sessionHash = parameters.get(Constants.PARAMETERS_SESSIONHASH)[0];
+		}
+
 		matcher = regExSessionPattern.matcher(pathInfo);
 		if (matcher.find()) {
-			if (!parameters.containsKey(Constants.PARAMETERS_PASSWORDHASH)) {
+			if (parameters.containsKey(Constants.PARAMETERS_PASSWORDHASH)) {
 				// TODO HASH in constant
 				final String passwordHash = parameters.get(Constants.PARAMETERS_PASSWORDHASH)[0];
 				// TODO blala?

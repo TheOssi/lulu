@@ -24,7 +24,7 @@ import com.askit.notification.NotificationSender;
 import com.askit.notification.RegIDHandler;
 
 /**
- * @author Max Lenk
+ * @author lelmac
  * @version 1.0.0.0
  * @since 1.0.0.0
  * 
@@ -66,13 +66,9 @@ public class Faceservlet extends HttpServlet {
 	 */
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) {
-		// TODO what if out = null (check this everywhere)
+
 		final PrintWriter out = getPrintWriterSlienty(response);
 
-		// TODO check, if this comment out is okay -> delete it
-		// out.println("GET request handling");
-		// out.println(request.getPathInfo());
-		// out.println(request.getParameterMap());
 		final GetRequest resourceValues = new GetRequest(request.getPathInfo(), request.getParameterMap(), out);
 		handleRequest(resourceValues, response, out);
 		out.close();
@@ -91,7 +87,8 @@ public class Faceservlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doPut(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+	protected void doPut(final HttpServletRequest request, final HttpServletResponse response)
+			throws ServletException, IOException {
 		final PrintWriter out = getPrintWriterSlienty(response);
 		final PutRequest put = new PutRequest(request.getPathInfo(), request.getParameterMap(), out);
 		handleRequest(put, response, out);
@@ -99,7 +96,8 @@ public class Faceservlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doDelete(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+	protected void doDelete(final HttpServletRequest request, final HttpServletResponse response)
+			throws ServletException, IOException {
 		final PrintWriter out = getPrintWriterSlienty(response);
 		final DeleteRequest delete = new DeleteRequest(request.getPathInfo(), request.getParameterMap(), out);
 		handleRequest(delete, response, out);
@@ -118,7 +116,7 @@ public class Faceservlet extends HttpServlet {
 		exception.printStackTrace();
 
 		if (exception instanceof DuplicateHashException || exception instanceof WrongHashException) {
-			status = HttpServletResponse.SC_PAYMENT_REQUIRED;
+			status = HttpServletResponse.SC_UNAUTHORIZED;
 		} else if (exception instanceof ServletException || exception instanceof MissingParametersException) {
 			status = HttpServletResponse.SC_NOT_FOUND;
 		}
@@ -138,7 +136,8 @@ public class Faceservlet extends HttpServlet {
 	private void handleRequest(final Request request, final HttpServletResponse response, final PrintWriter out) {
 		try {
 			request.handleRequest();
-		} catch (final ServletException | MissingParametersException | DatabaseLayerException | WrongHashException | DuplicateHashException e) {
+		} catch (final ServletException | MissingParametersException | DatabaseLayerException | WrongHashException
+				| DuplicateHashException e) {
 			handleException(e, response, out);
 		}
 	}
