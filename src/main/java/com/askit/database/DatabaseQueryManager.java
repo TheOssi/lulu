@@ -1,7 +1,5 @@
 package com.askit.database;
 
-// TODO Frage abbrechen -> was passiert und Public und/oder Private
-// TODO Sort beachten
 // TODO langu beachten
 
 import java.sql.Connection;
@@ -475,6 +473,7 @@ public class DatabaseQueryManager implements QueryManager {
 		}
 	}
 
+	// TODO sort
 	@Override
 	public Long getUserScoreInGroup(final long userID, final long groupID) throws DatabaseLayerException {
 		PreparedStatement preparedStatement = null;
@@ -988,6 +987,7 @@ public class DatabaseQueryManager implements QueryManager {
 	// DELETE METHODS
 	// ================================================================================
 
+	// TODO delete also the answers, the user->question and the group->question
 	@Override
 	public void deletePrivateQuestion(final long questionID) throws DatabaseLayerException {
 		PreparedStatement preparedStatement = null;
@@ -1063,6 +1063,7 @@ public class DatabaseQueryManager implements QueryManager {
 		throw new DatabaseLayerException("not implemented");
 	}
 
+	// TODO sort
 	@Override
 	public PrivateQuestion[] searchForPrivateQuestionInGroup(final long groupID, final String questionSearchPattern) throws DatabaseLayerException {
 		PreparedStatement preparedStatement = null;
@@ -1084,6 +1085,7 @@ public class DatabaseQueryManager implements QueryManager {
 		}
 	}
 
+	// TODO sort
 	@Override
 	public PublicQuestion[] searchForPublicQuestion(final String nameSearchPattern) throws DatabaseLayerException {
 		PreparedStatement preparedStatement = null;
@@ -1222,6 +1224,7 @@ public class DatabaseQueryManager implements QueryManager {
 		return answersWithCount.toArray((Pair<Answer, Integer>[]) new Pair[answersWithCount.size()]);
 	}
 
+	// TODO sort
 	private PublicQuestion[] getPublicQuestionsOfUserDependingOnStatus(final long userID, final int startIndex, final int quantity,
 			final boolean finished) throws SQLException, DriverNotFoundException {
 		final String statement = "SELECT P.* FROM " + PublicQuestion.TABLE_NAME + " P JOIN " + PublicQuestionToUser.TABLE_NAME
@@ -1231,6 +1234,7 @@ public class DatabaseQueryManager implements QueryManager {
 		return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
 	}
 
+	// TODO sort
 	private PrivateQuestion[] getPrivateQuestionsOfUserDependingOnStatus(final long userID, final int startIndex, final int quantity,
 			final boolean finished) throws SQLException, DriverNotFoundException {
 		final String statement = "SELECT P.* FROM " + PrivateQuestion.TABLE_NAME + " P JOIN " + PrivateQuestionToUser.TABLE_NAME
