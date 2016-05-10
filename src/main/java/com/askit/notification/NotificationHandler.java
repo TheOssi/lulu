@@ -11,7 +11,7 @@ public class NotificationHandler {
 	private NotificationHandler() {
 	}
 
-	public static synchronized NotificationHandler getInstace() {
+	public static synchronized NotificationHandler getInstance() {
 		return INSTANCE;
 	}
 

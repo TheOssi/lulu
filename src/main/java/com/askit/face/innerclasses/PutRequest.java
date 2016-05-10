@@ -7,11 +7,16 @@ import javax.servlet.ServletException;
 
 import com.askit.database.DatabaseQueryManager;
 import com.askit.database.QueryManager;
+import com.askit.entities.User;
 import com.askit.etc.Constants;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
 import com.askit.exception.WrongHashException;
+import com.askit.notification.Notification;
+import com.askit.notification.NotificationCodes;
+import com.askit.notification.NotificationHandler;
+import com.askit.notification.RegIDHandler;
 
 public class PutRequest extends Request {
 
@@ -97,8 +102,16 @@ public class PutRequest extends Request {
 				isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
 				questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
 				answerID = Long.parseLong(parameters.get(Constants.PARAMETERS_ANSWERID)[0]);
+				NotificationHandler notificationHandler = NotificationHandler.getInstance();
+				RegIDHandler regHandler = RegIDHandler.getInstance();
 				if (!isPublic) {
 					queryManager.setSelectedAnswerOfPrivateQuestion(questionID, answerID);
+					
+					for(User user :queryManager.getUsersOfPrivateQuestion(questionID)){
+						String regID = regHandler.getRegIDFromUser(user.getUserID());
+						Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_ANSWER_SET.getCode(),"questionID", questionID.toString());
+						notificationHandler.addNotification(not);
+					}
 				}
 
 			} else if (parameters.containsKey(Constants.PARAMETERS_QUESTIONID)
@@ -111,8 +124,11 @@ public class PutRequest extends Request {
 				userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
 				if (!isPublic) {
 					queryManager.setChoosedAnswerOfPrivateQuestion(userID, questionID, answerID);
+					//Trigger.setPointsForAnsweringAPrivateQuestion(groupID, userID);
 				} else {
 					queryManager.setChoosedAnswerOfPublicQuestion(userID, questionID, answerID);
+					
+					//Trigger.setPointsForAnsweringAPublicQuestion(userID, hostID);
 				}
 			} else {
 				throw new MissingParametersException();

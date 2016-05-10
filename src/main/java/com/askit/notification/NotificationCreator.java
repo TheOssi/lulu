@@ -19,7 +19,7 @@ public class NotificationCreator {
 		final QueryManager queryManager = new DatabaseQueryManager();
 		final User[] users = queryManager.getUsersOfGroup(groupID);
 		final RegIDHandler regIDHandler = RegIDHandler.getInstance();
-		final NotificationHandler notificationHandler = NotificationHandler.getInstace();
+		final NotificationHandler notificationHandler = NotificationHandler.getInstance();
 		for (final User user : users) {
 			if (not.getTo() == null) {
 				final Long userID = user.getUserID();

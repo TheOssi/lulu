@@ -60,7 +60,7 @@ public class Faceservlet extends HttpServlet {
 		SessionManager.getInstance().start();
 		NotificationSender.getInstace().startThread();
 		RegIDHandler.getInstance();
-		NotificationHandler.getInstace();
+		NotificationHandler.getInstance();
 	}
 
 	/**

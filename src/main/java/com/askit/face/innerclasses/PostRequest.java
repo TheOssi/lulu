@@ -19,6 +19,9 @@ import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
 import com.askit.exception.WrongHashException;
+import com.askit.notification.Notification;
+import com.askit.notification.NotificationCodes;
+import com.askit.notification.NotificationHandler;
 import com.askit.notification.RegIDHandler;
 
 public class PostRequest extends Request {
@@ -160,6 +163,8 @@ public class PostRequest extends Request {
 
 		matcher = regExUserPattern.matcher(this.pathInfo);
 		if (matcher.find()) {
+			NotificationHandler notificationHandler = NotificationHandler.getInstance();
+			RegIDHandler regHandler = RegIDHandler.getInstance();
 			if (userName != null && phoneNumberHash != null && passwordHash != null && language != null) {
 				final Date accessionDate = null;
 				final String profilePictureURI = null;
@@ -174,11 +179,17 @@ public class PostRequest extends Request {
 			} else if (userID != null && groupID != null) {
 				queryManager.addUserToGroup(groupID, userID);
 				out.println("{message: " + "Sucessfully added User to Group}");
+				regID = regHandler.getRegIDFromUser(userID);
+				Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_ADDED_TO_GROUP.getCode(),"groupID", groupID.toString());
+				notificationHandler.addNotification(not);
 			} else if (userID != null && questionID != null && isOneTime) {
 				queryManager.addUserToOneTimeQuestion(userID, questionID);
 				out.println("{message: " + "Sucessfully added User to Question}");
 			} else if (userID != null && questionID != null && isPublic) {
 				queryManager.addUserToPublicQuestion(questionID, userID);
+				regID = regHandler.getRegIDFromUser(userID);
+				Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_INVITE_PUBLIC.getCode(),"questionID", questionID.toString());
+				notificationHandler.addNotification(not);
 				out.println("{message: " + "Sucessfully added User to Question}");
 			} else {
 				throw new MissingParametersException("Missings Parameters");
@@ -216,7 +227,8 @@ public class PostRequest extends Request {
 		 */
 		matcher = regExQuestionPattern.matcher(pathInfo);
 		if (matcher.find()) {
-
+			NotificationHandler notificationHandler = NotificationHandler.getInstance();
+			RegIDHandler regHandler = RegIDHandler.getInstance();
 			Date createDate = Calendar.getInstance().getTime();
 			if (isPublic && question != null && additionalInformation != null && hostID != null && pictureUrl != null
 					&& eDate != null && language != null) {
@@ -224,12 +236,19 @@ public class PostRequest extends Request {
 				PublicQuestion publicQuestion = new PublicQuestion(question, additionalInformation, hostID, pictureUrl,
 						createDate, endDate, optionExtension, isExpired, language);
 				queryManager.createPublicQuestion(publicQuestion);
+				regID = regHandler.getRegIDFromUser(hostID);
+				Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_NEW_QUESTION.getCode(), "hostID", hostID.toString());
+				notificationHandler.addNotification(not);
 			} else if (!isPublic && groupID != null) {
 				Date endDate = new Date(createDate.getTime() + eDate);
 				PrivateQuestion privateQuestion = new PrivateQuestion(question, additionalInformation, hostID,
 						pictureUrl, groupID, endDate, optionExtension, definitionOfEnd, sumOfUsersToAnswer, isExpired,
 						selectedAnswerID, language, isBet);
 				queryManager.createNewPrivateQuestionInGroup(privateQuestion);
+				
+				regID = regHandler.getRegIDFromUser(userID);
+				Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_NEW_QUESTION.getCode(),"hostID", hostID.toString());
+				notificationHandler.addNotification(not);
 			} else if (!isPublic && isOneTime) {
 				Date endDate = new Date(createDate.getTime() + eDate);
 				PrivateQuestion privateQuestion = new PrivateQuestion(question, additionalInformation, hostID,
