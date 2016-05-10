@@ -71,15 +71,15 @@ public class QuestionEndTimeChecker extends Thread {
 					} else if (currentQuestion.getTableName().equals(PublicQuestion.TABLE_NAME)) {
 						new DatabaseQueryManager().setPrivateQuestionToFinish(currentQuestion.getId());
 					}
-					// TODO notification
+					// TODO notification (waiting for M)
 				}
 			} else {
 				this.wait(SLEEP_TIME);
 			}
 		} catch (final SQLException | DatabaseLayerException e) {
 			e.printStackTrace();
-			// TODO exception handling
 		} catch (final InterruptedException e) {
+			e.printStackTrace();
 			startThread();
 		}
 	}

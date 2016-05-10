@@ -104,10 +104,9 @@ public class Trigger {
 		}
 	}
 
-	public static void d(final long questionID) throws DatabaseLayerException {
+	public static void afterAnsweringCheckForEndOfQuestionAndSetPoints(final long questionID) throws DatabaseLayerException {
 		ResultSet resultSet = null;
 		String statement = "";
-
 		try {
 			// get definition of end
 			statement = " SELECT definitionOfEnd FROM final APP.PrivateQuestions WHERE questionID = ? INTO l_definitionOfEnd;";

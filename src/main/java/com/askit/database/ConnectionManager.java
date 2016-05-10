@@ -7,10 +7,15 @@ import org.apache.commons.dbcp2.BasicDataSource;
 
 import com.askit.database.sqlHelper.Constants;
 
-//TODO drivernotfoundexception
-//TODO set min und max idle; puffer size
-
 public class ConnectionManager {
+	private static final int MAX_IDLE = 0;
+	private static final int MIN_IDLE = 0;
+	private static final int MAX_PARALLEL_CONNECTIONS = 100;
+	private static final int INITIAL_IDLE_CONNECTIONS = 5;
+	private static final int MAX_PARALLEL_PREPARED_STATEMENTS = 100;
+	private static final int LOGIN_TIMEOUT = 10000;
+	private static final int QUERY_TIMEOUT = 10000;
+	private static final int MAX_CONNECTION_LIFETIME = 10000;
 	private static final String MARIA_DB_DRIVER = "org.mariadb.jdbc.Driver";
 	private static final String IP_OF_DATABASE = "localhost";
 	private static final String JDBC_PROTOCOLL = "jdbc:mysql";
@@ -55,11 +60,22 @@ public class ConnectionManager {
 		basicDataSource.setDriverClassName(MARIA_DB_DRIVER);
 		basicDataSource.setUrl(URL);
 		basicDataSource.setDefaultAutoCommit(true);
-		basicDataSource.setMinIdle(20);
-		basicDataSource.setMaxIdle(25);
-		basicDataSource.setMaxTotal(-1);
-		basicDataSource.setInitialSize(0);
-		basicDataSource.setMaxOpenPreparedStatements(180);
+		basicDataSource.setMinIdle(MIN_IDLE);
+		basicDataSource.setMaxIdle(MAX_IDLE);
+		basicDataSource.setMaxTotal(MAX_PARALLEL_CONNECTIONS);
+		basicDataSource.setInitialSize(INITIAL_IDLE_CONNECTIONS);
+		basicDataSource.setMaxOpenPreparedStatements(MAX_PARALLEL_PREPARED_STATEMENTS);
+		basicDataSource.setDefaultQueryTimeout(QUERY_TIMEOUT);
+		basicDataSource.setMaxConnLifetimeMillis(MAX_CONNECTION_LIFETIME);
+		tryToSetLoginTimeout(basicDataSource);
+	}
+
+	private void tryToSetLoginTimeout(final BasicDataSource basicDataSource) {
+		try {
+			basicDataSource.setLoginTimeout(LOGIN_TIMEOUT);
+		} catch (final SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static synchronized ConnectionManager getInstance() {

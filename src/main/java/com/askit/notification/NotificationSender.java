@@ -1,15 +1,19 @@
 package com.askit.notification;
 
-//TODO what if the gcm server changes the regID and the client doesn't handle this?
-
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 import com.askit.exception.NotificationException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class NotificationSender implements Runnable {
 
@@ -43,6 +47,29 @@ public class NotificationSender implements Runnable {
 			dataOutputStream.writeBytes(content);
 			dataOutputStream.flush();
 			dataOutputStream.close();
+
+			final int responseCode = connection.getResponseCode();
+			final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String responseString;
+			final StringBuilder response = new StringBuilder();
+
+			while ((responseString = in.readLine()) != null) {
+				response.append(responseString);
+			}
+			in.close();
+
+			final String errorText = getErrorText(responseString);
+			if (responseCode == 200 && errorText.equals("NotRegistered")) {
+				NotificationHandler.getInstace().addNotification(notification);
+			} else if ((responseCode == 200 || responseCode >= 500)
+					&& (errorText.equals("Unavailable") || errorText.equals("error:InternalServerError"))) {
+				NotificationHandler.getInstace().addNotification(notification);
+			} else if (errorText.length() > 0) {
+				throw new NotificationException("Internal Error with code " + responseCode + "and response '" + responseString + "'");
+			}
+
+			// TODO 200 + error: DeviceMessageRate Exceeded
+
 		} catch (final IOException e) {
 			e.printStackTrace();
 			throw new NotificationException(e);
@@ -75,6 +102,16 @@ public class NotificationSender implements Runnable {
 				}
 			}
 		}
+	}
+
+	// TODO what if not avaible (waiting for S.)
+	public String getErrorText(final String json) {
+		final JsonElement parsedJSON = new JsonParser().parse(json);
+		JsonObject jsonObject = parsedJSON.getAsJsonObject();
+		final JsonArray jsonArray = jsonObject.getAsJsonArray("results");
+		jsonObject = jsonArray.get(0).getAsJsonObject();
+		final String result = jsonObject.get("error").toString();
+		return result;
 	}
 
 }
