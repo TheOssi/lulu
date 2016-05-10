@@ -1,7 +1,5 @@
 package com.askit.database;
 
-// TODO langu beachten
-
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -1086,6 +1084,7 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	// TODO sort
+	// TODO language
 	@Override
 	public PublicQuestion[] searchForPublicQuestion(final String nameSearchPattern) throws DatabaseLayerException {
 		PreparedStatement preparedStatement = null;
@@ -1224,7 +1223,6 @@ public class DatabaseQueryManager implements QueryManager {
 		return answersWithCount.toArray((Pair<Answer, Integer>[]) new Pair[answersWithCount.size()]);
 	}
 
-	// TODO sort
 	private PublicQuestion[] getPublicQuestionsOfUserDependingOnStatus(final long userID, final int startIndex, final int quantity,
 			final boolean finished) throws SQLException, DriverNotFoundException {
 		final String statement = "SELECT P.* FROM " + PublicQuestion.TABLE_NAME + " P JOIN " + PublicQuestionToUser.TABLE_NAME
@@ -1234,7 +1232,6 @@ public class DatabaseQueryManager implements QueryManager {
 		return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
 	}
 
-	// TODO sort
 	private PrivateQuestion[] getPrivateQuestionsOfUserDependingOnStatus(final long userID, final int startIndex, final int quantity,
 			final boolean finished) throws SQLException, DriverNotFoundException {
 		final String statement = "SELECT P.* FROM " + PrivateQuestion.TABLE_NAME + " P JOIN " + PrivateQuestionToUser.TABLE_NAME
