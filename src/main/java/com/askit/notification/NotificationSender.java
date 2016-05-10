@@ -25,7 +25,7 @@ public class NotificationSender implements Runnable {
 
 	private final GsonBuilder gsonBuilder = new GsonBuilder();
 	private final Gson gson = gsonBuilder.setPrettyPrinting().create();
-	private final NotificationHandler notificationHandler = NotificationHandler.getInstace();
+	private final NotificationHandler notificationHandler = NotificationHandler.getInstance();
 
 	private NotificationSender() {
 	}
@@ -60,10 +60,10 @@ public class NotificationSender implements Runnable {
 
 			final String errorText = getErrorText(responseString);
 			if (responseCode == 200 && errorText.equals("NotRegistered")) {
-				NotificationHandler.getInstace().addNotification(notification);
+				NotificationHandler.getInstance().addNotification(notification);
 			} else if ((responseCode == 200 || responseCode >= 500)
 					&& (errorText.equals("Unavailable") || errorText.equals("error:InternalServerError"))) {
-				NotificationHandler.getInstace().addNotification(notification);
+				NotificationHandler.getInstance().addNotification(notification);
 			} else if (errorText.length() > 0) {
 				throw new NotificationException("Internal Error with code " + responseCode + "and response '" + responseString + "'");
 			}
