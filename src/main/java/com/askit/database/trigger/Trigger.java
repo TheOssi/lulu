@@ -84,17 +84,17 @@ public class Trigger {
 		}
 	}
 
-	public static void setPointsForAnsweringAPrivateQuestion(final long groupID, final long userID) throws DatabaseLayerException {
+	public static void setPointsForAnsweringAPrivateQuestion(final long questionID, final long userID) throws DatabaseLayerException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		try {
 			final int pointsToAdd = Points.POINTS_PRIVATE_QUESTION_ANSWERED.getPoints();
 			connection = ConnectionManager.getInstance().getWriterConnection();
-			final String statement = "UPDATE APP.GroupsToUsers SET score = (score + ?) WHERE groupID = ( SELECT groupID FROM PrivateQuestions WHERE questionID ="
+			final String statement = "UPDATE APP.GroupsToUsers SET score = (score + ?) WHERE groupID = ( SELECT groupID FROM PrivateQuestions WHERE questionID = "
 					+ "?) AND userID = ?;";
 			preparedStatement = connection.prepareStatement(statement);
 			preparedStatement.setInt(1, pointsToAdd);
-			preparedStatement.setLong(2, groupID);
+			preparedStatement.setLong(2, questionID);
 			preparedStatement.setLong(3, userID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
