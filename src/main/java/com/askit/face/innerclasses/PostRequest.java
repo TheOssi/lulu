@@ -18,6 +18,7 @@ import com.askit.etc.Constants;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
+import com.askit.exception.NotificationException;
 import com.askit.exception.WrongHashException;
 import com.askit.notification.Notification;
 import com.askit.notification.NotificationCodes;
@@ -38,7 +39,7 @@ public class PostRequest extends Request {
 	 */
 	@Override
 	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
-			DatabaseLayerException, ServletException {
+			DatabaseLayerException, ServletException, NotificationException {
 		super.handleRequest();
 
 		final QueryManager queryManager = new DatabaseQueryManager();

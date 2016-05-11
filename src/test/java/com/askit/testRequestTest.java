@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
+import com.askit.exception.NotificationException;
 import com.askit.exception.WrongHashException;
 import com.askit.face.SessionManager;
 import com.askit.face.innerclasses.GetRequest;
@@ -53,6 +54,9 @@ public class testRequestTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (final DuplicateHashException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NotificationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

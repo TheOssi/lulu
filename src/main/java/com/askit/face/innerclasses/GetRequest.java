@@ -18,6 +18,7 @@ import com.askit.etc.Constants;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
+import com.askit.exception.NotificationException;
 import com.askit.exception.WrongHashException;
 import com.askit.face.JSONBuilder;
 import com.askit.notification.RegIDHandler;
@@ -40,7 +41,7 @@ public class GetRequest extends Request {
 	 */
 	@Override
 	public void handleRequest() throws DatabaseLayerException, MissingParametersException, ServletException,
-			WrongHashException, DuplicateHashException {
+			WrongHashException, DuplicateHashException, NotificationException {
 		final JSONBuilder jsonBuilder = new JSONBuilder();
 		final QueryManager queryManager = new DatabaseQueryManager();
 		Long groupID = null;
