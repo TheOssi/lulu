@@ -25,14 +25,13 @@ public class SessionManagerTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws IOException, SQLException, DriverNotFoundException {
 		for (int i = 0; i < usernames.length; i++) {
-			//TestUtil.createDatabase();
-			//TestUtil.createUser(usernames[i], passwordHashes[i]);
+		
 		}
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws SQLException, DriverNotFoundException {
-		//TestUtil.deleteDatabase();
+		
 	}
 
 	@Before

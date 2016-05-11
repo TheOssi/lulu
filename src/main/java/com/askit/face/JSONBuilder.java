@@ -1,4 +1,4 @@
-package com.askit.face; //TODO better naming for package?
+package com.askit.face; 
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

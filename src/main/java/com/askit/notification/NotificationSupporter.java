@@ -6,12 +6,9 @@ import com.askit.entities.User;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.NotificationException;
 
-//TODO better class name
-//TODO implement all methods
+public class NotificationSupporter {
 
-public class NotificationCreator {
-
-	public NotificationCreator() {
+	public NotificationSupporter() {
 
 	}
 

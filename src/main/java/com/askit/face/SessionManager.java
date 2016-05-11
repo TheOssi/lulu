@@ -13,8 +13,7 @@ import com.askit.exception.WrongHashException;
 public class SessionManager implements Runnable {
 
 	private static final SessionManager INSTANCE = new SessionManager();
-	// TODO necessray anymore
-	private static final long SESSIONTIME = 10 * 60 * 1000; // Min * 60 * 1000
+	private static final long SESSIONTIME = 12 * 60 * 1000; // Min * 60 * 1000
 
 	private static Thread checkSessionsThread;
 	private final ConcurrentHashMap<String, MappedUserHash> sessionMap = new ConcurrentHashMap<String, MappedUserHash>();
@@ -46,7 +45,6 @@ public class SessionManager implements Runnable {
 
 	public String createSession(final String username, final String passwordHash) throws WrongHashException, DuplicateHashException,
 			DatabaseLayerException {
-		start(); // TODO move this in the init method of the server
 		if (checkHash(username, passwordHash)) {
 			// TODO think about that
 			final String sessionHash = createSessionHash();
