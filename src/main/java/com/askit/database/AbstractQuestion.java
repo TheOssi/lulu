@@ -1,13 +1,16 @@
 package com.askit.database;
 
 /**
+ * 
+ * This class is a abstract version if a question, so it can holds the main data
+ * from a private and a public question. The tablename is for the differnce
+ * between the two types of questions. <br/>
+ * 
+ * This class is used in the {@link QuestionEndTimeChecker}
+ * 
  * @author Kai Müller
  * @since 1.0.0.0
  * @version 1.0.0.0
- * 
- *          This class is a abstract version if a question, so it can holds the
- *          main data from a private and a public question. The tablename is for
- *          the differnce between the two types of questions.
  *
  */
 public class AbstractQuestion {
@@ -16,9 +19,14 @@ public class AbstractQuestion {
 	private final String tableName;
 
 	/**
+	 * Constructor for a new abstract question.
+	 * 
 	 * @param id
+	 *            the id of the question
 	 * @param time
+	 *            the end time of the question
 	 * @param tableName
+	 *            the table of the question (private or public)
 	 */
 	public AbstractQuestion(final Long id, final Long time, final String tableName) {
 		this.id = id;
