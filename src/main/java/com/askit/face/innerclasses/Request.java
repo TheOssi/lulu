@@ -59,7 +59,6 @@ public class Request {
 		matcher = regExSessionPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			if (parameters.containsKey(Constants.PARAMETERS_PASSWORDHASH)) {
-				// TODO HASH in constant
 				final String passwordHash = parameters.get(Constants.PARAMETERS_PASSWORDHASH)[0];
 				// TODO blala?
 				// TODO using gson
