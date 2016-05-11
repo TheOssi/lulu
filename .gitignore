@@ -2,6 +2,7 @@
 
 ### Eclipse ###
 
+# Normal ignores
 .metadata
 bin/
 tmp/
@@ -11,13 +12,8 @@ build/
 *.swp
 *~.nib
 local.properties
-# .settings/
 .loadpath
 .recommenders
-config/
-
-# Eclipse Core
-# .project
 
 # External tool builders
 .externalToolBuilders/
@@ -30,12 +26,6 @@ config/
 
 # CDT-specific (C/C++ Development Tooling)
 .cproject
-
-# JDT-specific (Eclipse Java Development Tools)
-# .classpath
-
-# Java annotation processor (APT)
-# .factorypath
 
 # PDT-specific (PHP Development Tools)
 .buildpath
@@ -54,3 +44,15 @@ config/
 
 # Code Recommenders
 .recommenders/
+
+# Custom ignores
+config/
+
+
+
+### Comments ###
+# not ignored are: 
+# .settings/
+# .project
+# .factorypath
+# .classpath 

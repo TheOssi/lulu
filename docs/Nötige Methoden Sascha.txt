@@ -1,24 +1,10 @@
-package com.betit.betaskit.Steuerung;
-
 /**
  * Created by Slavisa Markovic on 19.11.15.
  */
 public class Steuerung {
 
-    // Verbindung zur Datenbank aufbauen mit Session Cookie
-    public Steuerung(){
-
-    }
-
-    // Die Steurung an die MainActivity Ã¼bergeben, damit sie diese verwenden kann.
-    public Steuerung getSteuerung(){
-        return this;
-    }
-
-
-
     /*
-    Ab hier beginnen die Methoden fÃ¼r den Datenbankzugriff.
+    Ab hier beginnen die Methoden für den Datenbankzugriff.
      */
 
 
@@ -27,7 +13,7 @@ public class Steuerung {
 	PHONEHASH: String 
 	PASSWORDHASH: String 
 	LANGUAGE: String
-    // FÃ¼ge einen Benutzer hinzu.
+    // Füge einen Benutzer hinzu.
     public void addUser(){
 
     }
@@ -36,7 +22,7 @@ public class Steuerung {
 		 * 
 		 * @params: GROUPNAME: String ADMINID: Long PICTUREURL: String
 		 */
-    // FÃ¼ge eine Gruppe hinzu
+    // Füge eine Gruppe hinzu
     public void addGroup(){
 
     }
@@ -46,7 +32,7 @@ public class Steuerung {
 		 * @params: GROUPID: Long 
 		 USERID: Long
 		 */
-    // Einen Benutzer zu einer Gruppe hinzufÃ¼gen.
+    // Einen Benutzer zu einer Gruppe hinzufügen.
     public void addUserToGroup(){
 
     }
@@ -56,7 +42,7 @@ public class Steuerung {
 		 * @params: CONTACTID: Long 
 		 USERID: Long
 		 */
-    // FÃ¼ge einen anderen User zu der Freundesliste hinzu.
+    // Füge einen anderen User zu der Freundesliste hinzu.
     public void addNewFriend(){
 
     }
@@ -67,7 +53,7 @@ public class Steuerung {
 		 QUESTIONID: Long 
 		 PUBLIC: Boolean(true in this case)
 		 */
-    // FÃ¼ge eine Benutzer zu einer Ã¶ffentlchen Frage hinzu.
+    // Füge eine Benutzer zu einer öffentlchen Frage hinzu.
     public void addUserToQuestion(){
 
     }
@@ -82,7 +68,7 @@ public class Steuerung {
 		 ENDDATE: Date
 		 LANGUAGE: String
 		 */
-    // FÃ¼ge eine Ã¶ffentliche Wette oder Frage hinzu. (Attribut wo (DE oder INT) wird mitgeschickt).
+    // Füge eine öffentliche Wette oder Frage hinzu. (Attribut wo (DE oder INT) wird mitgeschickt).
     public void addPublicQuestion() {
 
     }
@@ -104,7 +90,7 @@ public class Steuerung {
 		 SELECTEDANSWER: Long, AnswerID
 		 ISBET: Boolean
 		 */
-    //FÃ¼ge eine Wette in einer Gruppe hinzu
+    //Füge eine Wette in einer Gruppe hinzu
     public void addQuestionInGroup(){
 
     }
@@ -139,7 +125,7 @@ public class Steuerung {
 		 *ANSWER: String, answer as Text 
 		 *ANSWERID: Long, when related to another answer
 		 */
-    // FÃ¼ge zu der Frage eine mÃ¶gliche Antwort hinzu.
+    // Füge zu der Frage eine mögliche Antwort hinzu.
     public void addAnswer(){
 
     }
@@ -148,7 +134,7 @@ public class Steuerung {
 		 * 
 		 * @params: PUBLIC: boolean Example: /QUESTION/123?PUBLIC=TRUE
 		 */
-    //Liefert eine Frage mit allen dazugehÃ¶rigen Daten zurÃ¼ck.
+    //Liefert eine Frage mit allen dazugehörigen Daten zurück.
     public void getQuestion(){
 
     }
@@ -159,7 +145,7 @@ public class Steuerung {
 		 * START: StartIndex GROUPID: Long ACTIVE: Boolean SEARCH: String,
 		 * seachPattern
 		 */
-    // Liefert alle Fragen einer Gruppe zurÃ¼ck und deren Metdaten.
+    // Liefert alle Fragen einer Gruppe zurück und deren Metdaten.
     public void getGroupQuestion(){
 
     }
@@ -186,12 +172,12 @@ public class Steuerung {
 		 * /USER?QUESTIONID=32&ANSWERID=23&PUBLIC="TRUE"
 		 */
 	
-    // Dem Server wird ein UserName Ã¼bergeben und es sollen alle ausgegeben werden, die in Frage kommen.
+    // Dem Server wird ein UserName übergeben und es sollen alle ausgegeben werden, die in Frage kommen.
     public void getUserWithName(){
 
     }
 	/ GET /USER/ID
-    // Liefert den Nutzernamen eines Benutzers zurÃ¼ck.
+    // Liefert den Nutzernamen eines Benutzers zurück.
     public void getUserName(){
 
     }
@@ -202,7 +188,7 @@ public class Steuerung {
 		 * ANSWERID: Long PUBLIC: Boolean Example:
 		 * /USER?QUESTIONID=32&ANSWERID=23&PUBLIC="TRUE"
 		 */
-    // Liefert alle Nutzernamen einer Frage zurÃ¼ck.
+    // Liefert alle Nutzernamen einer Frage zurück.
     public void getAllUserNamesQuestion(){
 
     }
@@ -213,7 +199,7 @@ public class Steuerung {
 		 * ANSWERID: Long PUBLIC: Boolean Example:
 		 * /USER?QUESTIONID=32&ANSWERID=23&PUBLIC="TRUE"
 		 */
-    //Liefert die Nutzernamen, die eine bestimmte Antwort ausgewÃ¤hlt haben.
+    //Liefert die Nutzernamen, die eine bestimmte Antwort ausgewählt haben.
     public void getUserNamesAnswer(){
 
     }
@@ -234,7 +220,7 @@ public class Steuerung {
 		 * 
 		 * @params: GROUPID: Long Example: /USER/SCORE/1234?GROUPID=423
 		 */
-    // Liefert den globalen Score eines Benutzers zurÃ¼ck.
+    // Liefert den globalen Score eines Benutzers zurück.
     public void getUserGlobalScore(){
 
     }
@@ -244,18 +230,18 @@ public class Steuerung {
 		 * 
 		 * @params: GROUPID: Long Example: /USER/SCORE/1234?GROUPID=423
 		 */
-    // Liefert den Score eines Benutzers einer Gruppe zurÃ¼ck.
+    // Liefert den Score eines Benutzers einer Gruppe zurück.
     public void getUserGroupScore(){
 
     }
 
     // Liefert eine Liste mit allen GruppenNamen in denen der User ist und seiner Punktzahl.
-    // Es soll auch Global zurÃ¼ckgegeben werden.
+    // Es soll auch Global zurückgegeben werden.
     public void getUSerAllGroupsAndScores(){
 
     }
 
-    // Liefert alle Spieler und deren Gruppen Score zurÃ¼ck. Sortiert nach dem Score.
+    // Liefert alle Spieler und deren Gruppen Score zurück. Sortiert nach dem Score.
     public void getGroupScore(){
 
     }
@@ -269,7 +255,7 @@ public class Steuerung {
 		 * 
 		 * @params: QUESTIONID USERID PUBLIC Example: /ANSWERS?USERID=123&QUESTIONID=123
 		 */
-    // Liefert die ausgewÃ¤hlte Antwort vom User zurÃ¼ck.
+    // Liefert die ausgewählte Antwort vom User zurück.
     public void getSelectedAnswer() {
 
     }
@@ -278,12 +264,12 @@ public class Steuerung {
 		 * 
 		 * @params: QUESTIONID USERID PUBLIC Example: /ANSWERS?QUESTIONID=123
 		 */
-    // Gibt alle mÃ¶glichen Antworten zurÃ¼ck und die Anzahl, wie oft eine Antwort angeklickt worden ist.
+    // Gibt alle möglichen Antworten zurück und die Anzahl, wie oft eine Antwort angeklickt worden ist.
     public void getAllAnswersAndCount(){
 
     }
 	//Gibts nicht
-    // Liefert den Platz in der Gruppe zurÃ¼ck.
+    // Liefert den Platz in der Gruppe zurück.
     public void getRankingInGroup(){
 
     }
@@ -293,17 +279,17 @@ public class Steuerung {
 
     }
 	//same
-    // Liefert alle aktive Fragen des Benutzers zurÃ¼ck.
+    // Liefert alle aktive Fragen des Benutzers zurück.
     public void getAktivQuestions(){
 
     }
 	//same
-    // Liefert alle vergangene Fragen des Benutzers zurÃ¼ck.
+    // Liefert alle vergangene Fragen des Benutzers zurück.
     public void getArchivQuestions(){
 
     }
 	//same
-    // Liefert alle vergangenen Fragen einer Gruppe zurÃ¼ck.
+    // Liefert alle vergangenen Fragen einer Gruppe zurück.
     public void getArchivQuestionsGroup(){
 
     }
@@ -314,7 +300,7 @@ public class Steuerung {
 		 * START: StartIndex GROUPID: Long ACTIVE: Boolean SEARCH: String,
 		 * seachPattern
 		 */
-    // Liefert das Bild einer Gruppe zurÃ¼ck
+    // Liefert das Bild einer Gruppe zurück
     public void getGroupPicture(){
 
     }
@@ -327,13 +313,13 @@ public class Steuerung {
 		 * ANSWERID: Long PUBLIC: Boolean Example:
 		 * /USER?QUESTIONID=32&ANSWERID=23&PUBLIC="TRUE"
 		 */
-    // Liefret das Profilbild des Users zurÃ¼ck.
+    // Liefret das Profilbild des Users zurück.
     public void getUserProfilPicture(){
 
     }
 	// Answer Parameter + Question = getUsersofAnswer
 		// Public Flag --> true when "TRUE" , FALSE --> when not set
-    // Liefert die ausgewÃ¤hlte Sprache.
+    // Liefert die ausgewählte Sprache.
     public void getLanguage(){
 
     }
@@ -342,7 +328,7 @@ public class Steuerung {
 		 * PASSWORDHASH: String PHONEHASH: String PICTUREURL: String
 		 */
 	
-    // Setze die ausgewÃ¤hlte Sprache.
+    // Setze die ausgewählte Sprache.
     public void setLanguage(){
 
     }
@@ -377,7 +363,7 @@ public class Steuerung {
 		 * Question QUESTIONID: Long ANSWER: String, answer as Text ANSWERID:
 		 * Long, when related to another answer
 		 */
-    // Setze die vom User gewÃ¤hlte Antwort.
+    // Setze die vom User gewählte Antwort.
     public void setSelectedAnswer(){
 
     }
@@ -427,7 +413,7 @@ public class Steuerung {
 		 * DELETE /QUESTION PARAMETERS: QUESTIONID: Long PUBLIC: Boolean Deletes
 		 * Deletes Private Question
 		 */
-    // Der Admin hat die MÃ¶glichkeit eine Frage zu lÃ¶schen.
+    // Der Admin hat die Möglichkeit eine Frage zu löschen.
     public void deleteBet(){
 
     }
@@ -435,14 +421,14 @@ public class Steuerung {
 		 * DELETE /USER PARAMETERS: USERID: Long, CONTACTID: Long Deletes
 		 * Contact from User OR Deletes User from Group
 		 */
-    // Verlassen einer Gruppe. Oder der Admin lÃ¶scht jemanden.
+    // Verlassen einer Gruppe. Oder der Admin löscht jemanden.
     public void deleteFromGroup(){
 
     }
 	/*
 		 * DELETE /GROUP PARAMETERS: GROUPID: Long Deletes Group
 		 */
-    // Die gesamte Gruppe lÃ¶schen. Kann nur der Admin der Gruppe.
+    // Die gesamte Gruppe löschen. Kann nur der Admin der Gruppe.
     public void deleteGroup(){
 
     }
@@ -450,7 +436,7 @@ public class Steuerung {
 		 * DELETE /USER PARAMETERS: USERID: Long, CONTACTID: Long Deletes
 		 * Contact from User OR Deletes User from Group
 		 */
-    // LÃ¶sche einen anderen User von der Freundesliste.
+    // Lösche einen anderen User von der Freundesliste.
     public void deleteFriend(){
 
     }
@@ -483,12 +469,12 @@ public class Steuerung {
 		 * START: StartIndex GROUPID: Long ACTIVE: Boolean SEARCH: String,
 		 * seachPattern
 		 */
-    // Suche Ã¶ffentlich nach Fragen, die mit dem Wort/ Filter was zu tun haben (DE oder INT wird mitgeschickt).
+    // Suche öffentlich nach Fragen, die mit dem Wort/ Filter was zu tun haben (DE oder INT wird mitgeschickt).
     public void seachPublicQuestion(){
 
     }
 	
-    // Der Admin kann eine Frage sofort beenden. Nur in Gruppen mÃ¶glich.
+    // Der Admin kann eine Frage sofort beenden. Nur in Gruppen möglich.
     public void finishQuestion(){
 
     }
