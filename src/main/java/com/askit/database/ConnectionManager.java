@@ -13,7 +13,6 @@ public class ConnectionManager {
 	private static final int MAX_PARALLEL_CONNECTIONS = 100;
 	private static final int INITIAL_IDLE_CONNECTIONS = 5;
 	private static final int MAX_PARALLEL_PREPARED_STATEMENTS = 100;
-	private static final int LOGIN_TIMEOUT = 10000;
 	private static final int QUERY_TIMEOUT = 10000;
 	private static final int MAX_CONNECTION_LIFETIME = 10000;
 	private static final String MARIA_DB_DRIVER = "org.mariadb.jdbc.Driver";
@@ -67,15 +66,6 @@ public class ConnectionManager {
 		basicDataSource.setMaxOpenPreparedStatements(MAX_PARALLEL_PREPARED_STATEMENTS);
 		basicDataSource.setDefaultQueryTimeout(QUERY_TIMEOUT);
 		basicDataSource.setMaxConnLifetimeMillis(MAX_CONNECTION_LIFETIME);
-		tryToSetLoginTimeout(basicDataSource);
-	}
-
-	private void tryToSetLoginTimeout(final BasicDataSource basicDataSource) {
-		try {
-			basicDataSource.setLoginTimeout(LOGIN_TIMEOUT);
-		} catch (final SQLException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public static synchronized ConnectionManager getInstance() {
