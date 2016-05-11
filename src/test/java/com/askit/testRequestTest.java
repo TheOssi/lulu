@@ -48,16 +48,16 @@ public class testRequestTest {
 			post2.handleRequest();
 			realPost.handleRequest();
 		} catch (final MissingParametersException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		} catch (final WrongHashException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		} catch (final DuplicateHashException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		} catch (NotificationException e) {
-			// TODO Auto-generated catch block
+		
 			e.printStackTrace();
 		}
 	}

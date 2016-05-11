@@ -60,7 +60,6 @@ public class JSONBuilder {
 	 * @return a JSON without null's
 	 */
 	@SuppressWarnings("unused")
-	// TODO use this method and delete annotoation
 	private String removeNulls(final String json) {
 		final Type type = new TypeToken<Map<String, Object>>() {
 		}.getType();

@@ -130,10 +130,8 @@ public class GetRequest extends Request {
 		 * @params: NONE Example: /USER/1234
 		 */
 		matcher = regExUserPattern.matcher(pathInfo);
-		if (matcher.find()) {
-			this.out.println(matcher.group(1));
+		if (matcher.find()) {	
 			id = Integer.parseInt(matcher.group(1));
-			this.out.println(id);
 			if (id != null) {
 				final String username = queryManager.getUsername(id);
 				this.out.println("{username : " + username + "}");
@@ -162,7 +160,6 @@ public class GetRequest extends Request {
 
 			Long userscore;
 			id = Integer.parseInt(matcher.group(1));
-			this.out.println("{Score of : " + id + "}");
 			if (id != null) {
 				if (groupID != null) {
 					userscore = queryManager.getUserScoreInGroup(id, groupID);
@@ -299,17 +296,18 @@ public class GetRequest extends Request {
 		matcher = regExAnswersPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			Answer[] answers;
-			@SuppressWarnings("unused")
-			Pair<Answer, Integer>[] countedAnswers;
-			// TODO Answers
+			Pair<Answer, Integer>[] countedAnswers;	
 
 			if (questionID != null && userID == null && !isPublic) {
 				countedAnswers = queryManager.getAnswersOfPrivateQuestionAndCount(questionID);
+				out.print(jsonBuilder.createJSON(countedAnswers));
 			} else if (questionID != null && userID == null && !isPublic) {
 				countedAnswers = queryManager.getAnswersOfPublicQuestionAndCount(questionID);
+				out.print(jsonBuilder.createJSON(countedAnswers));
 			} else if (questionID != null && userID != null && !isPublic) {
 				answers = new Answer[1];
 				answers[0] = queryManager.getChoseAnswerInPrivateQuestion(questionID, userID);
+				out.print(jsonBuilder.createJSON(answers));
 			} else {
 				throw new MissingParametersException("No or not enough Parameters specified");
 			}
