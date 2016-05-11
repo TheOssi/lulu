@@ -15,7 +15,7 @@ public class NotificationCreator {
 
 	}
 
-	public void sendNotificationToAllMembersOfAGroup(final Notification not, final Long groupID) throws DatabaseLayerException, NotificationException {
+	public static void sendNotificationToAllMembersOfAGroup(final Notification not, final Long groupID) throws DatabaseLayerException, NotificationException {
 		final QueryManager queryManager = new DatabaseQueryManager();
 		final User[] users = queryManager.getUsersOfGroup(groupID);
 		final RegIDHandler regIDHandler = RegIDHandler.getInstance();

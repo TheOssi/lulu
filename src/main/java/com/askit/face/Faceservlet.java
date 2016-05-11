@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
+import com.askit.exception.NotificationException;
 import com.askit.exception.WrongHashException;
 import com.askit.face.innerclasses.DeleteRequest;
 import com.askit.face.innerclasses.GetRequest;
@@ -140,7 +141,7 @@ public class Faceservlet extends HttpServlet {
 		try {
 			request.handleRequest();
 		} catch (final ServletException | MissingParametersException | DatabaseLayerException | WrongHashException
-				| DuplicateHashException e) {
+				| DuplicateHashException | NotificationException e) {
 			handleException(e, response, out);
 		}
 	}

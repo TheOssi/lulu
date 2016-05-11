@@ -11,6 +11,7 @@ import com.askit.etc.Constants;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
+import com.askit.exception.NotificationException;
 import com.askit.exception.WrongHashException;
 import com.askit.face.SessionManager;
 
@@ -49,7 +50,7 @@ public class Request {
 	 * handles request for sessions
 	 */
 	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
-			DatabaseLayerException, ServletException {
+			DatabaseLayerException, ServletException, NotificationException {
 		String sessionHash = null;
 		if (parameters.containsKey(Constants.PARAMETERS_SESSIONHASH)) {
 			sessionHash = parameters.get(Constants.PARAMETERS_SESSIONHASH)[0];

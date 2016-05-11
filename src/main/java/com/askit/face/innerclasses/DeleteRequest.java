@@ -11,6 +11,7 @@ import com.askit.etc.Constants;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
+import com.askit.exception.NotificationException;
 import com.askit.exception.WrongHashException;
 
 public class DeleteRequest extends Request {
@@ -27,7 +28,7 @@ public class DeleteRequest extends Request {
 	 */
 	@Override
 	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
-			DatabaseLayerException, ServletException {
+			DatabaseLayerException, ServletException, NotificationException {
 		super.handleRequest();
 		final QueryManager queryManager = new DatabaseQueryManager();
 		Long groupID = null;

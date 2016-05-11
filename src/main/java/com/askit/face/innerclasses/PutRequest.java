@@ -7,16 +7,15 @@ import javax.servlet.ServletException;
 
 import com.askit.database.DatabaseQueryManager;
 import com.askit.database.QueryManager;
-import com.askit.entities.User;
 import com.askit.etc.Constants;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
+import com.askit.exception.NotificationException;
 import com.askit.exception.WrongHashException;
 import com.askit.notification.Notification;
 import com.askit.notification.NotificationCodes;
-import com.askit.notification.NotificationHandler;
-import com.askit.notification.RegIDHandler;
+import com.askit.notification.NotificationCreator;
 
 public class PutRequest extends Request {
 
@@ -36,7 +35,7 @@ public class PutRequest extends Request {
 	 */
 	@Override
 	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
-			DatabaseLayerException, ServletException {
+			DatabaseLayerException, ServletException, NotificationException {
 		super.handleRequest();
 		final QueryManager queryManager = new DatabaseQueryManager();
 
@@ -102,16 +101,10 @@ public class PutRequest extends Request {
 				isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
 				questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
 				answerID = Long.parseLong(parameters.get(Constants.PARAMETERS_ANSWERID)[0]);
-				NotificationHandler notificationHandler = NotificationHandler.getInstance();
-				RegIDHandler regHandler = RegIDHandler.getInstance();
 				if (!isPublic) {
 					queryManager.setSelectedAnswerOfPrivateQuestion(questionID, answerID);
-					
-					for(User user :queryManager.getUsersOfPrivateQuestion(questionID)){
-						String regID = regHandler.getRegIDFromUser(user.getUserID());
-						Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_ANSWER_SET.getCode(),"questionID", questionID.toString());
-						notificationHandler.addNotification(not);
-					}
+						Notification not = new Notification("", NotificationCodes.NOTIFICATION_ANSWER_SET.getCode(),"questionID", questionID.toString());
+						NotificationCreator.sendNotificationToAllMembersOfAGroup(not, groupID);	
 				}
 
 			} else if (parameters.containsKey(Constants.PARAMETERS_QUESTIONID)
@@ -135,32 +128,31 @@ public class PutRequest extends Request {
 			}
 			return;
 		}
-		/*
-		 * PUT /GROUP Parameters: USERID: Long GROUPID: Long GROUNAME: String
-		 * PICTUREURL: String
-		 */
-		matcher = regExGroupPattern.matcher(this.pathInfo);
-		if (matcher.find()) {
-			if (parameters.containsKey(Constants.PARAMETERS_GROUPID)
-					&& parameters.containsKey(Constants.PARAMETERS_USERID)) {
-				adminID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
-				groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
-				queryManager.setGroupAdmin(groupID, adminID);
-			} else if (parameters.containsKey(Constants.PARAMETERS_GROUPID)
-					&& parameters.containsKey(Constants.PARAMETERS_GROUPNAME)) {
-				groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
-				groupName = parameters.get(Constants.PARAMETERS_GROUPNAME)[0];
-				queryManager.setGroupName(groupID, groupName);
-			} else if (parameters.containsKey(Constants.PARAMETERS_GROUPID)
-					&& parameters.containsKey(Constants.PARAMETERS_GROUPNAME)) {
-				groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
-				pictureUrl = parameters.get(Constants.PARAMETERS_PICTUREURL)[0];
-				queryManager.setGroupPicture(groupID, pictureUrl);
-			} else {
-				throw new MissingParametersException();
-			}
-			return;
+	/*
+	 * PUT /GROUP Parameters: USERID: Long GROUPID: Long GROUNAME: String
+	 * PICTUREURL: String
+	 */
+	matcher=regExGroupPattern.matcher(this.pathInfo);if(matcher.find())
+
+	{
+		if (parameters.containsKey(Constants.PARAMETERS_GROUPID)
+				&& parameters.containsKey(Constants.PARAMETERS_USERID)) {
+			adminID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
+			groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
+			queryManager.setGroupAdmin(groupID, adminID);
+		} else if (parameters.containsKey(Constants.PARAMETERS_GROUPID)
+				&& parameters.containsKey(Constants.PARAMETERS_GROUPNAME)) {
+			groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
+			groupName = parameters.get(Constants.PARAMETERS_GROUPNAME)[0];
+			queryManager.setGroupName(groupID, groupName);
+		} else if (parameters.containsKey(Constants.PARAMETERS_GROUPID)
+				&& parameters.containsKey(Constants.PARAMETERS_GROUPNAME)) {
+			groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
+			pictureUrl = parameters.get(Constants.PARAMETERS_PICTUREURL)[0];
+			queryManager.setGroupPicture(groupID, pictureUrl);
+		} else {
+			throw new MissingParametersException();
 		}
-		throw new ServletException("Invalid URI");
-	}
-}
+		return;
+	} throw new ServletException("Invalid URI");
+}}
