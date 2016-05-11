@@ -3,23 +3,38 @@ package com.askit.database;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
+import java.util.Date;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
+import com.askit.entities.User;
 import com.askit.exception.DatabaseLayerException;
 
+@FixMethodOrder(MethodSorters.JVM)
 public class DatabaseQueryManagerTest {
 
 	private static final String DEFAULT_PICTURE_URI = "/PATH/TO/PICTURE";
 	private static final long DEFAULT_SCORE_OF_GLOBAL = 1;
+	private static final long DEFAULT_USER_ID = 1;
+	private static final long DEFAULT_GROUP_ID = 1;
 
 	private final QueryManager queryManager = new DatabaseQueryManager();
 
-	@BeforeClass
+	private static User defaultUser;
+	private static User defaultChangedUser;
+
+	@BeforeClass()
 	public static void setUpBeforeClass() throws Exception {
+		defaultUser = new User(1L, "PASSWORDHASH", "PHONENUMBERHASH", "USERNAME", new Date(146295926700L), "URI/TO/PICTURE", "DE", 0);
+		defaultChangedUser = new User(1L, "NEWPASSWORDHASH", "NEWPHONENUMBERHASH", "NEWUSERNAME", new Date(146295926700L), "NEW/URI/TO/PICTURE",
+				"EN", 0);
+
 	}
 
 	@AfterClass
@@ -38,61 +53,6 @@ public class DatabaseQueryManagerTest {
 	@Test
 	public void testCheckUser() throws DatabaseLayerException {
 		queryManager.checkUser("", "");
-	}
-
-	@Test
-	public void testCreateNewGroup() throws DatabaseLayerException {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testCreatePublicQuestion() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testCreateNewPrivateQuestionInGroup() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testCreateOneTimeQuestion() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testCreateUser() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testAddUserToGroup() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testAddContact() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testAddUserToOneTimeQuestion() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testAddAnswerToPublicQuestion() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testAddAnswerToPrivateQuestion() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testAddUserToPublicQuestion() {
-		fail("Not yet implemented");
 	}
 
 	@Test
@@ -152,7 +112,7 @@ public class DatabaseQueryManagerTest {
 
 	@Test
 	public void testGetUserScoreOfGlobal() throws DatabaseLayerException {
-		assertThat("", queryManager.getUserScoreOfGlobal(1).equals(DEFAULT_SCORE_OF_GLOBAL));
+		assertThat("", queryManager.getUserScoreOfGlobal(1).equals(DEFAULT_PICTURE_URI));
 	}
 
 	@Test
@@ -254,100 +214,101 @@ public class DatabaseQueryManagerTest {
 	public void testGetUsersOfGroupsWithScore() {
 		fail("Not yet implemented");
 	}
-
-	@Test
-	public void testSetLanguage() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetProfilPictureOfUser() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetGroupPicture() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetPasswordHash() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetChoosedAnswerOfPublicQuestion() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetChoosedAnswerOfPrivateQuestion() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetSelectedAnswerOfPrivateQuestion() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetGroupAdmin() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetPhoneNumberHash() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetGroupName() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetUsername() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetPrivateQuestionToFinish() throws DatabaseLayerException {
-		queryManager.setPrivateQuestionToFinish(1);
-	}
-
-	@Test
-	public void testDeletePrivateQuestion() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testDeleteUserFromGroup() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testDeleteGroup() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testDeleteContact() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSearchForGroup() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSearchForPrivateQuestionInGroup() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSearchForPublicQuestion() {
-		fail("Not yet implemented");
-	}
+	//
+	// @Test
+	// public void testSetLanguage() throws DatabaseLayerException {
+	// queryManager.setLanguage(DEFAULT_USER_ID, "EN");
+	// }
+	//
+	// @Test
+	// public void testSetProfilPictureOfUser() throws DatabaseLayerException {
+	// queryManager.setProfilPictureOfUser(DEFAULT_USER_ID, "URI/TO/PIC");
+	// }
+	//
+	// @Test
+	// public void testSetGroupPicture() throws DatabaseLayerException {
+	// queryManager.setGroupPicture(DEFAULT_GROUP_ID, DEFAULT_PICTURE_URI);
+	// }
+	//
+	// @Test
+	// public void testSetPasswordHash() {
+	// fail("Not yet implemented");
+	// }
+	//
+	// @Test
+	// public void testSetChoosedAnswerOfPublicQuestion() {
+	// fail("Not yet implemented");
+	// }
+	//
+	// @Test
+	// public void testSetChoosedAnswerOfPrivateQuestion() {
+	// fail("Not yet implemented");
+	// }
+	//
+	// @Test
+	// public void testSetSelectedAnswerOfPrivateQuestion() {
+	// fail("Not yet implemented");
+	// }
+	//
+	// @Test
+	// public void testSetGroupAdmin() {
+	// fail("Not yet implemented");
+	// }
+	//
+	// @Test
+	// public void testSetPhoneNumberHash() {
+	// fail("Not yet implemented");
+	// }
+	//
+	// @Test
+	// public void testSetGroupName() {
+	// fail("Not yet implemented");
+	// }
+	//
+	// @Test
+	// public void testSetUsername() {
+	// fail("Not yet implemented");
+	// }
+	//
+	// @Test
+	// public void testSetPrivateQuestionToFinish() throws
+	// DatabaseLayerException {
+	// queryManager.setPrivateQuestionToFinish(1);
+	// }
+	//
+	// @Test
+	// public void testDeletePrivateQuestion() {
+	// fail("Not yet implemented");
+	// }
+	//
+	// @Test
+	// public void testDeleteUserFromGroup() {
+	// fail("Not yet implemented");
+	// }
+	//
+	// @Test
+	// public void testDeleteGroup() {
+	// fail("Not yet implemented");
+	// }
+	//
+	// @Test
+	// public void testDeleteContact() {
+	// fail("Not yet implemented");
+	// }
+	//
+	// @Test
+	// public void testSearchForGroup() {
+	// fail("Not yet implemented");
+	// }
+	//
+	// @Test
+	// public void testSearchForPrivateQuestionInGroup() {
+	// fail("Not yet implemented");
+	// }
+	//
+	// @Test
+	// public void testSearchForPublicQuestion() {
+	// fail("Not yet implemented");
+	// }
 
 }
