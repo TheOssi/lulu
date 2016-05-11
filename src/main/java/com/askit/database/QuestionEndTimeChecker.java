@@ -8,6 +8,10 @@ import java.sql.SQLException;
 import com.askit.entities.PrivateQuestion;
 import com.askit.entities.PublicQuestion;
 import com.askit.exception.DatabaseLayerException;
+import com.askit.exception.NotificationException;
+import com.askit.notification.Notification;
+import com.askit.notification.NotificationCodes;
+import com.askit.notification.NotificationSupporter;
 
 /**
  * @author Kai Müller
@@ -27,9 +31,9 @@ public class QuestionEndTimeChecker extends Thread {
 			+ "WHERE PR.endDate IS NOT NULL AND PR.finished <> 1 AND PR.definitionOfEnd = 1 " + "UNION ALL SELECT PU.questionID, PU.endDate, '"
 			+ PublicQuestion.TABLE_NAME + "' as \"type\" FROM APP.PublicQuestions PU " + "WHERE PU.endDate IS NOT NULL AND PU.finished <> 1 )  AS R "
 			+ "ORDER BY R.endDate ASC LIMIT 1;";
-
+	
 	private AbstractQuestion currentQuestion;
-
+	private final QueryManager queryManager = new DatabaseQueryManager();
 	private QuestionEndTimeChecker() {
 	}
 
@@ -66,12 +70,17 @@ public class QuestionEndTimeChecker extends Thread {
 				if (currentTime + SLEEP_TIME < currentQuestion.getTime().longValue()) {
 					Thread.sleep(SLEEP_TIME);
 				} else {
+					Long questionID = currentQuestion.getId();
 					if (currentQuestion.getTableName().equals(PrivateQuestion.TABLE_NAME)) {
-						new DatabaseQueryManager().setPrivateQuestionToFinish(currentQuestion.getId());
+						queryManager.setPrivateQuestionToFinish(questionID);
+						Notification not = new Notification("", NotificationCodes.NOTIFICATION_QUESTION_END.getCode(), "questionID", questionID.toString());
+						NotificationSupporter.sendNotificationToAllMembersOfPrivateQuestion(not, questionID);
 					} else if (currentQuestion.getTableName().equals(PublicQuestion.TABLE_NAME)) {
-						new DatabaseQueryManager().setPrivateQuestionToFinish(currentQuestion.getId());
-					}
-					// TODO notification (waiting for M)
+						queryManager.setPrivateQuestionToFinish(questionID);
+						Notification not = new Notification("", NotificationCodes.NOTIFICATION_QUESTION_END.getCode(), "questionID", questionID.toString());
+						NotificationSupporter.sendNotificationToAllMembersOfPublicQuestion(not, questionID);
+					}					
+					
 				}
 			} else {
 				this.wait(SLEEP_TIME);
@@ -81,6 +90,8 @@ public class QuestionEndTimeChecker extends Thread {
 		} catch (final InterruptedException e) {
 			e.printStackTrace();
 			startThread();
+		} catch (NotificationException e) {
+			e.printStackTrace();
 		}
 	}
 }
