@@ -24,7 +24,6 @@ import com.askit.face.innerclasses.PostRequest;
 import com.askit.face.innerclasses.PutRequest;
 import com.askit.face.innerclasses.Request;
 import com.askit.notification.NotificationHandler;
-import com.askit.notification.NotificationSender;
 import com.askit.notification.RegIDHandler;
 
 /**
@@ -59,7 +58,7 @@ public class Faceservlet extends HttpServlet {
 			e.printStackTrace();
 		}
 		SessionManager.getInstance().start();
-		NotificationSender.getInstace().startThread();
+		//NotificationSender.getInstace().startThread();
 		RegIDHandler.getInstance();
 		NotificationHandler.getInstance();
 	}

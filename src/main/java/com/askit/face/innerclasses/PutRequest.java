@@ -15,7 +15,7 @@ import com.askit.exception.NotificationException;
 import com.askit.exception.WrongHashException;
 import com.askit.notification.Notification;
 import com.askit.notification.NotificationCodes;
-import com.askit.notification.NotificationCreator;
+import com.askit.notification.NotificationSupporter;
 
 public class PutRequest extends Request {
 
@@ -104,7 +104,7 @@ public class PutRequest extends Request {
 				if (!isPublic) {
 					queryManager.setSelectedAnswerOfPrivateQuestion(questionID, answerID);
 						Notification not = new Notification("", NotificationCodes.NOTIFICATION_ANSWER_SET.getCode(),"questionID", questionID.toString());
-						NotificationCreator.sendNotificationToAllMembersOfAGroup(not, groupID);	
+						NotificationSupporter.sendNotificationToAllMembersOfAGroup(not, groupID);	
 				}
 
 			} else if (parameters.containsKey(Constants.PARAMETERS_QUESTIONID)

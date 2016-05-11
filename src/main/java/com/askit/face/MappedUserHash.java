@@ -1,6 +1,6 @@
 package com.askit.face;
 
-public class MappedUserHash { // TODO better naming
+public class MappedUserHash {
 	private final String username;
 	private final long time;
 
