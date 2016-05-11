@@ -31,4 +31,45 @@ public class NotificationSupporter {
 			notificationHandler.addNotification(not);
 		}
 	}
+
+	public static void sendNotificationToAllMembersOfPrivateQuestion(Notification not, Long questionID) throws DatabaseLayerException, NotificationException {
+		final QueryManager queryManager = new DatabaseQueryManager();
+		final User[] users = queryManager.getUsersOfPrivateQuestion(questionID);
+		final RegIDHandler regIDHandler = RegIDHandler.getInstance();
+		final NotificationHandler notificationHandler = NotificationHandler.getInstance();
+		for (final User user : users) {
+			if (not.getTo() == null) {
+				final Long userID = user.getUserID();
+				final String regID = regIDHandler.getRegIDFromUser(userID);
+				if (regID != null) {
+					not.setTo(regID);
+				} else {
+					throw new NotificationException("No regID for User: " + userID);
+				}
+
+			}
+			notificationHandler.addNotification(not);
+		}
+		
+	}
+	public static void sendNotificationToAllMembersOfPublicQuestion(Notification not, Long questionID) throws DatabaseLayerException, NotificationException {
+		final QueryManager queryManager = new DatabaseQueryManager();
+		final User[] users = queryManager.getUsersOfPublicQuestion(questionID);
+		final RegIDHandler regIDHandler = RegIDHandler.getInstance();
+		final NotificationHandler notificationHandler = NotificationHandler.getInstance();
+		for (final User user : users) {
+			if (not.getTo() == null) {
+				final Long userID = user.getUserID();
+				final String regID = regIDHandler.getRegIDFromUser(userID);
+				if (regID != null) {
+					not.setTo(regID);
+				} else {
+					throw new NotificationException("No regID for User: " + userID);
+				}
+
+			}
+			notificationHandler.addNotification(not);
+		}
+		
+	}
 }
