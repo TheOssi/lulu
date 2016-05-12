@@ -14,12 +14,12 @@ import com.askit.notification.NotificationCodes;
 import com.askit.notification.NotificationSupporter;
 
 /**
+ * This class is a thread that checks the private and public question if they
+ * should be closed.
+ * 
  * @author Kai Müller
  * @version 1.0.0.0
  * @since 1.0.0.0
- * 
- *        This class is a thread that checks the private and public question if
- *        they should be closed.
  *
  */
 public class QuestionEndTimeChecker extends Thread {
@@ -31,9 +31,10 @@ public class QuestionEndTimeChecker extends Thread {
 			+ "WHERE PR.endDate IS NOT NULL AND PR.finished <> 1 AND PR.definitionOfEnd = 1 " + "UNION ALL SELECT PU.questionID, PU.endDate, '"
 			+ PublicQuestion.TABLE_NAME + "' as \"type\" FROM APP.PublicQuestions PU " + "WHERE PU.endDate IS NOT NULL AND PU.finished <> 1 )  AS R "
 			+ "ORDER BY R.endDate ASC LIMIT 1;";
-	
+
 	private AbstractQuestion currentQuestion;
 	private final QueryManager queryManager = new DatabaseQueryManager();
+
 	private QuestionEndTimeChecker() {
 	}
 
@@ -70,28 +71,25 @@ public class QuestionEndTimeChecker extends Thread {
 				if (currentTime + SLEEP_TIME < currentQuestion.getTime().longValue()) {
 					Thread.sleep(SLEEP_TIME);
 				} else {
-					Long questionID = currentQuestion.getId();
+					final Long questionID = currentQuestion.getId();
+					final Notification notification = new Notification("", NotificationCodes.NOTIFICATION_QUESTION_END.getCode(), "questionID",
+							questionID.toString());
 					if (currentQuestion.getTableName().equals(PrivateQuestion.TABLE_NAME)) {
 						queryManager.setPrivateQuestionToFinish(questionID);
-						Notification not = new Notification("", NotificationCodes.NOTIFICATION_QUESTION_END.getCode(), "questionID", questionID.toString());
-						NotificationSupporter.sendNotificationToAllMembersOfPrivateQuestion(not, questionID);
+						NotificationSupporter.sendNotificationToAllMembersOfPrivateQuestion(notification, questionID);
 					} else if (currentQuestion.getTableName().equals(PublicQuestion.TABLE_NAME)) {
-						queryManager.setPrivateQuestionToFinish(questionID);
-						Notification not = new Notification("", NotificationCodes.NOTIFICATION_QUESTION_END.getCode(), "questionID", questionID.toString());
-						NotificationSupporter.sendNotificationToAllMembersOfPublicQuestion(not, questionID);
-					}					
-					
+						queryManager.setPublicQuestionToFinish(questionID);
+						NotificationSupporter.sendNotificationToAllMembersOfPublicQuestion(notification, questionID);
+					}
 				}
 			} else {
-				this.wait(SLEEP_TIME);
+				Thread.sleep(SLEEP_TIME);
 			}
-		} catch (final SQLException | DatabaseLayerException e) {
+		} catch (final SQLException | DatabaseLayerException | NotificationException e) {
 			e.printStackTrace();
 		} catch (final InterruptedException e) {
 			e.printStackTrace();
 			startThread();
-		} catch (NotificationException e) {
-			e.printStackTrace();
 		}
 	}
 }

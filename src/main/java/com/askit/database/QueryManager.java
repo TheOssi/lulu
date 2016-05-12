@@ -492,6 +492,13 @@ public interface QueryManager {
 	 */
 	public void setUsername(long userID, String newUsername) throws DatabaseLayerException;
 
+	/**
+	 * @param userID
+	 * @param newUsername
+	 * @throws DatabaseLayerException
+	 */
+	public void setPublicQuestionToFinish(long questionID) throws DatabaseLayerException;
+
 	/*
 	 * delete Methods
 	 */
@@ -547,7 +554,7 @@ public interface QueryManager {
 	 * @return
 	 * @throws DatabaseLayerException
 	 */
-	public PublicQuestion[] searchForPublicQuestion(String nameSearchPattern) throws DatabaseLayerException;
+	public PublicQuestion[] searchForPublicQuestion(String nameSearchPattern, String language) throws DatabaseLayerException;
 
 	/*
 	 * other
