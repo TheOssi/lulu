@@ -1,5 +1,7 @@
 package com.askit.database;
 
+//TODO add to init
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
