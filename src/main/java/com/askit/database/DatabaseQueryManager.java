@@ -471,7 +471,6 @@ public class DatabaseQueryManager implements QueryManager {
 		}
 	}
 
-	// TODO sort
 	@Override
 	public Long getUserScoreInGroup(final long userID, final long groupID) throws DatabaseLayerException {
 		PreparedStatement preparedStatement = null;
@@ -981,11 +980,30 @@ public class DatabaseQueryManager implements QueryManager {
 		}
 	}
 
+	@Override
+	public void setPublicQuestionToFinish(final long questionID) throws DatabaseLayerException {
+		PreparedStatement preparedStatement = null;
+		try {
+			final String setClausel = PublicQuestion.FINISHED + " = ?";
+			final String whereCondition = PublicQuestion.QUESTION_ID + " = ?";
+			final String statement = SQLFactory.buildUpdateStatement(SCHEMA, PublicQuestion.TABLE_NAME, setClausel, whereCondition);
+			preparedStatement = getWriterPreparedStatement(statement);
+			preparedStatement.setBoolean(1, true);
+			preparedStatement.setLong(2, questionID);
+			preparedStatement.executeUpdate();
+		} catch (DriverNotFoundException | SQLException exception) {
+			throw new DatabaseLayerException(exception);
+		} finally {
+			SQLUtil.closeSilentlySQL(preparedStatement, null);
+		}
+	}
+
 	// ================================================================================
 	// DELETE METHODS
 	// ================================================================================
 
-	// TODO delete also the answers, the user->question and the group->question
+	// TODO delete also the answers, the user->question (over foreign keys
+	// possible) -> check also the other foreign keys
 	@Override
 	public void deletePrivateQuestion(final long questionID) throws DatabaseLayerException {
 		PreparedStatement preparedStatement = null;
@@ -1061,14 +1079,14 @@ public class DatabaseQueryManager implements QueryManager {
 		throw new DatabaseLayerException("not implemented");
 	}
 
-	// TODO sort
 	@Override
 	public PrivateQuestion[] searchForPrivateQuestionInGroup(final long groupID, final String questionSearchPattern) throws DatabaseLayerException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
 			final String searchPattern = "%" + questionSearchPattern + "%";
-			final String whereCondition = PrivateQuestion.GROUP_ID + " = ? AND " + PrivateQuestion.QUESTION + " LIKE ?";
+			final String orderByStatement = "ORDER BY " + PrivateQuestion.QUESTION + " " + SQLFactory.ASCENDING;
+			final String whereCondition = PrivateQuestion.GROUP_ID + " = ? AND " + PrivateQuestion.QUESTION + " LIKE ? " + orderByStatement;
 			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, PrivateQuestion.TABLE_NAME, whereCondition);
 			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
@@ -1083,18 +1101,18 @@ public class DatabaseQueryManager implements QueryManager {
 		}
 	}
 
-	// TODO sort
-	// TODO language
 	@Override
-	public PublicQuestion[] searchForPublicQuestion(final String nameSearchPattern) throws DatabaseLayerException {
+	public PublicQuestion[] searchForPublicQuestion(final String nameSearchPattern, final String language) throws DatabaseLayerException {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
 			final String searchPattern = "%" + nameSearchPattern + "%";
-			final String whereCondition = PublicQuestion.QUESTION + " LIKE ?";
+			final String orderByStatement = "ORDER BY " + PublicQuestion.QUESTION + " " + SQLFactory.ASCENDING;
+			final String whereCondition = PublicQuestion.QUESTION + " LIKE ? " + "AND " + PublicQuestion.LANGUAGE + " = ? " + orderByStatement;
 			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, PublicQuestion.TABLE_NAME, whereCondition);
 			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setString(1, searchPattern);
+			preparedStatement.setString(2, language);
 			resultSet = preparedStatement.executeQuery();
 			final List<PublicQuestion> publicQuestions = ResultSetMapper.mapPublicQuestions(resultSet);
 			return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
