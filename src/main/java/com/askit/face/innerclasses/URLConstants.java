@@ -1,8 +1,6 @@
-package com.askit.etc;
+package com.askit.face.innerclasses;
 
-//TODO move!
-
-public class Constants {
+public class URLConstants {
 	/*
 	 * Parameters Constants
 	 */

@@ -14,7 +14,6 @@ import com.askit.entities.Group;
 import com.askit.entities.PrivateQuestion;
 import com.askit.entities.PublicQuestion;
 import com.askit.entities.User;
-import com.askit.etc.Constants;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
@@ -71,83 +70,83 @@ public class PostRequest extends Request {
 		Long contactID = null;
 		String regID = null;
 
-		if (parameters.containsKey(Constants.PARAMETERS_GROUPID)) {
-			groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_GROUPID)) {
+			groupID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_GROUPID)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_QUESTIONID)) {
-			questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_QUESTIONID)) {
+			questionID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_QUESTIONID)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_USERID)) {
-			userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_USERID)) {
+			userID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_USERID)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_PUBLIC)) {
-			isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_PUBLIC)) {
+			isPublic = Boolean.parseBoolean(parameters.get(URLConstants.PARAMETERS_PUBLIC)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_ACTIVE)) {
-			isExpired = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_ACTIVE)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_ACTIVE)) {
+			isExpired = Boolean.parseBoolean(parameters.get(URLConstants.PARAMETERS_ACTIVE)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_LANGUAGE)) {
-			language = parameters.get(Constants.PARAMETERS_LANGUAGE)[0];
+		if (parameters.containsKey(URLConstants.PARAMETERS_LANGUAGE)) {
+			language = parameters.get(URLConstants.PARAMETERS_LANGUAGE)[0];
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_ANSWERID)) {
-			answerID = Long.parseLong(parameters.get(Constants.PARAMETERS_ANSWERID)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_ANSWERID)) {
+			answerID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_ANSWERID)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_USERNAME)) {
-			userName = parameters.get(Constants.PARAMETERS_USERNAME)[0];
+		if (parameters.containsKey(URLConstants.PARAMETERS_USERNAME)) {
+			userName = parameters.get(URLConstants.PARAMETERS_USERNAME)[0];
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_PASSWORDHASH)) {
-			passwordHash = parameters.get(Constants.PARAMETERS_PASSWORDHASH)[0];
+		if (parameters.containsKey(URLConstants.PARAMETERS_PASSWORDHASH)) {
+			passwordHash = parameters.get(URLConstants.PARAMETERS_PASSWORDHASH)[0];
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_PHONEHASH)) {
-			phoneNumberHash = parameters.get(Constants.PARAMETERS_PHONEHASH)[0];
+		if (parameters.containsKey(URLConstants.PARAMETERS_PHONEHASH)) {
+			phoneNumberHash = parameters.get(URLConstants.PARAMETERS_PHONEHASH)[0];
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_ADMINID)) {
-			adminID = Long.parseLong(parameters.get(Constants.PARAMETERS_ADMINID)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_ADMINID)) {
+			adminID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_ADMINID)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_GROUPNAME)) {
-			groupName = parameters.get(Constants.PARAMETERS_GROUPNAME)[0];
+		if (parameters.containsKey(URLConstants.PARAMETERS_GROUPNAME)) {
+			groupName = parameters.get(URLConstants.PARAMETERS_GROUPNAME)[0];
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_PICTUREURL)) {
-			pictureUrl = parameters.get(Constants.PARAMETERS_PICTUREURL)[0];
+		if (parameters.containsKey(URLConstants.PARAMETERS_PICTUREURL)) {
+			pictureUrl = parameters.get(URLConstants.PARAMETERS_PICTUREURL)[0];
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_QUESTION)) {
-			question = parameters.get(Constants.PARAMETERS_QUESTION)[0];
+		if (parameters.containsKey(URLConstants.PARAMETERS_QUESTION)) {
+			question = parameters.get(URLConstants.PARAMETERS_QUESTION)[0];
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_INFORMATION)) {
-			additionalInformation = parameters.get(Constants.PARAMETERS_INFORMATION)[0];
+		if (parameters.containsKey(URLConstants.PARAMETERS_INFORMATION)) {
+			additionalInformation = parameters.get(URLConstants.PARAMETERS_INFORMATION)[0];
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_HOSTID)) {
-			hostID = Long.parseLong(parameters.get(Constants.PARAMETERS_HOSTID)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_HOSTID)) {
+			hostID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_HOSTID)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_EXTENSION)) {
-			optionExtension = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_EXTENSION)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_EXTENSION)) {
+			optionExtension = Boolean.parseBoolean(parameters.get(URLConstants.PARAMETERS_EXTENSION)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_ENDDATE)) {
-			eDate = Long.parseLong(parameters.get(Constants.PARAMETERS_ENDDATE)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_ENDDATE)) {
+			eDate = Long.parseLong(parameters.get(URLConstants.PARAMETERS_ENDDATE)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_BET)) {
-			isBet = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_BET)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_BET)) {
+			isBet = Boolean.parseBoolean(parameters.get(URLConstants.PARAMETERS_BET)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_DEFINITIONEND)) {
-			definitionOfEnd = Integer.parseInt(parameters.get(Constants.PARAMETERS_DEFINITIONEND)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_DEFINITIONEND)) {
+			definitionOfEnd = Integer.parseInt(parameters.get(URLConstants.PARAMETERS_DEFINITIONEND)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_SUMANSWERS)) {
-			sumOfUsersToAnswer = Integer.parseInt(parameters.get(Constants.PARAMETERS_SUMANSWERS)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_SUMANSWERS)) {
+			sumOfUsersToAnswer = Integer.parseInt(parameters.get(URLConstants.PARAMETERS_SUMANSWERS)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_SELECTEDANSWER)) {
-			selectedAnswerID = Long.parseLong(parameters.get(Constants.PARAMETERS_SELECTEDANSWER)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_SELECTEDANSWER)) {
+			selectedAnswerID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_SELECTEDANSWER)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_ONETIME)) {
-			isOneTime = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_ONETIME)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_ONETIME)) {
+			isOneTime = Boolean.parseBoolean(parameters.get(URLConstants.PARAMETERS_ONETIME)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_ANSWER)) {
-			answerText = parameters.get(Constants.PARAMETERS_ANSWER)[0];
+		if (parameters.containsKey(URLConstants.PARAMETERS_ANSWER)) {
+			answerText = parameters.get(URLConstants.PARAMETERS_ANSWER)[0];
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_CONTACTID)) {
-			contactID = Long.parseLong(parameters.get(Constants.PARAMETERS_CONTACTID)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_CONTACTID)) {
+			contactID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_CONTACTID)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_REGID)) {
-			regID = parameters.get(Constants.PARAMETERS_REGID)[0];
+		if (parameters.containsKey(URLConstants.PARAMETERS_REGID)) {
+			regID = parameters.get(URLConstants.PARAMETERS_REGID)[0];
 		}
 		/*
 		 * POST /USER
