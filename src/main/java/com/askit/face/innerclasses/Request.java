@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 
-import com.askit.etc.Constants;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
@@ -52,14 +51,14 @@ public class Request {
 	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
 			DatabaseLayerException, ServletException, NotificationException {
 		String sessionHash = null;
-		if (parameters.containsKey(Constants.PARAMETERS_SESSIONHASH)) {
-			sessionHash = parameters.get(Constants.PARAMETERS_SESSIONHASH)[0];
+		if (parameters.containsKey(URLConstants.PARAMETERS_SESSIONHASH)) {
+			sessionHash = parameters.get(URLConstants.PARAMETERS_SESSIONHASH)[0];
 		}
 
 		matcher = regExSessionPattern.matcher(pathInfo);
 		if (matcher.find()) {
-			if (parameters.containsKey(Constants.PARAMETERS_PASSWORDHASH)) {
-				final String passwordHash = parameters.get(Constants.PARAMETERS_PASSWORDHASH)[0];
+			if (parameters.containsKey(URLConstants.PARAMETERS_PASSWORDHASH)) {
+				final String passwordHash = parameters.get(URLConstants.PARAMETERS_PASSWORDHASH)[0];
 				// TODO blala?
 				// TODO using gson
 				out.println("{hash : " + SessionManager.getInstance().createSession(passwordHash, "blala") + "}");

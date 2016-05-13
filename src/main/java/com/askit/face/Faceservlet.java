@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.askit.database.DatabaseUser;
+import com.askit.database.QuestionSoonEndTimeChecker;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
@@ -54,11 +56,13 @@ public class Faceservlet extends HttpServlet {
 	public void init(final ServletConfig config) {
 		try {
 			super.init();
-		} catch (final ServletException e) {
+			DatabaseUser.loadAllPasswordsFromFile();
+		} catch (final ServletException | IOException e) {
 			e.printStackTrace();
 		}
 		SessionManager.getInstance().start();
 		//NotificationSender.getInstace().startThread();
+		QuestionSoonEndTimeChecker.getInstance();
 		RegIDHandler.getInstance();
 		NotificationHandler.getInstance();
 	}

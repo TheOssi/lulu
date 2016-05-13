@@ -7,7 +7,6 @@ import javax.servlet.ServletException;
 
 import com.askit.database.DatabaseQueryManager;
 import com.askit.database.QueryManager;
-import com.askit.etc.Constants;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
@@ -58,30 +57,30 @@ public class PutRequest extends Request {
 		 */
 		matcher = regExUserPattern.matcher(this.pathInfo);
 		if (matcher.find()) {
-			if (parameters.containsKey(Constants.PARAMETERS_USERID)
-					&& parameters.containsKey(Constants.PARAMETERS_USERNAME)) {
-				userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
-				userName = parameters.get(Constants.PARAMETERS_USERNAME)[0];
+			if (parameters.containsKey(URLConstants.PARAMETERS_USERID)
+					&& parameters.containsKey(URLConstants.PARAMETERS_USERNAME)) {
+				userID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_USERID)[0]);
+				userName = parameters.get(URLConstants.PARAMETERS_USERNAME)[0];
 				queryManager.setUsername(userID, userName);
-			} else if (parameters.containsKey(Constants.PARAMETERS_USERID)
-					&& parameters.containsKey(Constants.PARAMETERS_LANGUAGE)) {
-				userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
-				language = parameters.get(Constants.PARAMETERS_LANGUAGE)[0];
+			} else if (parameters.containsKey(URLConstants.PARAMETERS_USERID)
+					&& parameters.containsKey(URLConstants.PARAMETERS_LANGUAGE)) {
+				userID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_USERID)[0]);
+				language = parameters.get(URLConstants.PARAMETERS_LANGUAGE)[0];
 				queryManager.setLanguage(userID, language);
-			} else if (parameters.containsKey(Constants.PARAMETERS_USERID)
-					&& parameters.containsKey(Constants.PARAMETERS_PASSWORDHASH)) {
-				userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
-				passwordHash = parameters.get(Constants.PARAMETERS_PASSWORDHASH)[0];
+			} else if (parameters.containsKey(URLConstants.PARAMETERS_USERID)
+					&& parameters.containsKey(URLConstants.PARAMETERS_PASSWORDHASH)) {
+				userID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_USERID)[0]);
+				passwordHash = parameters.get(URLConstants.PARAMETERS_PASSWORDHASH)[0];
 				queryManager.setPasswordHash(userID, passwordHash);
-			} else if (parameters.containsKey(Constants.PARAMETERS_USERID)
-					&& parameters.containsKey(Constants.PARAMETERS_PHONEHASH)) {
-				userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
-				phoneNumberHash = parameters.get(Constants.PARAMETERS_PHONEHASH)[0];
+			} else if (parameters.containsKey(URLConstants.PARAMETERS_USERID)
+					&& parameters.containsKey(URLConstants.PARAMETERS_PHONEHASH)) {
+				userID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_USERID)[0]);
+				phoneNumberHash = parameters.get(URLConstants.PARAMETERS_PHONEHASH)[0];
 				queryManager.setPhoneNumberHash(userID, phoneNumberHash);
-			} else if (parameters.containsKey(Constants.PARAMETERS_USERID)
-					&& parameters.containsKey(Constants.PARAMETERS_PICTUREURL)) {
-				userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
-				pictureUrl = parameters.get(Constants.PARAMETERS_PICTUREURL)[0];
+			} else if (parameters.containsKey(URLConstants.PARAMETERS_USERID)
+					&& parameters.containsKey(URLConstants.PARAMETERS_PICTUREURL)) {
+				userID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_USERID)[0]);
+				pictureUrl = parameters.get(URLConstants.PARAMETERS_PICTUREURL)[0];
 				queryManager.setProfilPictureOfUser(userID, pictureUrl);
 			} else {
 				throw new MissingParametersException();
@@ -94,27 +93,27 @@ public class PutRequest extends Request {
 		 */
 		matcher = regExQuestionPattern.matcher(this.pathInfo);
 		if (matcher.find()) {
-			if (parameters.containsKey(Constants.PARAMETERS_QUESTIONID)
-					&& parameters.containsKey(Constants.PARAMETERS_ANSWERID)
-					&& parameters.containsKey(Constants.PARAMETERS_PUBLIC)
-					&& !parameters.containsKey(Constants.PARAMETERS_USERID)) {
-				isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
-				questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
-				answerID = Long.parseLong(parameters.get(Constants.PARAMETERS_ANSWERID)[0]);
+			if (parameters.containsKey(URLConstants.PARAMETERS_QUESTIONID)
+					&& parameters.containsKey(URLConstants.PARAMETERS_ANSWERID)
+					&& parameters.containsKey(URLConstants.PARAMETERS_PUBLIC)
+					&& !parameters.containsKey(URLConstants.PARAMETERS_USERID)) {
+				isPublic = Boolean.parseBoolean(parameters.get(URLConstants.PARAMETERS_PUBLIC)[0]);
+				questionID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_QUESTIONID)[0]);
+				answerID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_ANSWERID)[0]);
 				if (!isPublic) {
 					queryManager.setSelectedAnswerOfPrivateQuestion(questionID, answerID);
 						Notification not = new Notification("", NotificationCodes.NOTIFICATION_ANSWER_SET.getCode(),"questionID", questionID.toString());
 						NotificationSupporter.sendNotificationToAllMembersOfAGroup(not, groupID);	
 				}
 
-			} else if (parameters.containsKey(Constants.PARAMETERS_QUESTIONID)
-					&& parameters.containsKey(Constants.PARAMETERS_ANSWERID)
-					&& parameters.containsKey(Constants.PARAMETERS_PUBLIC)
-					&& parameters.containsKey(Constants.PARAMETERS_USERID)) {
-				isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
-				questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
-				answerID = Long.parseLong(parameters.get(Constants.PARAMETERS_ANSWERID)[0]);
-				userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
+			} else if (parameters.containsKey(URLConstants.PARAMETERS_QUESTIONID)
+					&& parameters.containsKey(URLConstants.PARAMETERS_ANSWERID)
+					&& parameters.containsKey(URLConstants.PARAMETERS_PUBLIC)
+					&& parameters.containsKey(URLConstants.PARAMETERS_USERID)) {
+				isPublic = Boolean.parseBoolean(parameters.get(URLConstants.PARAMETERS_PUBLIC)[0]);
+				questionID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_QUESTIONID)[0]);
+				answerID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_ANSWERID)[0]);
+				userID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_USERID)[0]);
 				if (!isPublic) {
 					queryManager.setChoosedAnswerOfPrivateQuestion(userID, questionID, answerID);
 					//Trigger.setPointsForAnsweringAPrivateQuestion(groupID, userID);
@@ -135,20 +134,20 @@ public class PutRequest extends Request {
 	matcher=regExGroupPattern.matcher(this.pathInfo);if(matcher.find())
 
 	{
-		if (parameters.containsKey(Constants.PARAMETERS_GROUPID)
-				&& parameters.containsKey(Constants.PARAMETERS_USERID)) {
-			adminID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
-			groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_GROUPID)
+				&& parameters.containsKey(URLConstants.PARAMETERS_USERID)) {
+			adminID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_USERID)[0]);
+			groupID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_GROUPID)[0]);
 			queryManager.setGroupAdmin(groupID, adminID);
-		} else if (parameters.containsKey(Constants.PARAMETERS_GROUPID)
-				&& parameters.containsKey(Constants.PARAMETERS_GROUPNAME)) {
-			groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
-			groupName = parameters.get(Constants.PARAMETERS_GROUPNAME)[0];
+		} else if (parameters.containsKey(URLConstants.PARAMETERS_GROUPID)
+				&& parameters.containsKey(URLConstants.PARAMETERS_GROUPNAME)) {
+			groupID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_GROUPID)[0]);
+			groupName = parameters.get(URLConstants.PARAMETERS_GROUPNAME)[0];
 			queryManager.setGroupName(groupID, groupName);
-		} else if (parameters.containsKey(Constants.PARAMETERS_GROUPID)
-				&& parameters.containsKey(Constants.PARAMETERS_GROUPNAME)) {
-			groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
-			pictureUrl = parameters.get(Constants.PARAMETERS_PICTUREURL)[0];
+		} else if (parameters.containsKey(URLConstants.PARAMETERS_GROUPID)
+				&& parameters.containsKey(URLConstants.PARAMETERS_GROUPNAME)) {
+			groupID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_GROUPID)[0]);
+			pictureUrl = parameters.get(URLConstants.PARAMETERS_PICTUREURL)[0];
 			queryManager.setGroupPicture(groupID, pictureUrl);
 		} else {
 			throw new MissingParametersException();

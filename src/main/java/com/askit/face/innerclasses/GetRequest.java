@@ -14,7 +14,6 @@ import com.askit.entities.Group;
 import com.askit.entities.PrivateQuestion;
 import com.askit.entities.PublicQuestion;
 import com.askit.entities.User;
-import com.askit.etc.Constants;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
@@ -55,35 +54,35 @@ public class GetRequest extends Request {
 		String searchPattern = null;
 		Long answerID = null;
 
-		if (parameters.containsKey(Constants.PARAMETERS_GROUPID)) {
-			groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_GROUPID)) {
+			groupID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_GROUPID)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_QUESTIONID)) {
-			questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_QUESTIONID)) {
+			questionID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_QUESTIONID)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_USERID)) {
-			userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_USERID)) {
+			userID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_USERID)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_PUBLIC)) {
-			isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_PUBLIC)) {
+			isPublic = Boolean.parseBoolean(parameters.get(URLConstants.PARAMETERS_PUBLIC)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_ACTIVE)) {
-			isExpired = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_ACTIVE)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_ACTIVE)) {
+			isExpired = Boolean.parseBoolean(parameters.get(URLConstants.PARAMETERS_ACTIVE)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_STARTINDEX)) {
-			startIndex = Integer.parseInt(parameters.get(Constants.PARAMETERS_STARTINDEX)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_STARTINDEX)) {
+			startIndex = Integer.parseInt(parameters.get(URLConstants.PARAMETERS_STARTINDEX)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_QUANTITY)) {
-			quantity = Integer.parseInt(parameters.get(Constants.PARAMETERS_QUANTITY)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_QUANTITY)) {
+			quantity = Integer.parseInt(parameters.get(URLConstants.PARAMETERS_QUANTITY)[0]);
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_LANGUAGE)) {
-			language = parameters.get(Constants.PARAMETERS_LANGUAGE)[0];
+		if (parameters.containsKey(URLConstants.PARAMETERS_LANGUAGE)) {
+			language = parameters.get(URLConstants.PARAMETERS_LANGUAGE)[0];
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_SEARCH)) {
-			searchPattern = parameters.get(Constants.PARAMETERS_SEARCH)[0];
+		if (parameters.containsKey(URLConstants.PARAMETERS_SEARCH)) {
+			searchPattern = parameters.get(URLConstants.PARAMETERS_SEARCH)[0];
 		}
-		if (parameters.containsKey(Constants.PARAMETERS_ANSWERID)) {
-			answerID = Long.parseLong(parameters.get(Constants.PARAMETERS_ANSWERID)[0]);
+		if (parameters.containsKey(URLConstants.PARAMETERS_ANSWERID)) {
+			answerID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_ANSWERID)[0]);
 		}
 
 		super.handleRequest();
@@ -96,8 +95,8 @@ public class GetRequest extends Request {
 		 */
 		matcher = regExGroupPattern.matcher(pathInfo);
 		if (matcher.find()) {
-			if (parameters.containsKey(Constants.PARAMETERS_GROUPID)) {
-				groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
+			if (parameters.containsKey(URLConstants.PARAMETERS_GROUPID)) {
+				groupID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_GROUPID)[0]);
 				this.out.println("{ groupName: " + queryManager.getGroupName(groupID) + ", pictureUrl: "
 						+ queryManager.getGroupPictureURI(groupID) + "}");
 			} else if (userID != null && searchPattern != null) {
@@ -151,11 +150,11 @@ public class GetRequest extends Request {
 		matcher = regExUserScorePattern.matcher(pathInfo);
 		if (matcher.find()) {
 
-			if (parameters.containsKey(Constants.PARAMETERS_GROUPID)) {
-				groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
+			if (parameters.containsKey(URLConstants.PARAMETERS_GROUPID)) {
+				groupID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_GROUPID)[0]);
 			}
-			if (parameters.containsKey(Constants.PARAMETERS_USERID)) {
-				userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
+			if (parameters.containsKey(URLConstants.PARAMETERS_USERID)) {
+				userID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_USERID)[0]);
 			}
 
 			Long userscore;
@@ -248,8 +247,8 @@ public class GetRequest extends Request {
 					publicQuestions = queryManager.getActivePublicQuestionsOfUser(userID, startIndex, quantity);
 				} else if (userID != null && quantity != 0 && isExpired) {
 					publicQuestions = queryManager.getOldPublicQuestionsOfUser(userID, startIndex, quantity);
-				} else if (userID == null && searchPattern != null) {
-					publicQuestions = queryManager.searchForPublicQuestion(searchPattern);
+				} else if (userID == null && searchPattern != null && language != null) {
+					publicQuestions = queryManager.searchForPublicQuestion(searchPattern, language);
 				} else {
 					throw new MissingParametersException("No or not enough Parameters specified");
 				}

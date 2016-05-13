@@ -7,7 +7,6 @@ import javax.servlet.ServletException;
 
 import com.askit.database.DatabaseQueryManager;
 import com.askit.database.QueryManager;
-import com.askit.etc.Constants;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
@@ -43,15 +42,15 @@ public class DeleteRequest extends Request {
 		 */
 		matcher = regExUserPattern.matcher(pathInfo);
 		if (matcher.find()) {
-			if (parameters.containsKey(Constants.PARAMETERS_USERID)
-					&& parameters.containsKey(Constants.PARAMETERS_CONTACTID)) {
-				userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
-				contactID = Long.parseLong(parameters.get(Constants.PARAMETERS_CONTACTID)[0]);
+			if (parameters.containsKey(URLConstants.PARAMETERS_USERID)
+					&& parameters.containsKey(URLConstants.PARAMETERS_CONTACTID)) {
+				userID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_USERID)[0]);
+				contactID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_CONTACTID)[0]);
 				queryManager.deleteContact(userID, contactID);
-			} else if (parameters.containsKey(Constants.PARAMETERS_USERID)
-					&& parameters.containsKey(Constants.PARAMETERS_GROUPID)) {
-				userID = Long.parseLong(parameters.get(Constants.PARAMETERS_USERID)[0]);
-				groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
+			} else if (parameters.containsKey(URLConstants.PARAMETERS_USERID)
+					&& parameters.containsKey(URLConstants.PARAMETERS_GROUPID)) {
+				userID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_USERID)[0]);
+				groupID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_GROUPID)[0]);
 				queryManager.deleteUserFromGroup(groupID, userID);
 			} else {
 				throw new MissingParametersException("Not enough Parameters specified");
@@ -65,8 +64,8 @@ public class DeleteRequest extends Request {
 		 */
 		matcher = regExGroupPattern.matcher(pathInfo);
 		if (matcher.find()) {
-			if (parameters.containsKey(Constants.PARAMETERS_GROUPID)) {
-				groupID = Long.parseLong(parameters.get(Constants.PARAMETERS_GROUPID)[0]);
+			if (parameters.containsKey(URLConstants.PARAMETERS_GROUPID)) {
+				groupID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_GROUPID)[0]);
 				queryManager.deleteGroup(groupID);
 			} else {
 				throw new MissingParametersException("Not enough Parameters specified");
@@ -80,10 +79,10 @@ public class DeleteRequest extends Request {
 		 */
 		matcher = regExGroupPattern.matcher(pathInfo);
 		if (matcher.find()) {
-			if (parameters.containsKey(Constants.PARAMETERS_QUESTIONID)
-					&& parameters.containsKey(Constants.PARAMETERS_PUBLIC)) {
-				questionID = Long.parseLong(parameters.get(Constants.PARAMETERS_QUESTIONID)[0]);
-				isPublic = Boolean.parseBoolean(parameters.get(Constants.PARAMETERS_PUBLIC)[0]);
+			if (parameters.containsKey(URLConstants.PARAMETERS_QUESTIONID)
+					&& parameters.containsKey(URLConstants.PARAMETERS_PUBLIC)) {
+				questionID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_QUESTIONID)[0]);
+				isPublic = Boolean.parseBoolean(parameters.get(URLConstants.PARAMETERS_PUBLIC)[0]);
 				if (!isPublic) {
 					queryManager.deletePrivateQuestion(questionID);
 				}
