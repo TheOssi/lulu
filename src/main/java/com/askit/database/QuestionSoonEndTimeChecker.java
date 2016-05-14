@@ -1,7 +1,7 @@
 package com.askit.database;
 
-
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,13 +18,15 @@ import com.askit.notification.NotificationSupporter;
 
 public class QuestionSoonEndTimeChecker extends Thread {
 	private static final QuestionSoonEndTimeChecker INSTANCE = new QuestionSoonEndTimeChecker();
-	private static final long SLEEP_TIME = 5000L;
-	// TODO modify statement + edits from other class
+	private static final long SLEEP_TIME = 5000L; // 5s
+	private static final long SOON_END_TIME = 14400000L; // 2h
+	private static final long THRESHOLD_LEFT = 60000L; // 1min
+	private static final long THRESHOLD_RIGHT = 60000L; // 1min
 	private static final String STATEMENT = "SELECT R.questionID, R.endDate, R.type FROM ( SELECT PR.questionID, PR.endDate, '"
 			+ PrivateQuestion.TABLE_NAME + "' as \"type\" FROM APP.PrivateQuestions AS PR "
-			+ "WHERE PR.endDate IS NOT NULL AND PR.finished <> 1 AND PR.definitionOfEnd = 1 " + "UNION ALL SELECT PU.questionID, PU.endDate, '"
-			+ PublicQuestion.TABLE_NAME + "' as \"type\" FROM APP.PublicQuestions PU " + "WHERE PU.endDate IS NOT NULL AND PU.finished <> 1 )  AS R "
-			+ "ORDER BY R.endDate ASC LIMIT 1;";
+			+ "WHERE PR.endDate IS NOT NULL AND PR.endDate BETWEEN ? AND ? AND PR.finished <> 1 AND PR.definitionOfEnd = 1 "
+			+ "UNION ALL SELECT PU.questionID, PU.endDate, '" + PublicQuestion.TABLE_NAME + "' as \"type\" FROM APP.PublicQuestions PU "
+			+ "WHERE PU.endDate IS NOT NULL AND PU.endDate BETWEEN ? AND ? AND PU.finished <> 1 )  AS R ORDER BY R.endDate ASC LIMIT 1;";
 
 	private AbstractQuestion[] currentQuestions;
 	private final QueryManager queryManager = new DatabaseQueryManager();
@@ -44,8 +46,13 @@ public class QuestionSoonEndTimeChecker extends Thread {
 	}
 
 	private AbstractQuestion[] getNext() throws SQLException {
+		final long currentTime = System.currentTimeMillis();
 		final Connection connection = ConnectionManager.getInstance().getReaderConnection();
 		final PreparedStatement preparedStatement = connection.prepareStatement(STATEMENT);
+		preparedStatement.setDate(1, new Date(currentTime - SOON_END_TIME + THRESHOLD_RIGHT));
+		preparedStatement.setDate(2, new Date(currentTime - SOON_END_TIME - THRESHOLD_LEFT));
+		preparedStatement.setDate(3, new Date(currentTime - SOON_END_TIME + THRESHOLD_RIGHT));
+		preparedStatement.setDate(4, new Date(currentTime - SOON_END_TIME - THRESHOLD_LEFT));
 		final ResultSet resultSet = preparedStatement.executeQuery();
 		final List<AbstractQuestion> questions = new ArrayList<AbstractQuestion>();
 		while (resultSet.next()) {
@@ -66,9 +73,8 @@ public class QuestionSoonEndTimeChecker extends Thread {
 					final Long questionID = currentQuestion.getId();
 					if (!usedIDs.contains(questionID)) {
 						usedIDs.add(questionID);
-						// TODO notification code
-						final Notification notification = new Notification("", NotificationCodes.NOTIFICATION_QUESTION_END.getCode(), "questionID",
-								questionID.toString());
+						final Notification notification = new Notification("", NotificationCodes.NOTIFICATION_QUESTION_SOON_END.getCode(),
+								"questionID", questionID.toString());
 						if (currentQuestion.getTableName().equals(PrivateQuestion.TABLE_NAME)) {
 							queryManager.setPrivateQuestionToFinish(questionID);
 							NotificationSupporter.sendNotificationToAllMembersOfPrivateQuestion(notification, questionID);
