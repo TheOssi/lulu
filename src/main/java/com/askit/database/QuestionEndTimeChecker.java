@@ -1,5 +1,7 @@
 package com.askit.database;
 
+//TODO mit wait und dann mit checker
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,7 +18,7 @@ import com.askit.notification.NotificationSupporter;
 /**
  * This class is a thread that checks the private and public question if they
  * should be closed.
- * 
+ *
  * @author Kai Müller
  * @version 1.0.0.0
  * @since 1.0.0.0
@@ -26,6 +28,7 @@ public class QuestionEndTimeChecker extends Thread {
 
 	private static final QuestionEndTimeChecker INSTANCE = new QuestionEndTimeChecker();
 	private static final long SLEEP_TIME = 5000L;
+	// TODO enDate > currentTime
 	private static final String STATEMENT = "SELECT R.questionID, R.endDate, R.type FROM ( SELECT PR.questionID, PR.endDate, '"
 			+ PrivateQuestion.TABLE_NAME + "' as \"type\" FROM APP.PrivateQuestions AS PR "
 			+ "WHERE PR.endDate IS NOT NULL AND PR.finished <> 1 AND PR.definitionOfEnd = 1 " + "UNION ALL SELECT PU.questionID, PU.endDate, '"

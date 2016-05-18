@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.askit.database.DatabaseUser;
+import com.askit.database.QuestionEndTimeChecker;
 import com.askit.database.QuestionSoonEndTimeChecker;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
@@ -60,8 +61,9 @@ public class Faceservlet extends HttpServlet {
 			e.printStackTrace();
 		}
 		SessionManager.getInstance().start();
-		//NotificationSender.getInstace().startThread();
-		QuestionSoonEndTimeChecker.getInstance();
+		// NotificationSender.getInstace().startThread();
+		QuestionEndTimeChecker.getInstance().startThread();
+		QuestionSoonEndTimeChecker.getInstance().startThread();
 		RegIDHandler.getInstance();
 		NotificationHandler.getInstance();
 	}
@@ -93,8 +95,7 @@ public class Faceservlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doPut(final HttpServletRequest request, final HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPut(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 		final PrintWriter out = getPrintWriterSlienty(response);
 		final PutRequest put = new PutRequest(request.getPathInfo(), request.getParameterMap(), out);
 		handleRequest(put, response, out);
@@ -102,8 +103,7 @@ public class Faceservlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doDelete(final HttpServletRequest request, final HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doDelete(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 		final PrintWriter out = getPrintWriterSlienty(response);
 		final DeleteRequest delete = new DeleteRequest(request.getPathInfo(), request.getParameterMap(), out);
 		handleRequest(delete, response, out);
@@ -142,8 +142,8 @@ public class Faceservlet extends HttpServlet {
 	private void handleRequest(final Request request, final HttpServletResponse response, final PrintWriter out) {
 		try {
 			request.handleRequest();
-		} catch (final ServletException | MissingParametersException | DatabaseLayerException | WrongHashException
-				| DuplicateHashException | NotificationException e) {
+		} catch (final ServletException | MissingParametersException | DatabaseLayerException | WrongHashException | DuplicateHashException
+				| NotificationException e) {
 			handleException(e, response, out);
 		}
 	}
