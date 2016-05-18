@@ -1,7 +1,6 @@
 package com.askit.face;
 
 //TODO add trigger calls
-//TODO add notification calls
 
 import java.io.IOException;
 import java.io.PrintWriter;
