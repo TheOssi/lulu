@@ -11,9 +11,9 @@ import com.askit.exception.DuplicateHashException;
 import com.askit.exception.WrongHashException;
 
 /**
- * Handles Sessions acquired by Users Users request Sessionhash which is valid
- * for a certain period of time, after this period they have to get a new one
- * This concept enables a higher security standard
+ * Handles sessions acquired by users request. A sessionhash is valid for a
+ * certain period of time, after this period they have to get a new one. This
+ * concept enables a higher security standard
  *
  * @author Max Lenk
  * @version 1.0.0.0
@@ -22,6 +22,7 @@ import com.askit.exception.WrongHashException;
  */
 public class SessionManager implements Runnable {
 
+	private static final int SLEEP_TIME = 5000;
 	private static final SessionManager INSTANCE = new SessionManager();
 	private static final long SESSIONTIME = 12 * 60 * 1000; // Min * 60 * 1000
 
@@ -33,10 +34,11 @@ public class SessionManager implements Runnable {
 	}
 
 	/**
-	 * starts Thread
+	 * This method starts the Thread SessionManager, because it's implemented as
+	 * a singelton Thread. The thread checking the sessions for elapsed ones.
 	 */
 	public void start() {
-		if (checkSessionsThread == null || !(checkSessionsThread.isAlive())) {
+		if (checkSessionsThread == null || !checkSessionsThread.isAlive()) {
 			checkSessionsThread = new Thread(INSTANCE);
 			checkSessionsThread.start();
 		}
@@ -52,32 +54,25 @@ public class SessionManager implements Runnable {
 	}
 
 	/**
-	 * Deletes all Sessions
-	 */
-	public void deleteAllSessions() {
-		if (checkSessionsThread.isAlive()) {
-			checkSessionsThread.interrupt();
-		}
-		sessionMap.clear();
-		if (checkSessionsThread.isInterrupted()) {
-			checkSessionsThread.start();
-		}
-	}
-
-	/**
-	 * Creates Session
+	 * Creates a session for a user
 	 *
 	 * @param username
+	 *            the username of the login
 	 * @param passwordHash
+	 *            the passwordHash for the login
 	 * @return
 	 * @throws WrongHashException
+	 *             if the passwordHash is not valid in the combination with the
+	 *             given username
 	 * @throws DuplicateHashException
+	 *             if the generated sessionHash is currently used by another
+	 *             session
 	 * @throws DatabaseLayerException
+	 *             if something in the datasbase layer went wrong
 	 */
 	public String createSession(final String username, final String passwordHash) throws WrongHashException, DuplicateHashException,
 			DatabaseLayerException {
 		if (checkHash(username, passwordHash)) {
-			// TODO think about that
 			final String sessionHash = createSessionHash(username);
 			if (!sessionMap.containsKey(sessionHash)) {
 				sessionMap.put(sessionHash, new MappedUserHash(username, Calendar.getInstance().getTimeInMillis() + SESSIONTIME));
@@ -91,9 +86,10 @@ public class SessionManager implements Runnable {
 	}
 
 	/**
-	 * Destroys Session for a certain User
+	 * Destroys alls session for a certain User
 	 *
 	 * @param username
+	 *            the username of the user
 	 */
 	public void destroySessionsForUser(final String username) {
 		for (final Entry<String, MappedUserHash> entry : sessionMap.entrySet()) {
@@ -106,40 +102,46 @@ public class SessionManager implements Runnable {
 	}
 
 	/**
-	 * Destroys a single sessionHash
+	 * Destroys a single session of a user
 	 *
 	 * @param sessionHash
+	 *            the sessionHash of the session to destroy
 	 */
 	public void destroySession(final String sessionHash) {
 		sessionMap.remove(sessionHash);
 	}
 
 	/**
-	 * Checks Passwordhash of User
+	 * Checks the passwordhash of a user
 	 *
 	 * @param username
+	 *            the username of the user
 	 * @param passwordHash
-	 * @return
+	 *            the hash of the password of the user
+	 * @return true, if the passwordHash is valid in the combination with the
+	 *         username; false, if not
 	 * @throws DatabaseLayerException
+	 *             thrown, if something went wrong in the database layer
 	 */
 	private boolean checkHash(final String username, final String passwordHash) throws DatabaseLayerException {
+		// TODO add return to the line below and remove the "return true"
 		queryManager.checkUser(username, passwordHash);
 		return true;
-		// TODO Hashüberprüfung
 	}
 
 	/**
 	 * creates unique SessionHash
 	 *
 	 * @param seed
-	 * @return
+	 *            the seed for the session hash
+	 * @return a unique session hash
 	 */
 	private String createSessionHash(String seed) {
 		long hash = Calendar.getInstance().getTimeInMillis();
 		if (seed == null || seed == "") {
-			seed = "HalloSaschaKaiIstBloed";
+			seed = "TestMaxSaschaFabiKai";
 		} else {
-			seed = seed.concat("HalloSaschaKaiIstBloed");
+			seed = seed.concat("TestMaxSaschaFabiKai");
 		}
 		for (int i = 0; i < seed.length(); i++) {
 			hash = hash * 31 + seed.charAt(i);
@@ -151,16 +153,17 @@ public class SessionManager implements Runnable {
 	 * verifies if a sessionHash is valid
 	 *
 	 * @param sessionHash
-	 * @return
+	 *            the session hash to control
+	 * @return true, if valid; false, if not
 	 * @throws WrongHashException
 	 */
-	public boolean isValidSessionHash(final String sessionHash) throws WrongHashException {
+	public boolean isValidSessionHash(final String sessionHash) {
 		return sessionMap.containsKey(sessionHash);
 	}
 
 	/*
 	 * runing logic(non-Javadoc)
-	 *
+	 * 
 	 * @see java.lang.Runnable#run()
 	 */
 	@Override
@@ -176,7 +179,7 @@ public class SessionManager implements Runnable {
 				}
 			} else {
 				try {
-					Thread.sleep(5000);
+					Thread.sleep(SLEEP_TIME);
 				} catch (final InterruptedException e) {
 					checkSessionsThread.start();
 				}
