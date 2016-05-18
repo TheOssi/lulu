@@ -22,11 +22,20 @@ import com.askit.exception.WrongHashException;
 import com.askit.face.JSONBuilder;
 import com.askit.notification.RegIDHandler;
 
+/**
+ * @author lelmac
+ *
+ */
 public class GetRequest extends Request {
 	private Integer id;
 
 	/*
 	 * 
+	 */
+	/**
+	 * @param pathInfo
+	 * @param parameters
+	 * @param out
 	 */
 	public GetRequest(final String pathInfo, final Map<String, String[]> parameters, final PrintWriter out) {
 		super(pathInfo, parameters, out);
