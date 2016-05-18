@@ -24,14 +24,14 @@ public class SessionManagerTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws IOException, SQLException, DriverNotFoundException {
-		for (int i = 0; i < usernames.length; i++) {
-		
+		for (final String username : usernames) {
+
 		}
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws SQLException, DriverNotFoundException {
-		
+
 	}
 
 	@Before
@@ -57,11 +57,6 @@ public class SessionManagerTest {
 			e.printStackTrace();
 			fail("a exception appeared: " + e.getMessage());
 		}
-	}
-
-	@Test
-	public void testCreateSessionThreadSafety() {
-		// TODO sowohl input als auch outout
 	}
 
 	@Test

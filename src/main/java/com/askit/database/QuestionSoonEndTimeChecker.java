@@ -30,7 +30,7 @@ public class QuestionSoonEndTimeChecker extends Thread {
 
 	private AbstractQuestion[] currentQuestions;
 	private final QueryManager queryManager = new DatabaseQueryManager();
-	private final List<Long> usedIDs = new ArrayList<Long>();
+	private final List<AbstractQuestion> usedQuestions = new ArrayList<AbstractQuestion>();
 
 	private QuestionSoonEndTimeChecker() {
 	}
@@ -43,6 +43,10 @@ public class QuestionSoonEndTimeChecker extends Thread {
 		if (!this.isAlive() || this.isInterrupted()) {
 			this.start();
 		}
+	}
+
+	public void removeUsedQuestion(final AbstractQuestion question) {
+		usedQuestions.remove(question);
 	}
 
 	private AbstractQuestion[] getNext() throws SQLException {
@@ -71,8 +75,9 @@ public class QuestionSoonEndTimeChecker extends Thread {
 			if (currentQuestions.length != 0) {
 				for (final AbstractQuestion currentQuestion : currentQuestions) {
 					final Long questionID = currentQuestion.getId();
-					if (!usedIDs.contains(questionID)) {
-						usedIDs.add(questionID);
+					final AbstractQuestion questionToCheck = new AbstractQuestion(currentQuestion.getId(), null, currentQuestion.getTableName());
+					if (!usedQuestions.contains(questionToCheck)) {
+						usedQuestions.add(questionToCheck);
 						final Notification notification = new Notification("", NotificationCodes.NOTIFICATION_QUESTION_SOON_END.getCode(),
 								"questionID", questionID.toString());
 						if (currentQuestion.getTableName().equals(PrivateQuestion.TABLE_NAME)) {

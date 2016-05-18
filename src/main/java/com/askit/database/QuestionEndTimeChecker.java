@@ -1,7 +1,5 @@
 package com.askit.database;
 
-//TODO mit wait und dann mit checker
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -84,6 +82,8 @@ public class QuestionEndTimeChecker extends Thread {
 						queryManager.setPublicQuestionToFinish(questionID);
 						NotificationSupporter.sendNotificationToAllMembersOfPublicQuestion(notification, questionID);
 					}
+					final AbstractQuestion questionToCheck = new AbstractQuestion(currentQuestion.getId(), null, currentQuestion.getTableName());
+					QuestionSoonEndTimeChecker.getInstance().removeUsedQuestion(questionToCheck);
 				}
 			} else {
 				Thread.sleep(SLEEP_TIME);
