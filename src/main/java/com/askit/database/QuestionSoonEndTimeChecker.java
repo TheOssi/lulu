@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.askit.entities.PrivateQuestion;
@@ -28,9 +29,8 @@ public class QuestionSoonEndTimeChecker extends Thread {
 			+ "UNION ALL SELECT PU.questionID, PU.endDate, '" + PublicQuestion.TABLE_NAME + "' as \"type\" FROM APP.PublicQuestions PU "
 			+ "WHERE PU.endDate IS NOT NULL AND PU.endDate BETWEEN ? AND ? AND PU.finished <> 1 )  AS R ORDER BY R.endDate ASC LIMIT 1;";
 
-	private AbstractQuestion[] currentQuestions;
-	private final QueryManager queryManager = new DatabaseQueryManager();
-	private final List<AbstractQuestion> usedQuestions = new ArrayList<AbstractQuestion>();
+	// TODO is thread safe?
+	private final List<AbstractQuestion> usedQuestions = Collections.synchronizedList(new ArrayList<AbstractQuestion>());
 
 	private QuestionSoonEndTimeChecker() {
 	}
@@ -70,33 +70,37 @@ public class QuestionSoonEndTimeChecker extends Thread {
 
 	@Override
 	public void run() {
-		try {
-			currentQuestions = getNext();
-			if (currentQuestions.length != 0) {
-				for (final AbstractQuestion currentQuestion : currentQuestions) {
-					final Long questionID = currentQuestion.getId();
-					final AbstractQuestion questionToCheck = new AbstractQuestion(currentQuestion.getId(), null, currentQuestion.getTableName());
-					if (!usedQuestions.contains(questionToCheck)) {
-						usedQuestions.add(questionToCheck);
-						final Notification notification = new Notification("", NotificationCodes.NOTIFICATION_QUESTION_SOON_END.getCode(),
-								"questionID", questionID.toString());
-						if (currentQuestion.getTableName().equals(PrivateQuestion.TABLE_NAME)) {
-							queryManager.setPrivateQuestionToFinish(questionID);
-							NotificationSupporter.sendNotificationToAllMembersOfPrivateQuestion(notification, questionID);
-						} else if (currentQuestion.getTableName().equals(PublicQuestion.TABLE_NAME)) {
-							queryManager.setPublicQuestionToFinish(questionID);
-							NotificationSupporter.sendNotificationToAllMembersOfPublicQuestion(notification, questionID);
+		AbstractQuestion[] currentQuestions = null;
+		final QueryManager queryManager = new DatabaseQueryManager();
+		while (true) {
+			try {
+				currentQuestions = getNext();
+				if (currentQuestions.length != 0) {
+					for (final AbstractQuestion currentQuestion : currentQuestions) {
+						final Long questionID = currentQuestion.getId();
+						final AbstractQuestion questionToCheck = new AbstractQuestion(currentQuestion.getId(), null, currentQuestion.getTableName());
+						if (!usedQuestions.contains(questionToCheck)) {
+							usedQuestions.add(questionToCheck);
+							final Notification notification = new Notification("", NotificationCodes.NOTIFICATION_QUESTION_SOON_END.getCode(),
+									"questionID", questionID.toString());
+							if (currentQuestion.getTableName().equals(PrivateQuestion.TABLE_NAME)) {
+								queryManager.setPrivateQuestionToFinish(questionID);
+								NotificationSupporter.sendNotificationToAllMembersOfPrivateQuestion(notification, questionID);
+							} else if (currentQuestion.getTableName().equals(PublicQuestion.TABLE_NAME)) {
+								queryManager.setPublicQuestionToFinish(questionID);
+								NotificationSupporter.sendNotificationToAllMembersOfPublicQuestion(notification, questionID);
+							}
 						}
 					}
+				} else {
+					Thread.sleep(SLEEP_TIME);
 				}
-			} else {
-				Thread.sleep(SLEEP_TIME);
+			} catch (final SQLException | DatabaseLayerException | NotificationException e) {
+				e.printStackTrace();
+			} catch (final InterruptedException e) {
+				e.printStackTrace();
+				startThread();
 			}
-		} catch (final SQLException | DatabaseLayerException | NotificationException e) {
-			e.printStackTrace();
-		} catch (final InterruptedException e) {
-			e.printStackTrace();
-			startThread();
 		}
 	}
 }
