@@ -15,8 +15,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+//TODO thread safe?
 public class NotificationSender implements Runnable {
 
+	private static final int SLEEP_TIME = 5000;
 	private static final NotificationSender INSTANCE = new NotificationSender();
 	private static final String AUTH_KEY = ""; // TODO get this from S.
 	private final static String GCM_URL = "https://android.googleapis.com/gcm/send";
@@ -94,7 +96,7 @@ public class NotificationSender implements Runnable {
 				}
 			} else {
 				try {
-					Thread.sleep(5000);
+					Thread.sleep(SLEEP_TIME);
 				} catch (final InterruptedException e) {
 					if (!sendNotificationThread.isAlive() || sendNotificationThread.isInterrupted()) {
 						sendNotificationThread.start();
