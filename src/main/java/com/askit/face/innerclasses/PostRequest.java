@@ -19,23 +19,38 @@ import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
 import com.askit.exception.NotificationException;
 import com.askit.exception.WrongHashException;
+import com.askit.face.PictureSupporter;
 import com.askit.notification.Notification;
 import com.askit.notification.NotificationCodes;
 import com.askit.notification.NotificationHandler;
 import com.askit.notification.RegIDHandler;
+/**
+ * @author D062367
+ *
+ */
 
 public class PostRequest extends Request {
-
-	public PostRequest(final String pathInfo, final Map<String, String[]> parameters, final PrintWriter out) {
+	final String body;
+	
+	
+	/**
+	 * @param pathInfo
+	 * @param parameters
+	 * @param out
+	 * @param body
+	 */
+	public PostRequest(final String pathInfo, final Map<String, String[]> parameters, final PrintWriter out,final String body) {
 		super(pathInfo, parameters, out);
+		this.body = body;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see com.askit.face.innerclasses.Request#handleRequest() handles
 	 * PostRequest
 	 */
+	
 	@Override
 	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
 			DatabaseLayerException, ServletException, NotificationException {
@@ -298,7 +313,16 @@ public class PostRequest extends Request {
 			}
 
 		}
-
+		matcher = regExPicturePattern.matcher(pathInfo);
+		if (matcher.find()) {
+			if(body != null && body != ""&& groupID!=null){
+				PictureSupporter.createPictureFile(body,"/group",groupID);
+			}else if(body !=null && body != "" && userID!=null){
+				PictureSupporter.createPictureFile(body,"/user",userID);
+			}else{
+				throw new MissingParametersException("Empty or no Body");
+			}
+		}
 		throw new ServletException();
 	}
 }
