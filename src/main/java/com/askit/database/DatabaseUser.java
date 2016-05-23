@@ -38,6 +38,7 @@ public enum DatabaseUser {
 	}
 
 	public static void loadAllPasswordsFromFile() throws IOException {
+		// TODO who to root
 		final File propertiesFile = new File("./config/config.properties");
 		if (propertiesFile.exists() == false) {
 			throw new IOException("Properties file (" + propertiesFile.getAbsolutePath() + ") does not exist");

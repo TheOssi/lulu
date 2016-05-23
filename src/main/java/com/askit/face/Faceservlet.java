@@ -1,12 +1,8 @@
 package com.askit.face;
 
-import java.io.BufferedReader;
-
 //TODO add trigger calls
-
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletConfig;
@@ -52,7 +48,7 @@ public class Faceservlet extends HttpServlet {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig) Init:
 	 * Runs all the basic methods at the beginning.
 	 */
@@ -98,11 +94,11 @@ public class Faceservlet extends HttpServlet {
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) {
 		final PrintWriter out = getPrintWriterSlienty(response);
 		final String body = getBody(request);
-		final PostRequest post = new PostRequest(request.getPathInfo(), request.getParameterMap(), out,body);
+		final PostRequest post = new PostRequest(request.getPathInfo(), request.getParameterMap(), out, body);
 		handleRequest(post, response, out);
 		out.close();
 	}
-	
+
 	/**
 	 * @param request
 	 * @param response
@@ -110,8 +106,7 @@ public class Faceservlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	@Override
-	protected void doPut(final HttpServletRequest request, final HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPut(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 		final PrintWriter out = getPrintWriterSlienty(response);
 		final PutRequest put = new PutRequest(request.getPathInfo(), request.getParameterMap(), out);
 		handleRequest(put, response, out);
@@ -125,8 +120,7 @@ public class Faceservlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	@Override
-	protected void doDelete(final HttpServletRequest request, final HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doDelete(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 		final PrintWriter out = getPrintWriterSlienty(response);
 		final DeleteRequest delete = new DeleteRequest(request.getPathInfo(), request.getParameterMap(), out);
 		handleRequest(delete, response, out);
@@ -179,43 +173,33 @@ public class Faceservlet extends HttpServlet {
 	private void handleRequest(final Request request, final HttpServletResponse response, final PrintWriter out) {
 		try {
 			request.handleRequest();
-		} catch (final ServletException | MissingParametersException | DatabaseLayerException | WrongHashException
-				| DuplicateHashException | NotificationException e) {
+		} catch (final ServletException | MissingParametersException | DatabaseLayerException | WrongHashException | DuplicateHashException
+				| NotificationException e) {
 			handleException(e, response, out);
 		}
+
 	}
 
-	/**String get Body
-	 * reads Body of request into one String
+	/**
+	 * String get Body reads Body of request into one String
+	 *
 	 * @param request
 	 * @return String body
 	 */
 	private String getBody(final HttpServletRequest request) {
-		StringBuilder stringBuilder = new StringBuilder();
-		BufferedReader bufferedReader = null;
+		String body = "";
 		try {
-			InputStream inputStream = request.getInputStream();
-			if (inputStream != null) {
-				bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-				char[] charBuffer = new char[128];
-				int bytesRead = -1;
-				while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
-					stringBuilder.append(charBuffer, 0, bytesRead);
-				}
-			} else {
-				stringBuilder.append("");
+			final StringBuilder stringBuilder = new StringBuilder();
+			final BufferedReader bodyBufferedreader = request.getReader();
+			String line = "";
+			while ((line = bodyBufferedreader.readLine()) != null) {
+				stringBuilder.append(line);
 			}
-		} catch (IOException ex) {
-
-		} finally {
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException ex) {
-
-				}
-			}
+			bodyBufferedreader.close();
+			body = stringBuilder.toString();
+		} catch (final IOException e) {
+			e.printStackTrace();
 		}
-		return stringBuilder.toString();
+		return body;
 	}
 }
