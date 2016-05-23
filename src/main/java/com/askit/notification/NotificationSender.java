@@ -2,10 +2,15 @@ package com.askit.notification;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Properties;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import com.askit.exception.NotificationException;
 import com.google.gson.Gson;
@@ -20,16 +25,16 @@ public class NotificationSender implements Runnable {
 
 	private static final int SLEEP_TIME = 5000;
 	private static final NotificationSender INSTANCE = new NotificationSender();
-	private static final String AUTH_KEY = ""; // TODO get this from S.
-	private final static String GCM_URL = "https://android.googleapis.com/gcm/send";
+	private final static String FCM_URL = "https://fcm.googleapis.com/fcm/send";
 
 	private Thread sendNotificationThread;
-
+	private final String authKey;
 	private final GsonBuilder gsonBuilder = new GsonBuilder();
 	private final Gson gson = gsonBuilder.setPrettyPrinting().create();
 	private final NotificationHandler notificationHandler = NotificationHandler.getInstance();
 
 	private NotificationSender() {
+		authKey = getAuthKey();
 	}
 
 	public static synchronized NotificationSender getInstace() {
@@ -38,14 +43,14 @@ public class NotificationSender implements Runnable {
 
 	private void send(final Notification notification) throws NotificationException {
 		try {
-			final URL url = new URL(GCM_URL);
-			final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			final URL url = new URL(FCM_URL);
+			final HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 			connection.setRequestMethod("POST");
 			connection.setRequestProperty("Content-Type", "application/json");
-			connection.setRequestProperty("Authorization", "key=" + AUTH_KEY);
+			connection.setRequestProperty("Authorization", "key=" + authKey);
 			connection.setDoOutput(true);
 			final DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
-			final String content = gson.toJson(notificationHandler.getNextNotificationAndDelete());
+			final String content = gson.toJson(notification);
 			dataOutputStream.writeBytes(content);
 			dataOutputStream.flush();
 			dataOutputStream.close();
@@ -60,14 +65,14 @@ public class NotificationSender implements Runnable {
 			}
 			in.close();
 
-			final String errorText = getErrorText(responseString);
+			final String errorText = getErrorText(response.toString());
 			if (responseCode == 200 && errorText.equals("NotRegistered")) {
 				NotificationHandler.getInstance().addNotification(notification);
 			} else if ((responseCode == 200 || responseCode >= 500)
 					&& (errorText.equals("Unavailable") || errorText.equals("error:InternalServerError"))) {
 				NotificationHandler.getInstance().addNotification(notification);
 			} else if (errorText.length() > 0) {
-				throw new NotificationException("Internal Error with code " + responseCode + "and response '" + responseString + "'");
+				throw new NotificationException("Internal Error with code " + responseCode + " and response '" + response.toString() + "'");
 			}
 
 			// TODO 200 + error: DeviceMessageRate Exceeded
@@ -106,14 +111,40 @@ public class NotificationSender implements Runnable {
 		}
 	}
 
-	// TODO what if not avaible (waiting for S.)
+	// TODO what if not avaible
 	public String getErrorText(final String json) {
 		final JsonElement parsedJSON = new JsonParser().parse(json);
 		JsonObject jsonObject = parsedJSON.getAsJsonObject();
 		final JsonArray jsonArray = jsonObject.getAsJsonArray("results");
 		jsonObject = jsonArray.get(0).getAsJsonObject();
-		final String result = jsonObject.get("error").toString();
+		final String result = jsonObject.get("error").getAsString();
 		return result;
 	}
 
+	private String getAuthKey() {
+		String authKey = "";
+		try {
+			final File propertiesFile = new File("./config/cm.properties");
+			if (propertiesFile.exists() == false) {
+				throw new IOException("Properties file (" + propertiesFile.getAbsolutePath() + ") does not exist");
+			}
+
+			final Properties properties = new Properties();
+			final InputStream inputStream = new FileInputStream(propertiesFile);
+			properties.load(inputStream);
+			closeSilentlyInputStream(inputStream);
+			authKey = properties.getProperty("auth_key");
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
+		return authKey;
+	}
+
+	private static void closeSilentlyInputStream(final InputStream inputStream) {
+		try {
+			inputStream.close();
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
