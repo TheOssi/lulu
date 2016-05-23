@@ -329,6 +329,8 @@ public class PostRequest extends Request {
 					PictureSupporter.createPictureFile(body, "/publicQuestion", userID);
 				} else if (questionID != null && !isPublic) {
 					PictureSupporter.createPictureFile(body, "/privateQuestion", userID);
+				}else{
+					throw new MissingParametersException("Missing ID for Entity");
 				}
 			} else {
 				throw new MissingParametersException("Empty or no Body");
