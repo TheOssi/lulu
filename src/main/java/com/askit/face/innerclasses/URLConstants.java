@@ -1,10 +1,14 @@
 package com.askit.face.innerclasses;
 
+/**
+ * @author
+ *URLConstats
+ */
 public class URLConstants {
 	/*
 	 * Parameters Constants
 	 */
-
+	
 	public static final String PARAMETERS_GROUPID = "GROUPID";
 	public static final String PARAMETERS_ADMINID = "ADMINID";
 	public static final String PARAMETERS_GROUPNAME = "GROUPNAME";

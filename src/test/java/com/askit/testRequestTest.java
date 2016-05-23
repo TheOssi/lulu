@@ -41,7 +41,7 @@ public class testRequestTest {
 		ar[0] = "123";
 		parameters.put("ADMINID", ar);
 		parameters.put("PICTUREURL", ar);
-		final PostRequest realPost = new PostRequest("/GROUP", parameters, out);
+		final PostRequest realPost = new PostRequest("/GROUP", parameters, out,"");
 
 		try {
 			post.handleRequest();

@@ -1,8 +1,12 @@
 package com.askit.face;
 
+import java.io.BufferedReader;
+
 //TODO add trigger calls
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletConfig;
@@ -86,24 +90,43 @@ public class Faceservlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	/**
+	 * @param request
+	 * @param response
+	 */
 	@Override
 	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) {
 		final PrintWriter out = getPrintWriterSlienty(response);
-		final PostRequest post = new PostRequest(request.getPathInfo(), request.getParameterMap(), out);
+		final String body = getBody(request);
+		final PostRequest post = new PostRequest(request.getPathInfo(), request.getParameterMap(), out,body);
 		handleRequest(post, response, out);
 		out.close();
 	}
-
+	
+	/**
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	@Override
-	protected void doPut(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+	protected void doPut(final HttpServletRequest request, final HttpServletResponse response)
+			throws ServletException, IOException {
 		final PrintWriter out = getPrintWriterSlienty(response);
 		final PutRequest put = new PutRequest(request.getPathInfo(), request.getParameterMap(), out);
 		handleRequest(put, response, out);
 		out.close();
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	@Override
-	protected void doDelete(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+	protected void doDelete(final HttpServletRequest request, final HttpServletResponse response)
+			throws ServletException, IOException {
 		final PrintWriter out = getPrintWriterSlienty(response);
 		final DeleteRequest delete = new DeleteRequest(request.getPathInfo(), request.getParameterMap(), out);
 		handleRequest(delete, response, out);
@@ -113,6 +136,11 @@ public class Faceservlet extends HttpServlet {
 
 	/*
 	 * handles various Exceptions and prints stacktrace to log
+	 */
+	/**
+	 * @param exception
+	 * @param response
+	 * @param out
 	 */
 	private void handleException(final Exception exception, final HttpServletResponse response, final PrintWriter out) {
 		final JSONBuilder jsonBuilder = new JSONBuilder();
@@ -129,6 +157,10 @@ public class Faceservlet extends HttpServlet {
 		response.setStatus(status);
 	}
 
+	/**
+	 * @param response
+	 * @return
+	 */
 	private PrintWriter getPrintWriterSlienty(final HttpServletResponse response) {
 		PrintWriter out = null;
 		try {
@@ -139,12 +171,51 @@ public class Faceservlet extends HttpServlet {
 		return out;
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 * @param out
+	 */
 	private void handleRequest(final Request request, final HttpServletResponse response, final PrintWriter out) {
 		try {
 			request.handleRequest();
-		} catch (final ServletException | MissingParametersException | DatabaseLayerException | WrongHashException | DuplicateHashException
-				| NotificationException e) {
+		} catch (final ServletException | MissingParametersException | DatabaseLayerException | WrongHashException
+				| DuplicateHashException | NotificationException e) {
 			handleException(e, response, out);
 		}
+	}
+
+	/**String get Body
+	 * reads Body of request into one String
+	 * @param request
+	 * @return String body
+	 */
+	private String getBody(final HttpServletRequest request) {
+		StringBuilder stringBuilder = new StringBuilder();
+		BufferedReader bufferedReader = null;
+		try {
+			InputStream inputStream = request.getInputStream();
+			if (inputStream != null) {
+				bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+				char[] charBuffer = new char[128];
+				int bytesRead = -1;
+				while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
+					stringBuilder.append(charBuffer, 0, bytesRead);
+				}
+			} else {
+				stringBuilder.append("");
+			}
+		} catch (IOException ex) {
+
+		} finally {
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (IOException ex) {
+
+				}
+			}
+		}
+		return stringBuilder.toString();
 	}
 }

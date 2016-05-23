@@ -34,6 +34,8 @@ public class Request {
 
 	final static Pattern regExSessionPattern = Pattern.compile("/SESSION");
 	final static Pattern regExGCMPattern = Pattern.compile("/GCM");
+	
+	final static Pattern regExPicturePattern = Pattern.compile("/PICTURE");
 
 	Matcher matcher;
 	Integer id;
