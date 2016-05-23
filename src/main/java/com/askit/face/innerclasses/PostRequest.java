@@ -24,6 +24,7 @@ import com.askit.notification.Notification;
 import com.askit.notification.NotificationCodes;
 import com.askit.notification.NotificationHandler;
 import com.askit.notification.RegIDHandler;
+
 /**
  * @author D062367
  *
@@ -31,26 +32,26 @@ import com.askit.notification.RegIDHandler;
 
 public class PostRequest extends Request {
 	final String body;
-	
-	
+
 	/**
 	 * @param pathInfo
 	 * @param parameters
 	 * @param out
 	 * @param body
 	 */
-	public PostRequest(final String pathInfo, final Map<String, String[]> parameters, final PrintWriter out,final String body) {
+	public PostRequest(final String pathInfo, final Map<String, String[]> parameters, final PrintWriter out,
+			final String body) {
 		super(pathInfo, parameters, out);
 		this.body = body;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see com.askit.face.innerclasses.Request#handleRequest() handles
 	 * PostRequest
 	 */
-	
+
 	@Override
 	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
 			DatabaseLayerException, ServletException, NotificationException {
@@ -195,7 +196,8 @@ public class PostRequest extends Request {
 				queryManager.addUserToGroup(groupID, userID);
 				out.println("{message: " + "Sucessfully added User to Group}");
 				regID = regHandler.getRegIDFromUser(userID);
-				Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_ADDED_TO_GROUP.getCode(),"groupID", groupID.toString());
+				Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_ADDED_TO_GROUP.getCode(),
+						"groupID", groupID.toString());
 				notificationHandler.addNotification(not);
 			} else if (userID != null && questionID != null && isOneTime) {
 				queryManager.addUserToOneTimeQuestion(userID, questionID);
@@ -203,7 +205,8 @@ public class PostRequest extends Request {
 			} else if (userID != null && questionID != null && isPublic) {
 				queryManager.addUserToPublicQuestion(questionID, userID);
 				regID = regHandler.getRegIDFromUser(userID);
-				Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_INVITE_PUBLIC.getCode(),"questionID", questionID.toString());
+				Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_INVITE_PUBLIC.getCode(),
+						"questionID", questionID.toString());
 				notificationHandler.addNotification(not);
 				out.println("{message: " + "Sucessfully added User to Question}");
 			} else {
@@ -252,7 +255,8 @@ public class PostRequest extends Request {
 						createDate, endDate, optionExtension, isExpired, language);
 				queryManager.createPublicQuestion(publicQuestion);
 				regID = regHandler.getRegIDFromUser(hostID);
-				Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_NEW_QUESTION.getCode(), "hostID", hostID.toString());
+				Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_NEW_QUESTION.getCode(),
+						"hostID", hostID.toString());
 				notificationHandler.addNotification(not);
 			} else if (!isPublic && groupID != null) {
 				Date endDate = new Date(createDate.getTime() + eDate);
@@ -260,9 +264,10 @@ public class PostRequest extends Request {
 						pictureUrl, groupID, endDate, optionExtension, definitionOfEnd, sumOfUsersToAnswer, isExpired,
 						selectedAnswerID, language, isBet);
 				queryManager.createNewPrivateQuestionInGroup(privateQuestion);
-				
+
 				regID = regHandler.getRegIDFromUser(userID);
-				Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_NEW_QUESTION.getCode(),"hostID", hostID.toString());
+				Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_NEW_QUESTION.getCode(),
+						"hostID", hostID.toString());
 				notificationHandler.addNotification(not);
 			} else if (!isPublic && isOneTime) {
 				Date endDate = new Date(createDate.getTime() + eDate);
@@ -315,13 +320,20 @@ public class PostRequest extends Request {
 		}
 		matcher = regExPicturePattern.matcher(pathInfo);
 		if (matcher.find()) {
-			if(body != null && body != ""&& groupID!=null){
-				PictureSupporter.createPictureFile(body,"/group",groupID);
-			}else if(body !=null && body != "" && userID!=null){
-				PictureSupporter.createPictureFile(body,"/user",userID);
-			}else{
+			if (body != null && body != "") {
+				if (groupID != null) {
+					PictureSupporter.createPictureFile(body, "/group", groupID);
+				} else if (userID != null) {
+					PictureSupporter.createPictureFile(body, "/user", userID);
+				} else if (questionID != null && isPublic) {
+					PictureSupporter.createPictureFile(body, "/publicQuestion", userID);
+				} else if (questionID != null && !isPublic) {
+					PictureSupporter.createPictureFile(body, "/privateQuestion", userID);
+				}
+			} else {
 				throw new MissingParametersException("Empty or no Body");
 			}
+
 		}
 		throw new ServletException();
 	}

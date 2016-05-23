@@ -20,6 +20,7 @@ import com.askit.exception.MissingParametersException;
 import com.askit.exception.NotificationException;
 import com.askit.exception.WrongHashException;
 import com.askit.face.JSONBuilder;
+import com.askit.face.PictureSupporter;
 import com.askit.notification.RegIDHandler;
 
 /**
@@ -138,7 +139,7 @@ public class GetRequest extends Request {
 		 * @params: NONE Example: /USER/1234
 		 */
 		matcher = regExUserPattern.matcher(pathInfo);
-		if (matcher.find()) {	
+		if (matcher.find()) {
 			id = Integer.parseInt(matcher.group(1));
 			if (id != null) {
 				final String username = queryManager.getUsername(id);
@@ -304,7 +305,7 @@ public class GetRequest extends Request {
 		matcher = regExAnswersPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			Answer[] answers;
-			Pair<Answer, Integer>[] countedAnswers;	
+			Pair<Answer, Integer>[] countedAnswers;
 
 			if (questionID != null && userID == null && !isPublic) {
 				countedAnswers = queryManager.getAnswersOfPrivateQuestionAndCount(questionID);
@@ -333,7 +334,21 @@ public class GetRequest extends Request {
 			}
 			return;
 		}
+		matcher = regExPicturePattern.matcher(pathInfo);
+		if (matcher.find()) {
+			if(questionID!=null && isPublic){
+				PictureSupporter.getPicture("/publicQuestion", questionID);
+			}else if(questionID!=null && !isPublic){
+				PictureSupporter.getPicture("/privateQuestion", questionID);
+			}else if(groupID!=null){
+				PictureSupporter.getPicture("/group", groupID);
+			}else if(userID!=null){
+				PictureSupporter.getPicture("/user", userID);
+			}
 
+		} else {
+			throw new MissingParametersException("MissingID");
+		}
 		matcher = regExSessionPattern.matcher(pathInfo);
 		if (matcher.find()) {
 		} else {
