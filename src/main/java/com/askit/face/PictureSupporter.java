@@ -30,6 +30,7 @@ public class PictureSupporter {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println("Created File");
 	}
 
 	/**
@@ -63,6 +64,7 @@ public class PictureSupporter {
 		}
 		try (BufferedWriter writer = Files.newBufferedWriter(fullPath, ENCODING)) {
 			writer.write(data);
+			System.out.println("wrote data");
 		}
 
 	}

@@ -336,18 +336,20 @@ public class GetRequest extends Request {
 		}
 		matcher = regExPicturePattern.matcher(pathInfo);
 		if (matcher.find()) {
-			if(questionID!=null && isPublic){
-				PictureSupporter.getPicture("/publicQuestion", questionID);
-			}else if(questionID!=null && !isPublic){
-				PictureSupporter.getPicture("/privateQuestion", questionID);
-			}else if(groupID!=null){
-				PictureSupporter.getPicture("/group", groupID);
-			}else if(userID!=null){
-				PictureSupporter.getPicture("/user", userID);
+			String encodedPicture = null;
+			if (questionID != null && isPublic) {
+				encodedPicture = PictureSupporter.getPicture("/publicQuestion", questionID);
+			} else if (questionID != null && !isPublic) {
+				encodedPicture = PictureSupporter.getPicture("/privateQuestion", questionID);
+			} else if (groupID != null) {
+				encodedPicture = PictureSupporter.getPicture("/group", groupID);
+			} else if (userID != null) {
+				encodedPicture = PictureSupporter.getPicture("/user", userID);
+			} else {
+				throw new MissingParametersException("MissingID");
 			}
-
-		} else {
-			throw new MissingParametersException("MissingID");
+			out.println(new JSONBuilder().createJSON(encodedPicture));
+			return;
 		}
 		matcher = regExSessionPattern.matcher(pathInfo);
 		if (matcher.find()) {
