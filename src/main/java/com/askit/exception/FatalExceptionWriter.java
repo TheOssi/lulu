@@ -1,26 +1,24 @@
-package com.askit.errorhandling;
+package com.askit.exception;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.mail.MessagingException;
-
-import com.askit.etc.SMPTEmailSender;
-import com.askit.etc.Util;
-
 public class FatalExceptionWriter {
 
 	// TODO is it thread safe
 
+	private static final int SLEEP_TIME = 1000;
 	private static final FatalExceptionWriter INSTANCE = new FatalExceptionWriter();
 	private static final String ERROR_LOG_FILE_NAME = "java_error_log";
 	private static final long TIMEOUT = 5 * 60 * 1000; // 5min
-	private static final File ERROR_FILE = new File(Util.getRunntimeDirectory(), ERROR_LOG_FILE_NAME);
+	private static final File ERROR_FILE = new File("", ERROR_LOG_FILE_NAME); // TODO
 
 	private final Thread checkThread;
 	private final Map<Exception, Long> exceptionMap = new ConcurrentHashMap<Exception, Long>();
@@ -38,6 +36,12 @@ public class FatalExceptionWriter {
 								exceptionMap.remove(key);
 							}
 						}
+					} else {
+						try {
+							Thread.sleep(SLEEP_TIME);
+						} catch (final InterruptedException e) {
+							// TODO was hier
+						}
 					}
 				}
 			}
@@ -46,7 +50,7 @@ public class FatalExceptionWriter {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the instance of the errorHandler
 	 */
 	public static synchronized FatalExceptionWriter getInstance() {
@@ -54,11 +58,7 @@ public class FatalExceptionWriter {
 	}
 
 	/**
-	 * This method handle a exception. If this exception doesn't appears in last
-	 * 5 minutes, the stackTrance will be printed, the error will e written to a
-	 * file and a emal will be send Else the Timeout of this exception will be
-	 * increased of 5 minutes
-	 * 
+	 *
 	 * @param exception
 	 *            the Excpetion to handle
 	 */
@@ -66,15 +66,7 @@ public class FatalExceptionWriter {
 		if (insertException(exception)) {
 			exception.printStackTrace();
 			writeFullErrorToFile(exception);
-			final String exceptionText = Util.getExceptionText(exception);
-			final String message = "" + new Date(System.currentTimeMillis()).toString() + System.lineSeparator() + exceptionText;
-			try {
-				SMPTEmailSender.sendMail(new String[] { "kai.jmueller@gmail.com" }, exception.getMessage(), message);
-			} catch (final MessagingException e1) {
-				writeFullErrorToFile(e1);
-			}
 		} else {
-			exception.printStackTrace();
 			writeHashExceptionToFile(exception);
 		}
 	}
@@ -87,14 +79,12 @@ public class FatalExceptionWriter {
 			writer.write(System.lineSeparator());
 		} catch (final IOException e) {
 			// TODO was muss man hier noch machen
-			e.printStackTrace();
 		} finally {
 			try {
 				writer.flush();
 				writer.close();
 			} catch (final IOException e) {
 				// TODO was muss man hier noch machen
-				e.printStackTrace();
 			}
 		}
 	}
@@ -102,7 +92,7 @@ public class FatalExceptionWriter {
 	private void writeFullErrorToFile(final Exception exception) {
 		String errorText = "";
 		errorText = errorText + new Date(System.currentTimeMillis()).toString();
-		errorText = errorText + " : (" + exception.hashCode() + ") " + Util.getExceptionText(exception);
+		errorText = errorText + " : (" + exception.hashCode() + ") " + getExceptionText(exception);
 		writeToErrorFile(errorText);
 	}
 
@@ -114,7 +104,6 @@ public class FatalExceptionWriter {
 	}
 
 	private boolean insertException(final Exception exception) {
-
 		if (exceptionMap.containsKey(exception)) {
 			for (final Entry<Exception, Long> entry : exceptionMap.entrySet()) {
 				final Exception key = entry.getKey();
@@ -127,5 +116,20 @@ public class FatalExceptionWriter {
 			exceptionMap.put(exception, System.currentTimeMillis() + TIMEOUT);
 			return true;
 		}
+	}
+
+	/**
+	 * This method extracts the text of a exception
+	 *
+	 * @param exception
+	 *            the exception
+	 * @return the exception text
+	 */
+	private static String getExceptionText(final Exception exception) {
+		final StringWriter stringWriter = new StringWriter();
+		final PrintWriter printWriter = new PrintWriter(stringWriter, true);
+		printWriter.flush();
+		exception.printStackTrace(printWriter);
+		return stringWriter.getBuffer().toString();
 	}
 }

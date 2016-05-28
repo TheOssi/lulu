@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import com.askit.exception.FatalExceptionWriter;
+
 public enum DatabaseUser {
 
 	READ_USER("appReader"),
@@ -37,28 +39,33 @@ public enum DatabaseUser {
 		this.password = password;
 	}
 
-	public static void loadAllPasswordsFromFile() throws IOException {
-		// TODO who to root
-		final File propertiesFile = new File("./config/config.properties");
-		if (propertiesFile.exists() == false) {
-			throw new IOException("Properties file (" + propertiesFile.getAbsolutePath() + ") does not exist");
+	public static void loadAllPasswordsFromFile() {
+		InputStream inputStream = null;
+		try {
+			// TODO how to root
+			final File propertiesFile = new File("./config/config.properties");
+			if (propertiesFile.exists() == false) {
+				throw new IOException("Properties file (" + propertiesFile.getAbsolutePath() + ") does not exist");
+			}
+			final Properties properties = new Properties();
+			inputStream = new FileInputStream(propertiesFile);
+			properties.load(inputStream);
+
+			setPassword(properties, READ_USER);
+			setPassword(properties, WRITE_USER);
+			setPassword(properties, DELETE_USER);
+		} catch (final IOException e) {
+			FatalExceptionWriter.getInstance().handleError(e);
+		} finally {
+			closeSilentlyInputStream(inputStream);
 		}
-
-		final Properties properties = new Properties();
-		final InputStream inputStream = new FileInputStream(propertiesFile);
-		properties.load(inputStream);
-		closeSilentlyInputStream(inputStream);
-
-		setPassword(properties, READ_USER);
-		setPassword(properties, WRITE_USER);
-		setPassword(properties, DELETE_USER);
 	}
 
 	private static void closeSilentlyInputStream(final InputStream inputStream) {
 		try {
 			inputStream.close();
 		} catch (final IOException e) {
-			e.printStackTrace();
+			FatalExceptionWriter.getInstance().handleError(e);
 		}
 	}
 

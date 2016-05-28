@@ -31,18 +31,5 @@ public class Util {
 		return parentPathOfJar;
 	}
 
-	/**
-	 * This method extracts the text of a exception
-	 *
-	 * @param exception
-	 *            the exception
-	 * @return the exception text
-	 */
-	public static String getExceptionText(final Exception exception) {
-		final StringWriter stringWriter = new StringWriter();
-		final PrintWriter printWriter = new PrintWriter(stringWriter, true);
-		printWriter.flush();
-		exception.printStackTrace(printWriter);
-		return stringWriter.getBuffer().toString();
-	}
+
 }

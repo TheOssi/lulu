@@ -5,12 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.askit.exception.FatalExceptionWriter;
+
 public class SQLUtil {
 
 	/**
 	 * This method measures the size of a resultset. It cares that the current
 	 * row pointer is after the call on the same row.
-	 * 
+	 *
 	 * @param resultSet
 	 *            the resultSet
 	 * @return the size of the ResultSet
@@ -42,7 +44,7 @@ public class SQLUtil {
 				connection.close();
 			}
 		} catch (final SQLException exception) {
-			exception.printStackTrace();
+			FatalExceptionWriter.getInstance().handleError(exception);
 		}
 	}
 }

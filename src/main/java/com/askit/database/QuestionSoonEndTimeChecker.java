@@ -12,6 +12,7 @@ import java.util.List;
 import com.askit.entities.PrivateQuestion;
 import com.askit.entities.PublicQuestion;
 import com.askit.exception.DatabaseLayerException;
+import com.askit.exception.FatalExceptionWriter;
 import com.askit.exception.NotificationException;
 import com.askit.notification.Notification;
 import com.askit.notification.NotificationCodes;
@@ -23,6 +24,7 @@ public class QuestionSoonEndTimeChecker extends Thread {
 	private static final long SOON_END_TIME = 14400000L; // 2h
 	private static final long THRESHOLD_LEFT = 60000L; // 1min
 	private static final long THRESHOLD_RIGHT = 60000L; // 1min
+	private static final FatalExceptionWriter FATAL_EXCEPTION_WRITER = FatalExceptionWriter.getInstance();
 	private static final String STATEMENT = "SELECT R.questionID, R.endDate, R.type FROM ( SELECT PR.questionID, PR.endDate, '"
 			+ PrivateQuestion.TABLE_NAME + "' as \"type\" FROM APP.PrivateQuestions AS PR "
 			+ "WHERE PR.endDate IS NOT NULL AND PR.endDate BETWEEN ? AND ? AND PR.finished <> 1 AND PR.definitionOfEnd = 1 "
@@ -96,9 +98,9 @@ public class QuestionSoonEndTimeChecker extends Thread {
 					Thread.sleep(SLEEP_TIME);
 				}
 			} catch (final SQLException | DatabaseLayerException | NotificationException e) {
-				e.printStackTrace();
+				FATAL_EXCEPTION_WRITER.handleError(e);
 			} catch (final InterruptedException e) {
-				e.printStackTrace();
+				FATAL_EXCEPTION_WRITER.handleError(e);
 				startThread();
 			}
 		}
