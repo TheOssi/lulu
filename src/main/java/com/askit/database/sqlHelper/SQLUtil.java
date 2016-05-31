@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.askit.exception.FatalExceptionWriter;
+import com.askit.exception.ExceptionHandler;
 
 public class SQLUtil {
 
@@ -44,7 +44,7 @@ public class SQLUtil {
 				connection.close();
 			}
 		} catch (final SQLException exception) {
-			FatalExceptionWriter.getInstance().handleError(exception);
+			ExceptionHandler.getInstance().handleError(exception);
 		}
 	}
 }

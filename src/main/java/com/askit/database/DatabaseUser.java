@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import com.askit.exception.FatalExceptionWriter;
+import com.askit.exception.ExceptionHandler;
 
 public enum DatabaseUser {
 
@@ -55,7 +55,7 @@ public enum DatabaseUser {
 			setPassword(properties, WRITE_USER);
 			setPassword(properties, DELETE_USER);
 		} catch (final IOException e) {
-			FatalExceptionWriter.getInstance().handleError(e);
+			ExceptionHandler.getInstance().handleError(e);
 		} finally {
 			closeSilentlyInputStream(inputStream);
 		}
@@ -65,7 +65,7 @@ public enum DatabaseUser {
 		try {
 			inputStream.close();
 		} catch (final IOException e) {
-			FatalExceptionWriter.getInstance().handleError(e);
+			ExceptionHandler.getInstance().handleError(e);
 		}
 	}
 

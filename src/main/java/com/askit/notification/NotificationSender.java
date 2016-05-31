@@ -12,7 +12,7 @@ import java.util.Properties;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import com.askit.exception.FatalExceptionWriter;
+import com.askit.exception.ExceptionHandler;
 import com.askit.exception.NotificationException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -27,7 +27,7 @@ public class NotificationSender implements Runnable {
 	private static final int SLEEP_TIME = 5000;
 	private static final NotificationSender INSTANCE = new NotificationSender();
 	private final static String FCM_URL = "https://fcm.googleapis.com/fcm/send";
-	private static final FatalExceptionWriter FATAL_EXCEPTION_WRITER = FatalExceptionWriter.getInstance();
+	private static final ExceptionHandler FATAL_EXCEPTION_WRITER = ExceptionHandler.getInstance();
 
 	private Thread sendNotificationThread;
 	private final String authKey;

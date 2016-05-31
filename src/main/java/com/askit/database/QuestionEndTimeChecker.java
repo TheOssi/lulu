@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import com.askit.entities.PrivateQuestion;
 import com.askit.entities.PublicQuestion;
 import com.askit.exception.DatabaseLayerException;
-import com.askit.exception.FatalExceptionWriter;
+import com.askit.exception.ExceptionHandler;
 import com.askit.exception.NotificationException;
 import com.askit.notification.Notification;
 import com.askit.notification.NotificationCodes;
@@ -27,7 +27,7 @@ public class QuestionEndTimeChecker extends Thread {
 
 	private static final QuestionEndTimeChecker INSTANCE = new QuestionEndTimeChecker();
 	private static final long SLEEP_TIME = 5000L;
-	private static final FatalExceptionWriter FATAL_EXCEPTION_WRITER = FatalExceptionWriter.getInstance();
+	private final ExceptionHandler exceptionHandler = ExceptionHandler.getInstance();
 	// TODO enDate > currentTime
 	private static final String STATEMENT = "SELECT R.questionID, R.endDate, R.type FROM ( SELECT PR.questionID, PR.endDate, '"
 			+ PrivateQuestion.TABLE_NAME + "' as \"type\" FROM APP.PrivateQuestions AS PR "
@@ -90,9 +90,9 @@ public class QuestionEndTimeChecker extends Thread {
 					Thread.sleep(SLEEP_TIME);
 				}
 			} catch (final SQLException | DatabaseLayerException | NotificationException e) {
-				FATAL_EXCEPTION_WRITER.handleError(e);
+				exceptionHandler.handleError(e);
 			} catch (final InterruptedException e) {
-				FATAL_EXCEPTION_WRITER.handleError(e);
+				exceptionHandler.handleError(e);
 				startThread();
 			}
 		}
