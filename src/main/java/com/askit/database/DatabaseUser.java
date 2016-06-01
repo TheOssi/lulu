@@ -1,7 +1,9 @@
 package com.askit.database;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.StringReader;
+import java.io.InputStream;
 import java.util.Properties;
 
 import com.askit.exception.ExceptionHandler;
@@ -39,16 +41,25 @@ public enum DatabaseUser {
 	}
 
 	public static void loadAllPasswordsFromFile() {
+		InputStream inputStream = null;
 		try {
-			final String propertiesFileContent = FileSupporter.getFileContent("./config", "/config.properties");
+			final File propertiesFile = new File(FileSupporter.CONFIG_ROOT, "config.properties");
 			final Properties properties = new Properties();
-			properties.load(new StringReader(propertiesFileContent));
+			inputStream = new FileInputStream(propertiesFile);
+			properties.load(inputStream);
 
 			setPassword(properties, READ_USER);
 			setPassword(properties, WRITE_USER);
 			setPassword(properties, DELETE_USER);
 		} catch (final IOException e) {
 			ExceptionHandler.getInstance().handleError(e);
+		} finally {
+			try {
+				inputStream.close();
+			} catch (final IOException e) {
+				ExceptionHandler.getInstance().handleError(e);
+
+			}
 		}
 	}
 

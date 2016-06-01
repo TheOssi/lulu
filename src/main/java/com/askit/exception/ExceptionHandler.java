@@ -1,5 +1,9 @@
 package com.askit.exception;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -35,9 +39,11 @@ public class ExceptionHandler {
 	private final Map<String, Long> exceptionMap = new ConcurrentHashMap<String, Long>();
 
 	private final Thread checkThread;
+	private final File errorFile;
 
 	private ExceptionHandler() {
-		FileSupporter.createFile("./", ERROR_LOG_FILE_NAME);
+		FileSupporter.createFile(FileSupporter.ROOT, ERROR_LOG_FILE_NAME); // TODO
+		errorFile = createErrorFile();
 		checkThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -80,6 +86,18 @@ public class ExceptionHandler {
 		handleErrorInternal(exception, true);
 	}
 
+	private File createErrorFile() {
+		final File file = new File("./", ERROR_LOG_FILE_NAME);
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (final IOException e) {
+				handleErrorInternal(e, false);
+			}
+		}
+		return file;
+	}
+
 	private void handleErrorInternal(final Exception exception, final boolean writeToFile) {
 		if (insertException(exception)) {
 			// TODO delete this after test phase
@@ -107,8 +125,20 @@ public class ExceptionHandler {
 	}
 
 	private void writeToErrorFile(final String errorText) {
-		FileSupporter.appendContentToFile(errorText, "./", ERROR_LOG_FILE_NAME);
-		FileSupporter.appendContentToFile(System.lineSeparator(), "./", ERROR_LOG_FILE_NAME);
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter(errorFile, true));
+			writer.write(errorText);
+			writer.flush();
+		} catch (final IOException e) {
+			handleErrorInternal(e, false);
+		} finally {
+			try {
+				writer.close();
+			} catch (final IOException e) {
+				handleErrorInternal(e, false);
+			}
+		}
 	}
 
 	private void writeFullErrorToFile(final Exception exception) {

@@ -49,8 +49,8 @@ public class GetRequest extends Request {
 	 * Request
 	 */
 	@Override
-	public void handleRequest() throws DatabaseLayerException, MissingParametersException, ServletException,
-			WrongHashException, DuplicateHashException, NotificationException {
+	public void handleRequest() throws DatabaseLayerException, MissingParametersException, ServletException, WrongHashException,
+			DuplicateHashException, NotificationException {
 		final JSONBuilder jsonBuilder = new JSONBuilder();
 		final QueryManager queryManager = new DatabaseQueryManager();
 		Long groupID = null;
@@ -107,12 +107,11 @@ public class GetRequest extends Request {
 		if (matcher.find()) {
 			if (parameters.containsKey(URLConstants.PARAMETERS_GROUPID)) {
 				groupID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_GROUPID)[0]);
-				this.out.println("{ groupName: " + queryManager.getGroupName(groupID) + ", pictureUrl: "
-						+ queryManager.getGroupPictureURI(groupID) + "}");
+				out.println("{ groupName: " + queryManager.getGroupName(groupID) + ", pictureUrl: " + queryManager.getGroupPictureURI(groupID) + "}");
 			} else if (userID != null && searchPattern != null) {
 				Group[] groups;
 				groups = queryManager.searchForGroup(userID, searchPattern);
-				this.out.println(jsonBuilder.createJSON(groups));
+				out.println(jsonBuilder.createJSON(groups));
 			} else {
 				throw new MissingParametersException("Missing Parameters");
 			}
@@ -143,7 +142,7 @@ public class GetRequest extends Request {
 			id = Integer.parseInt(matcher.group(1));
 			if (id != null) {
 				final String username = queryManager.getUsername(id);
-				this.out.println("{username : " + username + "}");
+				out.println("{username : " + username + "}");
 			} else {
 				throw new MissingParametersException("Missing ID in Parameters");
 			}
@@ -175,7 +174,7 @@ public class GetRequest extends Request {
 				} else {
 					userscore = queryManager.getUserScoreOfGlobal(id);
 				}
-				this.out.println("{Score : " + userscore + "}");
+				out.println("{Score : " + userscore + "}");
 			} else {
 				throw new MissingParametersException("Missing ID in Parameters");
 			}
@@ -212,7 +211,7 @@ public class GetRequest extends Request {
 					users = queryManager.getUsersOfAnswerPublicQuestion(answerID);
 				}
 
-				this.out.println(jsonBuilder.createJSON(users));
+				out.println(jsonBuilder.createJSON(users));
 			} else {
 				throw new MissingParametersException("No Parameters specified.");
 			}
@@ -231,10 +230,10 @@ public class GetRequest extends Request {
 		if (matcher.find()) {
 			id = Integer.parseInt(matcher.group(1));
 			if (id != null && !isPublic) {
-				this.out.println(jsonBuilder.createJSON(queryManager.getPrivateQuestion(id)));
-			}else if(id != null && isPublic) {
-				this.out.println(jsonBuilder.createJSON(queryManager.getPublicQuestion(id)));
-			}else {
+				out.println(jsonBuilder.createJSON(queryManager.getPrivateQuestion(id)));
+			} else if (id != null && isPublic) {
+				out.println(jsonBuilder.createJSON(queryManager.getPublicQuestion(id)));
+			} else {
 				throw new MissingParametersException("Missing ID in Parameters");
 			}
 			return;
@@ -263,7 +262,7 @@ public class GetRequest extends Request {
 				} else {
 					throw new MissingParametersException("No or not enough Parameters specified");
 				}
-				this.out.println(jsonBuilder.createJSON(publicQuestions));
+				out.println(jsonBuilder.createJSON(publicQuestions));
 			} else {
 				PrivateQuestion[] privateQuestions = null;
 				if (questionID == null && groupID != null && startIndex != 0 && quantity != 0) {
@@ -271,19 +270,17 @@ public class GetRequest extends Request {
 				} else if (questionID == null && groupID != null && startIndex != 0 && quantity != 0 && isExpired) {
 					privateQuestions = queryManager.getOldPrivateQuestions(groupID, startIndex, quantity);
 				} else if (questionID != null && groupID == null && quantity == 0 && userID == null) {
-					this.out.println(jsonBuilder.createJSON(queryManager.getPrivateQuestion(questionID)));
-				} else if (questionID == null && groupID == null && !isExpired && userID != null && startIndex != 0
-						&& quantity != 0) {
+					out.println(jsonBuilder.createJSON(queryManager.getPrivateQuestion(questionID)));
+				} else if (questionID == null && groupID == null && !isExpired && userID != null && startIndex != 0 && quantity != 0) {
 					privateQuestions = queryManager.getActivePrivateQuestionsOfUser(userID, startIndex, quantity);
-				} else if (questionID == null && groupID == null && isExpired && userID != null && startIndex != 0
-						&& quantity != 0) {
+				} else if (questionID == null && groupID == null && isExpired && userID != null && startIndex != 0 && quantity != 0) {
 					privateQuestions = queryManager.getOldPrivateQuestionsOfUser(userID, startIndex, quantity);
 				} else if (groupID != null && searchPattern != null && questionID == null && userID == null) {
 					privateQuestions = queryManager.searchForPrivateQuestionInGroup(groupID, searchPattern);
 				} else {
 					throw new MissingParametersException("No or not enough Parameters specified");
 				}
-				this.out.println(jsonBuilder.createJSON(privateQuestions));
+				out.println(jsonBuilder.createJSON(privateQuestions));
 			}
 			return;
 		}
@@ -310,14 +307,14 @@ public class GetRequest extends Request {
 
 			if (questionID != null && userID == null && !isPublic) {
 				countedAnswers = queryManager.getAnswersOfPrivateQuestionAndCount(questionID);
-				this.out.print(jsonBuilder.createJSON(countedAnswers));
+				out.print(jsonBuilder.createJSON(countedAnswers));
 			} else if (questionID != null && userID == null && !isPublic) {
 				countedAnswers = queryManager.getAnswersOfPublicQuestionAndCount(questionID);
-				this.out.print(jsonBuilder.createJSON(countedAnswers));
+				out.print(jsonBuilder.createJSON(countedAnswers));
 			} else if (questionID != null && userID != null && !isPublic) {
 				answers = new Answer[1];
 				answers[0] = queryManager.getChoseAnswerInPrivateQuestion(questionID, userID);
-				this.out.print(jsonBuilder.createJSON(answers));
+				out.print(jsonBuilder.createJSON(answers));
 			} else {
 				throw new MissingParametersException("No or not enough Parameters specified");
 			}
@@ -328,8 +325,8 @@ public class GetRequest extends Request {
 		matcher = regExGCMPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			if (userID != null) {
-				String regID = RegIDHandler.getInstance().getRegIDFromUser(userID);
-				this.out.println(new JSONBuilder().createJSON(regID));
+				final String regID = RegIDHandler.getInstance().getRegIDFromUser(userID);
+				out.println(new JSONBuilder().createJSON(regID));
 			} else {
 				throw new MissingParametersException("No UserID specified");
 			}
@@ -339,17 +336,17 @@ public class GetRequest extends Request {
 		if (matcher.find()) {
 			String encodedPicture = null;
 			if (questionID != null && isPublic) {
-				encodedPicture = FileSupporter.getFileContent("/publicQuestion", questionID.toString());
+				encodedPicture = FileSupporter.getFileContent(FileSupporter.PICTURE_ROOT + "/publicQuestion", questionID.toString());
 			} else if (questionID != null && !isPublic) {
-				encodedPicture = FileSupporter.getFileContent("/privateQuestion", questionID.toString());
+				encodedPicture = FileSupporter.getFileContent(FileSupporter.PICTURE_ROOT + "/privateQuestion", questionID.toString());
 			} else if (groupID != null) {
-				encodedPicture = FileSupporter.getFileContent("/group", groupID.toString());
+				encodedPicture = FileSupporter.getFileContent(FileSupporter.PICTURE_ROOT + "/group", groupID.toString());
 			} else if (userID != null) {
-				encodedPicture = FileSupporter.getFileContent("/user", userID.toString());
+				encodedPicture = FileSupporter.getFileContent(FileSupporter.PICTURE_ROOT + "/user", userID.toString());
 			} else {
 				throw new MissingParametersException("MissingID");
 			}
-			this.out.println(new JSONBuilder().createJSON(encodedPicture));
+			out.println(new JSONBuilder().createJSON(encodedPicture));
 			return;
 		}
 		matcher = regExSessionPattern.matcher(pathInfo);

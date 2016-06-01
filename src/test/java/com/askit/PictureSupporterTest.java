@@ -26,7 +26,8 @@ public class PictureSupporterTest {
 
 	@Test
 	public void writeMultipleFiles() {
-		final String[] paths = { "/group", "/privateQuestion", "/pubQuestion", "/user" };
+		final String[] paths = { FileSupporter.PICTURE_ROOT + "/group", FileSupporter.PICTURE_ROOT + "/privateQuestion",
+				FileSupporter.PICTURE_ROOT + "/pubQuestion", FileSupporter.PICTURE_ROOT + "/user" };
 		for (int i = 0; i < 100; i++) {
 			final Long id = Double.doubleToLongBits(Math.random() * 1000000);
 			final int rnd = (int) (Math.random() * 4);

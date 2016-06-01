@@ -164,6 +164,6 @@ public class SQLFactory {
 	}
 
 	public static String buildLimitStatement() {
-		return "LIMIT ?;? ";
+		return "LIMIT ?,? ";
 	}
 }

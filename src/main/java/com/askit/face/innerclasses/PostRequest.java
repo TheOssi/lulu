@@ -316,13 +316,13 @@ public class PostRequest extends Request {
 		if (matcher.find()) {
 			if (body != null && body != "") {
 				if (groupID != null) {
-					FileSupporter.createFileWithContent(body, "/group", groupID.toString());
+					FileSupporter.createFileWithContent(body, FileSupporter.PICTURE_ROOT + "/group", groupID.toString());
 				} else if (userID != null) {
-					FileSupporter.createFileWithContent(body, "/user", userID.toString());
+					FileSupporter.createFileWithContent(body, FileSupporter.PICTURE_ROOT + "/user", userID.toString());
 				} else if (questionID != null && isPublic) {
-					FileSupporter.createFileWithContent(body, "/publicQuestion", questionID.toString());
+					FileSupporter.createFileWithContent(body, FileSupporter.PICTURE_ROOT + "/publicQuestion", questionID.toString());
 				} else if (questionID != null && !isPublic) {
-					FileSupporter.createFileWithContent(body, "/privateQuestion", questionID.toString());
+					FileSupporter.createFileWithContent(body, FileSupporter.PICTURE_ROOT + "/privateQuestion", questionID.toString());
 				} else {
 					throw new MissingParametersException("Missing ID for Entity");
 				}

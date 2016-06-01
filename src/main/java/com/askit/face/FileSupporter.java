@@ -1,5 +1,7 @@
 package com.askit.face;
 
+//TODO delete System.put.println's
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -8,7 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 import com.askit.exception.ExceptionHandler;
 
@@ -16,10 +17,12 @@ import com.askit.exception.ExceptionHandler;
  * @author lelmac Supports creating and reading pictures from the the filesystem
  */
 public class FileSupporter {
-	final static Charset ENCODING = StandardCharsets.UTF_8;
-	final static String rootPath = "./pictures";
+	public final static String ROOT = "./";
+	public final static String PICTURE_ROOT = "./pictures";
+	public final static String CONFIG_ROOT = "./config";
 
-	private static final ExceptionHandler exceptionHandler = ExceptionHandler.getInstance();
+	private final static Charset ENCODING = StandardCharsets.UTF_8;
+	private final static ExceptionHandler EXCEPTION_HANDLER = ExceptionHandler.getInstance();
 
 	/**
 	 * creates file at specified path
@@ -31,31 +34,13 @@ public class FileSupporter {
 	 * @param fileName
 	 *            : Name of File
 	 */
-	public static void createFileWithContent(final String data, String path, final String fileName) {
-		path = rootPath + path;
+	public static void createFileWithContent(final String data, final String path, final String fileName) {
 		try {
 			writeFile(path, data, fileName);
 		} catch (final IOException e) {
-			exceptionHandler.handleError(e);
+			EXCEPTION_HANDLER.handleError(e);
 		}
 		System.out.println("Created File");
-	}
-
-	/**
-	 * @param data
-	 *            : Binary data
-	 * @param path
-	 *            : filepath
-	 * @param fileName
-	 *            : Name of File
-	 */
-	public static void appendContentToFile(final String data, String path, final String fileNanme) {
-		path = rootPath + path;
-		try {
-			appendToFile(path, data, fileNanme);
-		} catch (final IOException e) {
-			exceptionHandler.handleError(e);
-		}
 	}
 
 	/**
@@ -69,11 +54,11 @@ public class FileSupporter {
 	 */
 	public static String getFileContent(String path, final String fileName) {
 		String data = null;
-		path = rootPath + path + "/" + fileName;
+		path = path + "/" + fileName;
 		try {
 			data = readFile(path);
 		} catch (final IOException e) {
-			exceptionHandler.handleError(e);
+			EXCEPTION_HANDLER.handleError(e);
 		}
 		return data;
 	}
@@ -93,19 +78,6 @@ public class FileSupporter {
 			Files.createDirectory(dirPath);
 		}
 		try (BufferedWriter writer = Files.newBufferedWriter(fullPath, ENCODING)) {
-			writer.write(data);
-			System.out.println("wrote data");
-		}
-
-	}
-
-	private static void appendToFile(final String path, final String data, final String fileName) throws IOException {
-		final Path fullPath = Paths.get(path + "/" + fileName);
-		final Path dirPath = Paths.get(path);
-		if (!Files.exists(dirPath)) {
-			Files.createDirectory(dirPath);
-		}
-		try (BufferedWriter writer = Files.newBufferedWriter(fullPath, ENCODING, StandardOpenOption.APPEND)) {
 			writer.write(data);
 			System.out.println("wrote data");
 		}

@@ -301,6 +301,11 @@ public class DatabaseQueryManager implements QueryManager {
 		}
 	}
 
+	public static void main(final String[] args) throws DatabaseLayerException {
+		DatabaseUser.loadAllPasswordsFromFile();
+		new DatabaseQueryManager().getPublicQuestions(1, 10, "DE");
+	}
+
 	@Override
 	public PublicQuestion getPublicQuestion(final long questionID) throws DatabaseLayerException {
 		PreparedStatement preparedStatement = null;
