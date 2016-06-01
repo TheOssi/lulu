@@ -19,8 +19,8 @@ import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
 import com.askit.exception.NotificationException;
 import com.askit.exception.WrongHashException;
-import com.askit.face.FileSupporter;
 import com.askit.face.JSONBuilder;
+import com.askit.face.PictureSupporter;
 import com.askit.notification.RegIDHandler;
 
 /**
@@ -31,7 +31,7 @@ public class GetRequest extends Request {
 	private Integer id;
 
 	/*
-	 * 
+	 *
 	 */
 	/**
 	 * @param pathInfo
@@ -44,7 +44,7 @@ public class GetRequest extends Request {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.askit.face.innerclasses.Request#handleRequest() Processes Get
 	 * Request
 	 */
@@ -100,7 +100,7 @@ public class GetRequest extends Request {
 		// SINGLE GROUP
 		/*
 		 * GET /GROUP/ID
-		 * 
+		 *
 		 * @params: NONE Example: /GROUP/1234
 		 */
 		matcher = regExGroupPattern.matcher(pathInfo);
@@ -121,9 +121,9 @@ public class GetRequest extends Request {
 		// ENTITYSET GROUP
 		/*
 		 * GET /GROUPS
-		 * 
+		 *
 		 * @params:
-		 * 
+		 *
 		 * Example: /GROUP/1234
 		 */
 		matcher = regExGroupsPattern.matcher(pathInfo);
@@ -134,7 +134,7 @@ public class GetRequest extends Request {
 
 		/*
 		 * GET /USER/ID
-		 * 
+		 *
 		 * @params: NONE Example: /USER/1234
 		 */
 		matcher = regExUserPattern.matcher(pathInfo);
@@ -153,7 +153,7 @@ public class GetRequest extends Request {
 		// /USER/SCORE/ID + GROUPID=ID Pattern returns Global or Group Score
 		/*
 		 * GET /USER/SCORE/ID
-		 * 
+		 *
 		 * @params: GROUPID: Long Example: /USER/SCORE/1234?GROUPID=423
 		 */
 		matcher = regExUserScorePattern.matcher(pathInfo);
@@ -187,7 +187,7 @@ public class GetRequest extends Request {
 		// Public Flag --> true when "TRUE" , FALSE --> when not set
 		/*
 		 * GET /USER
-		 * 
+		 *
 		 * @params: GROUPID: Long SEARCH: String, SearchPattern QUESTIONID: Long
 		 * ANSWERID: Long PUBLIC: Boolean Example:
 		 * /USER?QUESTIONID=32&ANSWERID=23&PUBLIC="TRUE"
@@ -223,7 +223,7 @@ public class GetRequest extends Request {
 		// Parameter Public: True/False
 		/*
 		 * GET /QUESTION/ID
-		 * 
+		 *
 		 * @params: PUBLIC: boolean Example: /QUESTION/123
 		 */
 		matcher = regExQuestionPattern.matcher(pathInfo);
@@ -241,7 +241,7 @@ public class GetRequest extends Request {
 		// Questions
 		/*
 		 * GET /QUESTIONS
-		 * 
+		 *
 		 * @params: USERID QUANTITY: Integer LANGUAGE: String ACTIVE: Boolean
 		 * START: StartIndex GROUPID: Long ACTIVE: Boolean SEARCH: String,
 		 * seachPattern
@@ -287,7 +287,7 @@ public class GetRequest extends Request {
 		// Answer Not implemented?
 		/*
 		 * GET /Answer/ID
-		 * 
+		 *
 		 * @params: NONE Example: /GROUP/1234
 		 */
 		matcher = regExAnswerPattern.matcher(pathInfo);
@@ -297,7 +297,7 @@ public class GetRequest extends Request {
 		// Answers
 		/*
 		 * GET /ANSWERS
-		 * 
+		 *
 		 * @params: QUESTIONID USERID PUBLIC Example: /ANSWERS
 		 */
 		matcher = regExAnswersPattern.matcher(pathInfo);
@@ -336,13 +336,13 @@ public class GetRequest extends Request {
 		if (matcher.find()) {
 			String encodedPicture = null;
 			if (questionID != null && isPublic) {
-				encodedPicture = FileSupporter.getFileContent(FileSupporter.PICTURE_ROOT + "/publicQuestion", questionID.toString());
+				encodedPicture = PictureSupporter.getPicture(PictureSupporter.PUBLIC_QUESTION_PATH, questionID);
 			} else if (questionID != null && !isPublic) {
-				encodedPicture = FileSupporter.getFileContent(FileSupporter.PICTURE_ROOT + "/privateQuestion", questionID.toString());
+				encodedPicture = PictureSupporter.getPicture(PictureSupporter.PRIVATE_QUESTION_PATH, questionID);
 			} else if (groupID != null) {
-				encodedPicture = FileSupporter.getFileContent(FileSupporter.PICTURE_ROOT + "/group", groupID.toString());
+				encodedPicture = PictureSupporter.getPicture(PictureSupporter.GROUP_QUESTION_PATH, groupID);
 			} else if (userID != null) {
-				encodedPicture = FileSupporter.getFileContent(FileSupporter.PICTURE_ROOT + "/user", userID.toString());
+				encodedPicture = PictureSupporter.getPicture(PictureSupporter.USER_QUESTION_PATH, userID);
 			} else {
 				throw new MissingParametersException("MissingID");
 			}
@@ -354,7 +354,5 @@ public class GetRequest extends Request {
 		} else {
 			throw new ServletException("Invalid URI");
 		}
-
 	}
-
 }

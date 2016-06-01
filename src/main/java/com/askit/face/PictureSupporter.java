@@ -16,56 +16,57 @@ import com.askit.exception.ExceptionHandler;
 /**
  * @author lelmac Supports creating and reading pictures from the the filesystem
  */
-public class FileSupporter {
-	public final static String ROOT = "./";
-	public final static String PICTURE_ROOT = "./pictures";
-	public final static String CONFIG_ROOT = "./config";
-
-	private final static Charset ENCODING = StandardCharsets.UTF_8;
-	private final static ExceptionHandler EXCEPTION_HANDLER = ExceptionHandler.getInstance();
+public class PictureSupporter {
+	private static final Charset ENCODING = StandardCharsets.UTF_8;
+	private static final String ROOT_PATH = "./pictures";
+	public static final String PUBLIC_QUESTION_PATH = "/publicQuestion";
+	public static final String PRIVATE_QUESTION_PATH = "/privateQuestion";
+	public static final String GROUP_QUESTION_PATH = "/group";
+	public static final String USER_QUESTION_PATH = "/user";
 
 	/**
-	 * creates file at specified path
-	 * 
+	 * creates Picturefile at specified path
+	 *
 	 * @param data
 	 *            : Binary data
 	 * @param path
 	 *            : filepath
-	 * @param fileName
-	 *            : Name of File
+	 * @param id
+	 *            : id of File
 	 */
-	public static void createFileWithContent(final String data, final String path, final String fileName) {
+	public static void createPictureFile(final String data, String path, final Long id) {
+		path = ROOT_PATH + path;
 		try {
-			writeFile(path, data, fileName);
+			writeFile(path, data, id.toString());
 		} catch (final IOException e) {
-			EXCEPTION_HANDLER.handleError(e);
+			e.printStackTrace();
 		}
 		System.out.println("Created File");
 	}
 
 	/**
-	 * returns data of file
-	 * 
+	 * returns picture data
+	 *
 	 * @param path
 	 *            : path of picture(more like category)
-	 * @param fileName
-	 *            : name of teh requested file
+	 * @param id
+	 *            : id of requested picture
 	 * @return binary picture data
 	 */
-	public static String getFileContent(String path, final String fileName) {
+	public static String getPicture(String path, final Long id) {
 		String data = null;
-		path = path + "/" + fileName;
+		path = ROOT_PATH + path + "/" + id;
 		try {
 			data = readFile(path);
 		} catch (final IOException e) {
-			EXCEPTION_HANDLER.handleError(e);
+			e.printStackTrace();
 		}
 		return data;
 	}
 
 	/**
 	 * Private Method, writes File to filesystem
-	 * 
+	 *
 	 * @param path
 	 * @param data
 	 * @param fileName
@@ -106,7 +107,7 @@ public class FileSupporter {
 
 	/**
 	 * Private Method reads File from file system
-	 * 
+	 *
 	 * @param fileUri
 	 * @return
 	 * @throws IOException

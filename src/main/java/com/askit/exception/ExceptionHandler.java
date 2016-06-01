@@ -14,15 +14,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.askit.face.FileSupporter;
-
 /**
  * The ExceptionHandler is for the handling of Exceptions. The handler stores
  * the exceptions inside a map. If a new exception is inserted, the exception
  * will be written to a log file. After a certain time the exception is deleted
  * from the map. So if a error occurs and a exception is very of thrown, the
  * handler is the instance that helps for not spamming the log file.
- * 
+ *
  * @author Kai Müller
  * @since 1.0.0.0
  * @version 1.0.0.0
@@ -42,7 +40,6 @@ public class ExceptionHandler {
 	private final File errorFile;
 
 	private ExceptionHandler() {
-		FileSupporter.createFile(FileSupporter.ROOT, ERROR_LOG_FILE_NAME); // TODO
 		errorFile = createErrorFile();
 		checkThread = new Thread(new Runnable() {
 			@Override

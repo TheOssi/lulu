@@ -2,12 +2,12 @@ package com.askit.database;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 import com.askit.exception.ExceptionHandler;
-import com.askit.face.FileSupporter;
 
 public enum DatabaseUser {
 
@@ -43,7 +43,10 @@ public enum DatabaseUser {
 	public static void loadAllPasswordsFromFile() {
 		InputStream inputStream = null;
 		try {
-			final File propertiesFile = new File(FileSupporter.CONFIG_ROOT, "config.properties");
+			final File propertiesFile = new File("./config", "config.properties");
+			if (propertiesFile.exists() == false) {
+				throw new FileNotFoundException("Propertiesfile not found; " + propertiesFile.getAbsolutePath());
+			}
 			final Properties properties = new Properties();
 			inputStream = new FileInputStream(propertiesFile);
 			properties.load(inputStream);
@@ -58,7 +61,6 @@ public enum DatabaseUser {
 				inputStream.close();
 			} catch (final IOException e) {
 				ExceptionHandler.getInstance().handleError(e);
-
 			}
 		}
 	}
