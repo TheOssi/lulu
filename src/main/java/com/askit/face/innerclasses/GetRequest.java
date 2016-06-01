@@ -339,13 +339,13 @@ public class GetRequest extends Request {
 		if (matcher.find()) {
 			String encodedPicture = null;
 			if (questionID != null && isPublic) {
-				encodedPicture = FileSupporter.getPicture("/publicQuestion", questionID);
+				encodedPicture = FileSupporter.getFileContent("/publicQuestion", questionID.toString());
 			} else if (questionID != null && !isPublic) {
-				encodedPicture = FileSupporter.getPicture("/privateQuestion", questionID);
+				encodedPicture = FileSupporter.getFileContent("/privateQuestion", questionID.toString());
 			} else if (groupID != null) {
-				encodedPicture = FileSupporter.getPicture("/group", groupID);
+				encodedPicture = FileSupporter.getFileContent("/group", groupID.toString());
 			} else if (userID != null) {
-				encodedPicture = FileSupporter.getPicture("/user", userID);
+				encodedPicture = FileSupporter.getFileContent("/user", userID.toString());
 			} else {
 				throw new MissingParametersException("MissingID");
 			}
