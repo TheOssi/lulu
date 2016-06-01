@@ -19,8 +19,8 @@ import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
 import com.askit.exception.NotificationException;
 import com.askit.exception.WrongHashException;
-import com.askit.face.JSONBuilder;
 import com.askit.face.FileSupporter;
+import com.askit.face.JSONBuilder;
 import com.askit.notification.RegIDHandler;
 
 /**
@@ -232,8 +232,9 @@ public class GetRequest extends Request {
 			id = Integer.parseInt(matcher.group(1));
 			if (id != null && !isPublic) {
 				this.out.println(jsonBuilder.createJSON(queryManager.getPrivateQuestion(id)));
-
-			} else {
+			}else if(id != null && isPublic) {
+				this.out.println(jsonBuilder.createJSON(queryManager.getPublicQuestion(id)));
+			}else {
 				throw new MissingParametersException("Missing ID in Parameters");
 			}
 			return;
