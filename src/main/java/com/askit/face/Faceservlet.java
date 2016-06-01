@@ -17,6 +17,7 @@ import com.askit.database.QuestionEndTimeChecker;
 import com.askit.database.QuestionSoonEndTimeChecker;
 import com.askit.exception.DatabaseLayerException;
 import com.askit.exception.DuplicateHashException;
+import com.askit.exception.ExceptionHandler;
 import com.askit.exception.MissingParametersException;
 import com.askit.exception.NotificationException;
 import com.askit.exception.WrongHashException;
@@ -56,10 +57,11 @@ public class Faceservlet extends HttpServlet {
 	public void init(final ServletConfig config) {
 		try {
 			super.init();
-			DatabaseUser.loadAllPasswordsFromFile();
-		} catch (final ServletException | IOException e) {
-			e.printStackTrace();
+		} catch (final ServletException e) {
+			ExceptionHandler.getInstance().handleError(e);
 		}
+		DatabaseUser.loadAllPasswordsFromFile();
+		ExceptionHandler.getInstance();
 		SessionManager.getInstance().start();
 		// NotificationSender.getInstace().startThread();
 		QuestionEndTimeChecker.getInstance().startThread();
@@ -141,7 +143,7 @@ public class Faceservlet extends HttpServlet {
 		int status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 		// TODO nicht nach auﬂen geben
 		out.print(jsonBuilder.createJSON(exception));
-		exception.printStackTrace();
+		ExceptionHandler.getInstance().handleError(exception);
 
 		if (exception instanceof DuplicateHashException || exception instanceof WrongHashException) {
 			status = HttpServletResponse.SC_UNAUTHORIZED;

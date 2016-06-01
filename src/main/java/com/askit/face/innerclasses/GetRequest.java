@@ -20,7 +20,7 @@ import com.askit.exception.MissingParametersException;
 import com.askit.exception.NotificationException;
 import com.askit.exception.WrongHashException;
 import com.askit.face.JSONBuilder;
-import com.askit.face.PictureSupporter;
+import com.askit.face.FileSupporter;
 import com.askit.notification.RegIDHandler;
 
 /**
@@ -338,13 +338,13 @@ public class GetRequest extends Request {
 		if (matcher.find()) {
 			String encodedPicture = null;
 			if (questionID != null && isPublic) {
-				encodedPicture = PictureSupporter.getPicture("/publicQuestion", questionID);
+				encodedPicture = FileSupporter.getPicture("/publicQuestion", questionID);
 			} else if (questionID != null && !isPublic) {
-				encodedPicture = PictureSupporter.getPicture("/privateQuestion", questionID);
+				encodedPicture = FileSupporter.getPicture("/privateQuestion", questionID);
 			} else if (groupID != null) {
-				encodedPicture = PictureSupporter.getPicture("/group", groupID);
+				encodedPicture = FileSupporter.getPicture("/group", groupID);
 			} else if (userID != null) {
-				encodedPicture = PictureSupporter.getPicture("/user", userID);
+				encodedPicture = FileSupporter.getPicture("/user", userID);
 			} else {
 				throw new MissingParametersException("MissingID");
 			}

@@ -9,11 +9,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import com.askit.exception.ExceptionHandler;
+
 /**
  * @author lelmac
  * Supports creating and reading pictures from the the filesystem
  */
-public class PictureSupporter {
+public class FileSupporter {
 	final static Charset ENCODING = StandardCharsets.UTF_8;
 	final static String rootPath = "./pictures";
 
@@ -67,6 +69,25 @@ public class PictureSupporter {
 			System.out.println("wrote data");
 		}
 
+	}
+	public static void createFile(String path,String fileName){
+		Path fullPath = Paths.get(path+"/" + fileName);
+		Path dirPath = Paths.get(path);
+		ExceptionHandler eHandler = ExceptionHandler.getInstance();
+		if(!Files.exists(dirPath)){
+			try {
+				Files.createDirectory(dirPath);
+			} catch (IOException e) {
+				eHandler.handleError(e);
+			}
+		}
+		if(!Files.exists(fullPath)){
+			try {
+				Files.createFile(fullPath);
+			} catch (IOException e) {
+				eHandler.handleError(e);
+			}
+		}
 	}
 
 	/**Private Method reads File from file system

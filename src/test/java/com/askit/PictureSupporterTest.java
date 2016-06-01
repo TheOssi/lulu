@@ -11,7 +11,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.askit.face.PictureSupporter;
+import com.askit.face.FileSupporter;
 
 public class PictureSupporterTest {
 	@Test
@@ -19,8 +19,8 @@ public class PictureSupporterTest {
 		String data = "TestString";
 		String path = "/group";
 		Long id = 1234L;
-		PictureSupporter.createPictureFile(data, path, id);
-		String readString = PictureSupporter.getPicture(path, id);
+		FileSupporter.createPictureFile(data, path, id);
+		String readString = FileSupporter.getPicture(path, id);
 		assertThat("Write=Read", data.equals(readString));
 	}
 	
@@ -30,7 +30,7 @@ public class PictureSupporterTest {
 		for(int i = 0;i<100;i++){
 			Long id = Double.doubleToLongBits(Math.random()*1000000);
 			int rnd = (int) ((Math.random()*4));
-			PictureSupporter.createPictureFile(id.toString(), paths[rnd], id);
+			FileSupporter.createPictureFile(id.toString(), paths[rnd], id);
 		}
 	}
 	@AfterClass

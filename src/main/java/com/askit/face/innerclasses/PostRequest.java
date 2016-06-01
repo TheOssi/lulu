@@ -19,7 +19,7 @@ import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
 import com.askit.exception.NotificationException;
 import com.askit.exception.WrongHashException;
-import com.askit.face.PictureSupporter;
+import com.askit.face.FileSupporter;
 import com.askit.notification.Notification;
 import com.askit.notification.NotificationCodes;
 import com.askit.notification.NotificationHandler;
@@ -322,13 +322,13 @@ public class PostRequest extends Request {
 		if (matcher.find()) {
 			if (body != null && body != "") {
 				if (groupID != null) {
-					PictureSupporter.createPictureFile(body, "/group", groupID);
+					FileSupporter.createPictureFile(body, "/group", groupID);
 				} else if (userID != null) {
-					PictureSupporter.createPictureFile(body, "/user", userID);
+					FileSupporter.createPictureFile(body, "/user", userID);
 				} else if (questionID != null && isPublic) {
-					PictureSupporter.createPictureFile(body, "/publicQuestion", userID);
+					FileSupporter.createPictureFile(body, "/publicQuestion", userID);
 				} else if (questionID != null && !isPublic) {
-					PictureSupporter.createPictureFile(body, "/privateQuestion", userID);
+					FileSupporter.createPictureFile(body, "/privateQuestion", userID);
 				}else{
 					throw new MissingParametersException("Missing ID for Entity");
 				}
