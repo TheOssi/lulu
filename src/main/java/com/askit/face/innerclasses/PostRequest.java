@@ -312,7 +312,6 @@ public class PostRequest extends Request {
 			}
 			return;
 		}
-		// TODO
 		matcher = regExPicturePattern.matcher(pathInfo);
 		if (matcher.find()) {
 			if (body != null && body != "") {
@@ -321,9 +320,9 @@ public class PostRequest extends Request {
 				} else if (userID != null) {
 					FileSupporter.createFileWithContent(body, "/user", userID.toString());
 				} else if (questionID != null && isPublic) {
-					FileSupporter.createFileWithContent(body, "/publicQuestion", userID.toString());
+					FileSupporter.createFileWithContent(body, "/publicQuestion", questionID.toString());
 				} else if (questionID != null && !isPublic) {
-					FileSupporter.createFileWithContent(body, "/privateQuestion", userID.toString());
+					FileSupporter.createFileWithContent(body, "/privateQuestion", questionID.toString());
 				} else {
 					throw new MissingParametersException("Missing ID for Entity");
 				}

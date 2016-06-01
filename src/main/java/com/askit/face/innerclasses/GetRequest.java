@@ -310,14 +310,14 @@ public class GetRequest extends Request {
 
 			if (questionID != null && userID == null && !isPublic) {
 				countedAnswers = queryManager.getAnswersOfPrivateQuestionAndCount(questionID);
-				out.print(jsonBuilder.createJSON(countedAnswers));
+				this.out.print(jsonBuilder.createJSON(countedAnswers));
 			} else if (questionID != null && userID == null && !isPublic) {
 				countedAnswers = queryManager.getAnswersOfPublicQuestionAndCount(questionID);
-				out.print(jsonBuilder.createJSON(countedAnswers));
+				this.out.print(jsonBuilder.createJSON(countedAnswers));
 			} else if (questionID != null && userID != null && !isPublic) {
 				answers = new Answer[1];
 				answers[0] = queryManager.getChoseAnswerInPrivateQuestion(questionID, userID);
-				out.print(jsonBuilder.createJSON(answers));
+				this.out.print(jsonBuilder.createJSON(answers));
 			} else {
 				throw new MissingParametersException("No or not enough Parameters specified");
 			}
@@ -329,7 +329,7 @@ public class GetRequest extends Request {
 		if (matcher.find()) {
 			if (userID != null) {
 				String regID = RegIDHandler.getInstance().getRegIDFromUser(userID);
-				out.println(new JSONBuilder().createJSON(regID));
+				this.out.println(new JSONBuilder().createJSON(regID));
 			} else {
 				throw new MissingParametersException("No UserID specified");
 			}
@@ -349,7 +349,7 @@ public class GetRequest extends Request {
 			} else {
 				throw new MissingParametersException("MissingID");
 			}
-			out.println(new JSONBuilder().createJSON(encodedPicture));
+			this.out.println(new JSONBuilder().createJSON(encodedPicture));
 			return;
 		}
 		matcher = regExSessionPattern.matcher(pathInfo);
