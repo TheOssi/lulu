@@ -39,8 +39,7 @@ public class PostRequest extends Request {
 	 * @param out
 	 * @param body
 	 */
-	public PostRequest(final String pathInfo, final Map<String, String[]> parameters, final PrintWriter out,
-			final String body) {
+	public PostRequest(final String pathInfo, final Map<String, String[]> parameters, final PrintWriter out, final String body) {
 		super(pathInfo, parameters, out);
 		this.body = body;
 	}
@@ -53,8 +52,8 @@ public class PostRequest extends Request {
 	 */
 
 	@Override
-	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
-			DatabaseLayerException, ServletException, NotificationException {
+	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException, DatabaseLayerException,
+			ServletException, NotificationException {
 		super.handleRequest();
 
 		final QueryManager queryManager = new DatabaseQueryManager();
@@ -177,16 +176,15 @@ public class PostRequest extends Request {
 		 * @params: USERID: Long CONTACTID: Long
 		 */
 
-		matcher = regExUserPattern.matcher(this.pathInfo);
+		matcher = regExUserPattern.matcher(pathInfo);
 		if (matcher.find()) {
-			NotificationHandler notificationHandler = NotificationHandler.getInstance();
-			RegIDHandler regHandler = RegIDHandler.getInstance();
+			final NotificationHandler notificationHandler = NotificationHandler.getInstance();
+			final RegIDHandler regHandler = RegIDHandler.getInstance();
 			if (userName != null && phoneNumberHash != null && passwordHash != null && language != null) {
 				final Date accessionDate = null;
 				final String profilePictureURI = null;
 				final int scoreOfGlobal = 0;
-				User user = new User(userID, passwordHash, phoneNumberHash, userName, accessionDate, profilePictureURI,
-						language, scoreOfGlobal);
+				final User user = new User(userID, passwordHash, phoneNumberHash, userName, accessionDate, profilePictureURI, language, scoreOfGlobal);
 				queryManager.createUser(user);
 				out.println("{message: " + "Sucessfully create User}");
 			} else if (userID != null && contactID != null) {
@@ -196,8 +194,8 @@ public class PostRequest extends Request {
 				queryManager.addUserToGroup(groupID, userID);
 				out.println("{message: " + "Sucessfully added User to Group}");
 				regID = regHandler.getRegIDFromUser(userID);
-				Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_ADDED_TO_GROUP.getCode(),
-						"groupID", groupID.toString());
+				final Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_ADDED_TO_GROUP.getCode(), "groupID",
+						groupID.toString());
 				notificationHandler.addNotification(not);
 			} else if (userID != null && questionID != null && isOneTime) {
 				queryManager.addUserToOneTimeQuestion(userID, questionID);
@@ -205,8 +203,8 @@ public class PostRequest extends Request {
 			} else if (userID != null && questionID != null && isPublic) {
 				queryManager.addUserToPublicQuestion(questionID, userID);
 				regID = regHandler.getRegIDFromUser(userID);
-				Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_INVITE_PUBLIC.getCode(),
-						"questionID", questionID.toString());
+				final Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_INVITE_PUBLIC.getCode(), "questionID",
+						questionID.toString());
 				notificationHandler.addNotification(not);
 				out.println("{message: " + "Sucessfully added User to Question}");
 			} else {
@@ -224,8 +222,8 @@ public class PostRequest extends Request {
 		matcher = regExGroupPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			if (adminID != null && groupName != null && pictureUrl != null) {
-				Date createDate = Calendar.getInstance().getTime();
-				Group group = new Group(createDate, adminID, groupName, pictureUrl);
+				final Date createDate = Calendar.getInstance().getTime();
+				final Group group = new Group(createDate, adminID, groupName, pictureUrl);
 				queryManager.createNewGroup(group);
 				out.println("{message: " + "Sucessfully created new Group}");
 			} else {
@@ -245,35 +243,31 @@ public class PostRequest extends Request {
 		 */
 		matcher = regExQuestionPattern.matcher(pathInfo);
 		if (matcher.find()) {
-			NotificationHandler notificationHandler = NotificationHandler.getInstance();
-			RegIDHandler regHandler = RegIDHandler.getInstance();
-			Date createDate = Calendar.getInstance().getTime();
-			if (isPublic && question != null && additionalInformation != null && hostID != null && pictureUrl != null
-					&& eDate != null && language != null) {
-				Date endDate = new Date(createDate.getTime() + eDate);
-				PublicQuestion publicQuestion = new PublicQuestion(question, additionalInformation, hostID, pictureUrl,
-						createDate, endDate, optionExtension, isExpired, language);
+			final NotificationHandler notificationHandler = NotificationHandler.getInstance();
+			final RegIDHandler regHandler = RegIDHandler.getInstance();
+			final Date createDate = Calendar.getInstance().getTime();
+			if (isPublic && question != null && additionalInformation != null && hostID != null && pictureUrl != null && eDate != null
+					&& language != null) {
+				final Date endDate = new Date(createDate.getTime() + eDate);
+				final PublicQuestion publicQuestion = new PublicQuestion(question, additionalInformation, hostID, pictureUrl, createDate, endDate,
+						optionExtension, isExpired, language);
 				queryManager.createPublicQuestion(publicQuestion);
 				regID = regHandler.getRegIDFromUser(hostID);
-				Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_NEW_QUESTION.getCode(),
-						"hostID", hostID.toString());
+				final Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_NEW_QUESTION.getCode(), "hostID", hostID.toString());
 				notificationHandler.addNotification(not);
 			} else if (!isPublic && groupID != null) {
-				Date endDate = new Date(createDate.getTime() + eDate);
-				PrivateQuestion privateQuestion = new PrivateQuestion(question, additionalInformation, hostID,
-						pictureUrl, groupID, endDate, optionExtension, definitionOfEnd, sumOfUsersToAnswer, isExpired,
-						selectedAnswerID, language, isBet);
+				final Date endDate = new Date(createDate.getTime() + eDate);
+				final PrivateQuestion privateQuestion = new PrivateQuestion(question, additionalInformation, hostID, pictureUrl, groupID, endDate,
+						optionExtension, definitionOfEnd, sumOfUsersToAnswer, isExpired, selectedAnswerID, language, isBet);
 				queryManager.createNewPrivateQuestionInGroup(privateQuestion);
 
 				regID = regHandler.getRegIDFromUser(userID);
-				Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_NEW_QUESTION.getCode(),
-						"hostID", hostID.toString());
+				final Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_NEW_QUESTION.getCode(), "hostID", hostID.toString());
 				notificationHandler.addNotification(not);
 			} else if (!isPublic && isOneTime) {
-				Date endDate = new Date(createDate.getTime() + eDate);
-				PrivateQuestion privateQuestion = new PrivateQuestion(question, additionalInformation, hostID,
-						pictureUrl, groupID, endDate, optionExtension, definitionOfEnd, sumOfUsersToAnswer, isExpired,
-						selectedAnswerID, language, isBet);
+				final Date endDate = new Date(createDate.getTime() + eDate);
+				final PrivateQuestion privateQuestion = new PrivateQuestion(question, additionalInformation, hostID, pictureUrl, groupID, endDate,
+						optionExtension, definitionOfEnd, sumOfUsersToAnswer, isExpired, selectedAnswerID, language, isBet);
 				queryManager.createOneTimeQuestion(privateQuestion);
 			}
 
@@ -294,16 +288,16 @@ public class PostRequest extends Request {
 		matcher = regExAnswerPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			if (questionID != null && answerText != null && !isPublic) {
-				Answer answer = new Answer(questionID, answerText);
+				final Answer answer = new Answer(questionID, answerText);
 				queryManager.addAnswerToPrivateQuestion(answer);
 			} else if (questionID != null && answerText != null && isPublic) {
-				Answer answer = new Answer(questionID, answerText);
+				final Answer answer = new Answer(questionID, answerText);
 				queryManager.addAnswerToPublicQuestion(answer);
 			} else if (questionID != null && answerText != null && !isPublic && answerID != null) {
-				Answer answer = new Answer(answerID, questionID, answerText);
+				final Answer answer = new Answer(answerID, questionID, answerText);
 				queryManager.addAnswerToPrivateQuestion(answer);
 			} else if (questionID != null && answerText != null && isPublic && answerID != null) {
-				Answer answer = new Answer(answerID, questionID, answerText);
+				final Answer answer = new Answer(answerID, questionID, answerText);
 				queryManager.addAnswerToPublicQuestion(answer);
 			}
 
@@ -318,18 +312,19 @@ public class PostRequest extends Request {
 			}
 			return;
 		}
+		// TODO
 		matcher = regExPicturePattern.matcher(pathInfo);
 		if (matcher.find()) {
 			if (body != null && body != "") {
 				if (groupID != null) {
-					FileSupporter.createPictureFile(body, "/group", groupID);
+					FileSupporter.createFileWithContent(body, "/group", groupID.toString());
 				} else if (userID != null) {
-					FileSupporter.createPictureFile(body, "/user", userID);
+					FileSupporter.createFileWithContent(body, "/user", userID.toString());
 				} else if (questionID != null && isPublic) {
-					FileSupporter.createPictureFile(body, "/publicQuestion", userID);
+					FileSupporter.createFileWithContent(body, "/publicQuestion", userID.toString());
 				} else if (questionID != null && !isPublic) {
-					FileSupporter.createPictureFile(body, "/privateQuestion", userID);
-				}else{
+					FileSupporter.createFileWithContent(body, "/privateQuestion", userID.toString());
+				} else {
 					throw new MissingParametersException("Missing ID for Entity");
 				}
 			} else {

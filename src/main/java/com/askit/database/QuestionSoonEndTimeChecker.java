@@ -31,7 +31,6 @@ public class QuestionSoonEndTimeChecker extends Thread {
 			+ "UNION ALL SELECT PU.questionID, PU.endDate, '" + PublicQuestion.TABLE_NAME + "' as \"type\" FROM APP.PublicQuestions PU "
 			+ "WHERE PU.endDate IS NOT NULL AND PU.endDate BETWEEN ? AND ? AND PU.finished <> 1 )  AS R ORDER BY R.endDate ASC LIMIT 1;";
 
-	// TODO is thread safe?
 	private final List<AbstractQuestion> usedQuestions = Collections.synchronizedList(new ArrayList<AbstractQuestion>());
 
 	private QuestionSoonEndTimeChecker() {

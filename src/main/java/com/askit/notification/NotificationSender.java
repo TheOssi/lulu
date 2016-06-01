@@ -21,19 +21,19 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-//TODO thread safe?
 public class NotificationSender implements Runnable {
 
 	private static final int SLEEP_TIME = 5000;
 	private static final NotificationSender INSTANCE = new NotificationSender();
-	private final static String FCM_URL = "https://fcm.googleapis.com/fcm/send";
-	private static final ExceptionHandler FATAL_EXCEPTION_WRITER = ExceptionHandler.getInstance();
+	private static final String FCM_URL = "https://fcm.googleapis.com/fcm/send";
+
+	private final GsonBuilder gsonBuilder = new GsonBuilder();
+	private final Gson gson = gsonBuilder.setPrettyPrinting().create();
+	private final ExceptionHandler exceptionHandler = ExceptionHandler.getInstance();
+	private final NotificationHandler notificationHandler = NotificationHandler.getInstance();
 
 	private Thread sendNotificationThread;
 	private final String authKey;
-	private final GsonBuilder gsonBuilder = new GsonBuilder();
-	private final Gson gson = gsonBuilder.setPrettyPrinting().create();
-	private final NotificationHandler notificationHandler = NotificationHandler.getInstance();
 
 	private NotificationSender() {
 		authKey = getAuthKey();
@@ -80,7 +80,7 @@ public class NotificationSender implements Runnable {
 			// TODO 200 + error: DeviceMessageRate Exceeded
 
 		} catch (final IOException e) {
-			FATAL_EXCEPTION_WRITER.handleError(e);
+			exceptionHandler.handleError(e);
 			throw new NotificationException(e);
 		}
 	}
@@ -99,7 +99,7 @@ public class NotificationSender implements Runnable {
 				try {
 					send(notificationHandler.getNextNotificationAndDelete());
 				} catch (final NotificationException e) {
-					FATAL_EXCEPTION_WRITER.handleError(e);
+					exceptionHandler.handleError(e);
 				}
 			} else {
 				try {
@@ -114,7 +114,7 @@ public class NotificationSender implements Runnable {
 	}
 
 	// TODO what if not avaible
-	public String getErrorText(final String json) {
+	private String getErrorText(final String json) {
 		final JsonElement parsedJSON = new JsonParser().parse(json);
 		JsonObject jsonObject = parsedJSON.getAsJsonObject();
 		final JsonArray jsonArray = jsonObject.getAsJsonArray("results");
@@ -137,7 +137,7 @@ public class NotificationSender implements Runnable {
 			closeSilentlyInputStream(inputStream);
 			authKey = properties.getProperty("auth_key");
 		} catch (final IOException e) {
-			FATAL_EXCEPTION_WRITER.handleError(e);
+			exceptionHandler.handleError(e);
 		}
 		return authKey;
 	}
@@ -146,7 +146,7 @@ public class NotificationSender implements Runnable {
 		try {
 			inputStream.close();
 		} catch (final IOException e) {
-			FATAL_EXCEPTION_WRITER.handleError(e);
+			ExceptionHandler.getInstance().handleError(e);
 		}
 	}
 }
