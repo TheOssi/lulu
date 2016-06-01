@@ -8,60 +8,88 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 import com.askit.exception.ExceptionHandler;
 
 /**
- * @author lelmac
- * Supports creating and reading pictures from the the filesystem
+ * @author lelmac Supports creating and reading pictures from the the filesystem
  */
 public class FileSupporter {
 	final static Charset ENCODING = StandardCharsets.UTF_8;
 	final static String rootPath = "./pictures";
 
+	private static final ExceptionHandler exceptionHandler = ExceptionHandler.getInstance();
+
 	/**
-	 * creates Picturefile at specified path
-	 * @param data : Binary data
-	 * @param path : filepath
-	 * @param id : id of File
+	 * creates file at specified path
+	 * 
+	 * @param data
+	 *            : Binary data
+	 * @param path
+	 *            : filepath
+	 * @param fileName
+	 *            : Name of File
 	 */
-	public static void createPictureFile(String data, String path, Long id) {
+	public static void createFileWithContent(final String data, String path, final String fileName) {
 		path = rootPath + path;
 		try {
-			writeFile(path, data, id.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
+			writeFile(path, data, fileName);
+		} catch (final IOException e) {
+			exceptionHandler.handleError(e);
 		}
 		System.out.println("Created File");
 	}
 
 	/**
-	 * returns picture data
-	 * @param path: path of picture(more like category)
-	 * @param id : id of requested picture
+	 * @param data
+	 *            : Binary data
+	 * @param path
+	 *            : filepath
+	 * @param fileName
+	 *            : Name of File
+	 */
+	public static void appendContentToFile(final String data, String path, final String fileNanme) {
+		path = rootPath + path;
+		try {
+			appendToFile(path, data, fileNanme);
+		} catch (final IOException e) {
+			exceptionHandler.handleError(e);
+		}
+	}
+
+	/**
+	 * returns data of file
+	 * 
+	 * @param path
+	 *            : path of picture(more like category)
+	 * @param fileName
+	 *            : name of teh requested file
 	 * @return binary picture data
 	 */
-	public static String getPicture(String path, Long id) {
+	public static String getFileContent(String path, final String fileName) {
 		String data = null;
-		path = rootPath + path + "/" + id;
+		path = rootPath + path + "/" + fileName;
 		try {
 			data = readFile(path);
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (final IOException e) {
+			exceptionHandler.handleError(e);
 		}
 		return data;
 	}
 
-	/**Private Method, writes File to filesystem
+	/**
+	 * Private Method, writes File to filesystem
+	 * 
 	 * @param path
 	 * @param data
 	 * @param fileName
 	 * @throws IOException
 	 */
-	private static void writeFile(String path, String data, String fileName) throws IOException {
-		Path fullPath = Paths.get(path+"/" + fileName);
-		Path dirPath = Paths.get(path);
-		if(!Files.exists(dirPath)){
+	private static void writeFile(final String path, final String data, final String fileName) throws IOException {
+		final Path fullPath = Paths.get(path + "/" + fileName);
+		final Path dirPath = Paths.get(path);
+		if (!Files.exists(dirPath)) {
 			Files.createDirectory(dirPath);
 		}
 		try (BufferedWriter writer = Files.newBufferedWriter(fullPath, ENCODING)) {
@@ -70,34 +98,50 @@ public class FileSupporter {
 		}
 
 	}
-	public static void createFile(String path,String fileName){
-		Path fullPath = Paths.get(path+"/" + fileName);
-		Path dirPath = Paths.get(path);
-		ExceptionHandler eHandler = ExceptionHandler.getInstance();
-		if(!Files.exists(dirPath)){
+
+	private static void appendToFile(final String path, final String data, final String fileName) throws IOException {
+		final Path fullPath = Paths.get(path + "/" + fileName);
+		final Path dirPath = Paths.get(path);
+		if (!Files.exists(dirPath)) {
+			Files.createDirectory(dirPath);
+		}
+		try (BufferedWriter writer = Files.newBufferedWriter(fullPath, ENCODING, StandardOpenOption.APPEND)) {
+			writer.write(data);
+			System.out.println("wrote data");
+		}
+
+	}
+
+	public static void createFile(final String path, final String fileName) {
+		final Path fullPath = Paths.get(path + "/" + fileName);
+		final Path dirPath = Paths.get(path);
+		final ExceptionHandler eHandler = ExceptionHandler.getInstance();
+		if (!Files.exists(dirPath)) {
 			try {
 				Files.createDirectory(dirPath);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				eHandler.handleError(e);
 			}
 		}
-		if(!Files.exists(fullPath)){
+		if (!Files.exists(fullPath)) {
 			try {
 				Files.createFile(fullPath);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				eHandler.handleError(e);
 			}
 		}
 	}
 
-	/**Private Method reads File from file system
+	/**
+	 * Private Method reads File from file system
+	 * 
 	 * @param fileUri
 	 * @return
 	 * @throws IOException
 	 */
-	private static String readFile(String fileUri) throws IOException {
-		StringBuilder sBuilder = new StringBuilder();
-		Path path = Paths.get(fileUri);
+	private static String readFile(final String fileUri) throws IOException {
+		final StringBuilder sBuilder = new StringBuilder();
+		final Path path = Paths.get(fileUri);
 		try (BufferedReader reader = Files.newBufferedReader(path, ENCODING)) {
 			String line = null;
 			while ((line = reader.readLine()) != null) {
@@ -106,5 +150,4 @@ public class FileSupporter {
 		}
 		return sBuilder.toString();
 	}
-
 }

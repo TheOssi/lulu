@@ -1,6 +1,7 @@
 package com.askit.database;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,11 +29,10 @@ public class QuestionEndTimeChecker extends Thread {
 	private static final QuestionEndTimeChecker INSTANCE = new QuestionEndTimeChecker();
 	private static final long SLEEP_TIME = 5000L;
 	private final ExceptionHandler exceptionHandler = ExceptionHandler.getInstance();
-	// TODO enDate > currentTime
 	private static final String STATEMENT = "SELECT R.questionID, R.endDate, R.type FROM ( SELECT PR.questionID, PR.endDate, '"
-			+ PrivateQuestion.TABLE_NAME + "' as \"type\" FROM APP.PrivateQuestions AS PR "
-			+ "WHERE PR.endDate IS NOT NULL AND PR.finished <> 1 AND PR.definitionOfEnd = 1 " + "UNION ALL SELECT PU.questionID, PU.endDate, '"
-			+ PublicQuestion.TABLE_NAME + "' as \"type\" FROM APP.PublicQuestions PU " + "WHERE PU.endDate IS NOT NULL AND PU.finished <> 1 )  AS R "
+			+ PrivateQuestion.TABLE_NAME + "' as \"type\" FROM APP.PrivateQuestions AS PR " + "WHERE PR.endDate IS NOT NULL AND PR.endDate >= ? AND "
+			+ "PR.finished <> 1 AND PR.definitionOfEnd = 1 " + "UNION ALL SELECT PU.questionID, PU.endDate, '" + PublicQuestion.TABLE_NAME
+			+ "' as \"type\" FROM APP.PublicQuestions PU " + "WHERE PU.endDate IS NOT NULL AND PU.endDate >= ? AND PU.finished <> 1 )  AS R "
 			+ "ORDER BY R.endDate ASC LIMIT 1;";
 
 	private QuestionEndTimeChecker() {
@@ -51,6 +51,8 @@ public class QuestionEndTimeChecker extends Thread {
 	private AbstractQuestion getNext() throws SQLException {
 		final Connection connection = ConnectionManager.getInstance().getReaderConnection();
 		final PreparedStatement preparedStatement = connection.prepareStatement(STATEMENT);
+		preparedStatement.setDate(1, new Date(System.currentTimeMillis()));
+		preparedStatement.setDate(2, new Date(System.currentTimeMillis()));
 		final ResultSet resultSet = preparedStatement.executeQuery();
 		if (resultSet.next()) {
 			final long id = resultSet.getLong(1);

@@ -16,29 +16,31 @@ import com.askit.face.FileSupporter;
 public class PictureSupporterTest {
 	@Test
 	public void testWriteRead() {
-		String data = "TestString";
-		String path = "/group";
-		Long id = 1234L;
-		FileSupporter.createPictureFile(data, path, id);
-		String readString = FileSupporter.getPicture(path, id);
+		final String data = "TestString";
+		final String path = "/group";
+		final Long id = 1234L;
+		FileSupporter.createFileWithContent(data, path, id.toString());
+		final String readString = FileSupporter.getFileContent(path, id.toString());
 		assertThat("Write=Read", data.equals(readString));
 	}
-	
+
 	@Test
-	public void writeMultipleFiles(){
-		String[] paths = {"/group","/privateQuestion","/pubQuestion","/user"};
-		for(int i = 0;i<100;i++){
-			Long id = Double.doubleToLongBits(Math.random()*1000000);
-			int rnd = (int) ((Math.random()*4));
-			FileSupporter.createPictureFile(id.toString(), paths[rnd], id);
+	public void writeMultipleFiles() {
+		final String[] paths = { "/group", "/privateQuestion", "/pubQuestion", "/user" };
+		for (int i = 0; i < 100; i++) {
+			final Long id = Double.doubleToLongBits(Math.random() * 1000000);
+			final int rnd = (int) (Math.random() * 4);
+			FileSupporter.createFileWithContent(id.toString(), paths[rnd], id.toString());
 		}
 	}
+
 	@AfterClass
-	public static void tearDown() throws Exception{
+	public static void tearDown() throws Exception {
 		FileUtils.deleteDirectory(new File("./pictures"));
 	}
+
 	@BeforeClass
-	public static void setUp() throws Exception{
+	public static void setUp() throws Exception {
 		Files.createDirectory(Paths.get("./pictures"));
 	}
 }

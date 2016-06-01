@@ -1,8 +1,5 @@
 package com.askit.exception;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -13,30 +10,44 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.askit.face.FileSupporter;
+
+/**
+ * The ExceptionHandler is for the handling of Exceptions. The handler stores
+ * the exceptions inside a map. If a new exception is inserted, the exception
+ * will be written to a log file. After a certain time the exception is deleted
+ * from the map. So if a error occurs and a exception is very of thrown, the
+ * handler is the instance that helps for not spamming the log file.
+ * 
+ * @author Kai Müller
+ * @since 1.0.0.0
+ * @version 1.0.0.0
+ *
+ */
 public class ExceptionHandler {
-
-	// TODO is it thread safe
-
-	private static final int SLEEP_TIME = 1000;
 	private static final ExceptionHandler INSTANCE = new ExceptionHandler();
-	private static final String ERROR_LOG_FILE_NAME = "java_error_log";
+	private static final String ERROR_LOG_FILE_NAME = "java_error_log.log";
 	private static final long TIMEOUT = 5 * 60 * 1000; // 5min
-	// TODO @M File creation and check
-	private static final File ERROR_FILE = new File("", ERROR_LOG_FILE_NAME);
+	private static final String SHA1_HASH = "SHA1";
+	private static final int SLEEP_TIME = 1000;
+	private static final String UTF_8 = "UTF-8";
 
-	private final Thread checkThread;
 	private final Map<String, Long> exceptionMap = new ConcurrentHashMap<String, Long>();
 
+	private final Thread checkThread;
+
 	private ExceptionHandler() {
+		FileSupporter.createFile("./", ERROR_LOG_FILE_NAME);
 		checkThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				while (true) {
 					if (!exceptionMap.isEmpty()) {
 						for (final Entry<String, Long> entry : exceptionMap.entrySet()) {
+							final String key = entry.getKey();
 							final Long time = entry.getValue();
-							if (time > System.currentTimeMillis()) {
-								exceptionMap.remove(entry);
+							if (time <= System.currentTimeMillis()) {
+								exceptionMap.remove(key);
 							}
 						}
 					} else {
@@ -72,55 +83,50 @@ public class ExceptionHandler {
 	private void handleErrorInternal(final Exception exception, final boolean writeToFile) {
 		if (insertException(exception)) {
 			// TODO delete this after test phase
-			System.out.println("== BEGIN DEBUG ExceptionHandler ==");
-			System.out.println(getExceptionText(exception));
-			System.out.println("== END DEBUG ExceptionHandler ==");
+			doDebugOutput(exception);
 			if (writeToFile) {
 				writeFullErrorToFile(exception);
 			} else {
+				System.out.println("== BEGIN ExceptionHandler ==");
 				exception.printStackTrace();
+				System.out.println("== END DEBUG ExceptionHandler ==");
 			}
 		} else {
-			writeHashExceptionToFile(exception);
+			if (writeToFile) {
+				writeHashExceptionToFile(exception);
+			} else {
+				exception.printStackTrace();
+			}
 		}
 	}
 
+	private void doDebugOutput(final Exception exception) {
+		System.out.println("== BEGIN DEBUG ExceptionHandler ==");
+		System.out.println(getExceptionText(exception));
+		System.out.println("== END DEBUG ExceptionHandler ==");
+	}
+
 	private void writeToErrorFile(final String errorText) {
-		FileWriter writer = null;
-		try {
-			writer = new FileWriter(ERROR_FILE, true);
-			writer.write(errorText);
-			writer.write(System.lineSeparator());
-			writer.flush();
-		} catch (final IOException e) {
-			handleErrorInternal(e, false);
-		} finally {
-			try {
-				if (writer != null) {
-					writer.close();
-				}
-			} catch (final IOException e) {
-				handleErrorInternal(e, false);
-			}
-		}
+		FileSupporter.appendContentToFile(errorText, "./", ERROR_LOG_FILE_NAME);
+		FileSupporter.appendContentToFile(System.lineSeparator(), "./", ERROR_LOG_FILE_NAME);
 	}
 
 	private void writeFullErrorToFile(final Exception exception) {
 		String errorText = "";
 		errorText = errorText + new Date(System.currentTimeMillis()).toString();
-		errorText = errorText + " : (" + makeSHA1Hash(getExceptionText(exception)) + ") " + getExceptionText(exception);
+		errorText = errorText + " : (" + getSHA1HashFromString(getExceptionText(exception)) + ") " + getExceptionText(exception);
 		writeToErrorFile(errorText);
 	}
 
 	private void writeHashExceptionToFile(final Exception exception) {
 		String errorText = "";
 		errorText = errorText + new Date(System.currentTimeMillis()).toString();
-		errorText = errorText + " : " + makeSHA1Hash(getExceptionText(exception));
+		errorText = errorText + " : " + getSHA1HashFromString(getExceptionText(exception));
 		writeToErrorFile(errorText);
 	}
 
 	private boolean insertException(final Exception exception) {
-		final String hashException = makeSHA1Hash(getExceptionText(exception));
+		final String hashException = getSHA1HashFromString(getExceptionText(exception));
 		if (exceptionMap.containsKey(hashException)) {
 			for (final Entry<String, Long> entry : exceptionMap.entrySet()) {
 				final String key = entry.getKey();
@@ -150,12 +156,12 @@ public class ExceptionHandler {
 		return stringWriter.getBuffer().toString();
 	}
 
-	private String makeSHA1Hash(final String input) {
+	private String getSHA1HashFromString(final String input) {
 		String hexStr = "";
 		try {
-			final MessageDigest messageDigest = MessageDigest.getInstance("SHA1");
+			final MessageDigest messageDigest = MessageDigest.getInstance(SHA1_HASH);
 			messageDigest.reset();
-			final byte[] buffer = input.getBytes("UTF-8");
+			final byte[] buffer = input.getBytes(UTF_8);
 			messageDigest.update(buffer);
 			final byte[] digest = messageDigest.digest();
 			for (final byte element : digest) {

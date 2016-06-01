@@ -1,12 +1,11 @@
 package com.askit.database;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.StringReader;
 import java.util.Properties;
 
 import com.askit.exception.ExceptionHandler;
+import com.askit.face.FileSupporter;
 
 public enum DatabaseUser {
 
@@ -40,30 +39,14 @@ public enum DatabaseUser {
 	}
 
 	public static void loadAllPasswordsFromFile() {
-		InputStream inputStream = null;
 		try {
-			// TODO how to root
-			final File propertiesFile = new File("./config/config.properties");
-			if (propertiesFile.exists() == false) {
-				throw new IOException("Properties file (" + propertiesFile.getAbsolutePath() + ") does not exist");
-			}
+			final String propertiesFileContent = FileSupporter.getFileContent("./config", "/config.properties");
 			final Properties properties = new Properties();
-			inputStream = new FileInputStream(propertiesFile);
-			properties.load(inputStream);
+			properties.load(new StringReader(propertiesFileContent));
 
 			setPassword(properties, READ_USER);
 			setPassword(properties, WRITE_USER);
 			setPassword(properties, DELETE_USER);
-		} catch (final IOException e) {
-			ExceptionHandler.getInstance().handleError(e);
-		} finally {
-			closeSilentlyInputStream(inputStream);
-		}
-	}
-
-	private static void closeSilentlyInputStream(final InputStream inputStream) {
-		try {
-			inputStream.close();
 		} catch (final IOException e) {
 			ExceptionHandler.getInstance().handleError(e);
 		}
