@@ -24,9 +24,6 @@ public class SessionManagerTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws IOException, SQLException, DriverNotFoundException {
-		for (final String username : usernames) {
-
-		}
 	}
 
 	@AfterClass

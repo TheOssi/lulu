@@ -19,7 +19,7 @@ import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
 import com.askit.exception.NotificationException;
 import com.askit.exception.WrongHashException;
-import com.askit.face.FileSupporter;
+import com.askit.face.PictureSupporter;
 import com.askit.notification.Notification;
 import com.askit.notification.NotificationCodes;
 import com.askit.notification.NotificationHandler;
@@ -46,7 +46,7 @@ public class PostRequest extends Request {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.askit.face.innerclasses.Request#handleRequest() handles
 	 * PostRequest
 	 */
@@ -165,14 +165,14 @@ public class PostRequest extends Request {
 		}
 		/*
 		 * POST /USER
-		 * 
+		 *
 		 * @params: USERNAME: String PHONEHASH: String PASSWORDHASH: String
 		 * LANGUAGE: String
 		 */
 
 		/*
 		 * POST /USER
-		 * 
+		 *
 		 * @params: USERID: Long CONTACTID: Long
 		 */
 
@@ -216,7 +216,7 @@ public class PostRequest extends Request {
 
 		/*
 		 * POST /GROUP
-		 * 
+		 *
 		 * @params: GROUPNAME: String ADMINID: Long PICTUREURL: String
 		 */
 		matcher = regExGroupPattern.matcher(pathInfo);
@@ -234,7 +234,7 @@ public class PostRequest extends Request {
 
 		/*
 		 * POST /QUESTION
-		 * 
+		 *
 		 * @params: PUBLIC: Boolean, defines if Public or Private Question
 		 * QUESTION: String INFORMATION: String, additional Information HOSTID:
 		 * Long ENDDATE: Long EXTENSION: Boolean ACTIVE: Boolean LANGUAGE:
@@ -280,7 +280,7 @@ public class PostRequest extends Request {
 		// Answer
 		/*
 		 * POST /ANSWER
-		 * 
+		 *
 		 * @params: PUBLIC: Boolean, defines if related to Public or Private
 		 * Question QUESTIONID: Long ANSWER: String, answer as Text ANSWERID:
 		 * Long, when related to another answer
@@ -316,13 +316,13 @@ public class PostRequest extends Request {
 		if (matcher.find()) {
 			if (body != null && body != "") {
 				if (groupID != null) {
-					FileSupporter.createFileWithContent(body, FileSupporter.PICTURE_ROOT + "/group", groupID.toString());
+					PictureSupporter.createPictureFile(body, PictureSupporter.GROUP_QUESTION_PATH, groupID);
 				} else if (userID != null) {
-					FileSupporter.createFileWithContent(body, FileSupporter.PICTURE_ROOT + "/user", userID.toString());
+					PictureSupporter.createPictureFile(body, PictureSupporter.USER_QUESTION_PATH, userID);
 				} else if (questionID != null && isPublic) {
-					FileSupporter.createFileWithContent(body, FileSupporter.PICTURE_ROOT + "/publicQuestion", questionID.toString());
+					PictureSupporter.createPictureFile(body, PictureSupporter.PUBLIC_QUESTION_PATH, questionID);
 				} else if (questionID != null && !isPublic) {
-					FileSupporter.createFileWithContent(body, FileSupporter.PICTURE_ROOT + "/privateQuestion", questionID.toString());
+					PictureSupporter.createPictureFile(body, PictureSupporter.PRIVATE_QUESTION_PATH, questionID);
 				} else {
 					throw new MissingParametersException("Missing ID for Entity");
 				}
