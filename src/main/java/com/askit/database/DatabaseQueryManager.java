@@ -25,7 +25,6 @@ import com.askit.entities.PublicQuestion;
 import com.askit.entities.PublicQuestionToUser;
 import com.askit.entities.User;
 import com.askit.exception.DatabaseLayerException;
-import com.askit.exception.DriverNotFoundException;
 
 public class DatabaseQueryManager implements QueryManager {
 
@@ -43,7 +42,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setString(2, username);
 			resultSet = preparedStatement.executeQuery();
 			return resultSet.next();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
@@ -66,7 +65,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setString(3, group.getGroupname());
 			preparedStatement.setString(4, group.getGroupPictureURI());
 			preparedStatement.executeUpdate();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -91,7 +90,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setBoolean(7, question.getOptionExtension());
 			preparedStatement.setString(8, question.getLanguage());
 			preparedStatement.executeUpdate();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -121,7 +120,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setString(11, question.getLanguage());
 			preparedStatement.setBoolean(12, question.getIsBet());
 			preparedStatement.executeUpdate();
-		} catch (SQLException | DriverNotFoundException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -149,7 +148,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setString(10, question.getLanguage());
 			preparedStatement.setBoolean(11, question.getIsBet());
 			preparedStatement.executeUpdate();
-		} catch (SQLException | DriverNotFoundException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -171,7 +170,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setString(5, user.getProfilePictureURI());
 			preparedStatement.setString(6, user.getLanguage());
 			preparedStatement.executeUpdate();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -192,7 +191,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(1, groupID);
 			preparedStatement.setLong(2, userID);
 			preparedStatement.executeUpdate();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -208,7 +207,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(1, userIDOfUser);
 			preparedStatement.setLong(2, userIDofContact);
 			preparedStatement.executeUpdate();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -225,7 +224,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(1, questionID);
 			preparedStatement.setLong(2, userID);
 			preparedStatement.executeUpdate();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -237,7 +236,7 @@ public class DatabaseQueryManager implements QueryManager {
 		final PreparedStatement preparedStatement = null;
 		try {
 			addAnswerToAnswerTable(answer, Answer.TABLE_NAME_PUBLIC);
-		} catch (SQLException | DriverNotFoundException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -249,7 +248,7 @@ public class DatabaseQueryManager implements QueryManager {
 		final PreparedStatement preparedStatement = null;
 		try {
 			addAnswerToAnswerTable(answer, Answer.TABLE_NAME_PRIVATE);
-		} catch (SQLException | DriverNotFoundException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -266,7 +265,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(1, questionID);
 			preparedStatement.setLong(2, userID);
 			preparedStatement.executeUpdate();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -294,7 +293,7 @@ public class DatabaseQueryManager implements QueryManager {
 			resultSet = preparedStatement.executeQuery();
 			final List<PublicQuestion> publicQuestions = ResultSetMapper.mapPublicQuestions(resultSet);
 			return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
@@ -318,7 +317,7 @@ public class DatabaseQueryManager implements QueryManager {
 			resultSet = preparedStatement.executeQuery();
 			final List<PublicQuestion> publicQuestions = ResultSetMapper.mapPublicQuestions(resultSet);
 			return publicQuestions.get(0);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
@@ -337,7 +336,7 @@ public class DatabaseQueryManager implements QueryManager {
 			resultSet = preparedStatement.executeQuery();
 			final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
 			return privateQuestions.get(0);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
@@ -361,7 +360,7 @@ public class DatabaseQueryManager implements QueryManager {
 			resultSet = preparedStatement.executeQuery();
 			final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
 			return privateQuestions.toArray(new PrivateQuestion[privateQuestions.size()]);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
@@ -377,7 +376,7 @@ public class DatabaseQueryManager implements QueryManager {
 				return resultSet.getString(1);
 			}
 			return null;
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(null, resultSet);
@@ -392,7 +391,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			return getUserArrayFromReaderPreparedStatement(preparedStatement);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -407,7 +406,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			return getUserArrayFromReaderPreparedStatement(preparedStatement);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -422,7 +421,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, answerID);
 			return getUserArrayFromReaderPreparedStatement(preparedStatement);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -437,7 +436,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, answerID);
 			return getUserArrayFromReaderPreparedStatement(preparedStatement);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -452,7 +451,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			return getUserArrayFromReaderPreparedStatement(preparedStatement);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -469,7 +468,7 @@ public class DatabaseQueryManager implements QueryManager {
 				return resultSet.getLong(1);
 			}
 			return null;
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
@@ -492,7 +491,7 @@ public class DatabaseQueryManager implements QueryManager {
 				return resultSet.getLong(1);
 			}
 			return null;
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
@@ -508,7 +507,7 @@ public class DatabaseQueryManager implements QueryManager {
 				return resultSet.getString(1);
 			}
 			return null;
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(null, resultSet);
@@ -521,7 +520,7 @@ public class DatabaseQueryManager implements QueryManager {
 		final ResultSet resultSet = null;
 		try {
 			return getChoseAnswer(questionID, userID, SCHEMA, PublicQuestionToUser.TABLE_NAME);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
@@ -534,7 +533,7 @@ public class DatabaseQueryManager implements QueryManager {
 		final ResultSet resultSet = null;
 		try {
 			return getChoseAnswer(questionID, userID, SCHEMA, PrivateQuestionToUser.TABLE_NAME);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
@@ -549,7 +548,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			return mapSingleAnswerToObject(preparedStatement);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -577,7 +576,7 @@ public class DatabaseQueryManager implements QueryManager {
 				return new Long(placeInRaking);
 			}
 			return null;
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
@@ -593,7 +592,7 @@ public class DatabaseQueryManager implements QueryManager {
 				return resultSet.getString(1);
 			}
 			return null;
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(null, resultSet);
@@ -609,7 +608,7 @@ public class DatabaseQueryManager implements QueryManager {
 				return resultSet.getString(1);
 			}
 			return null;
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(null, resultSet);
@@ -625,7 +624,7 @@ public class DatabaseQueryManager implements QueryManager {
 				return resultSet.getString(1);
 			}
 			return null;
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(null, resultSet);
@@ -638,7 +637,7 @@ public class DatabaseQueryManager implements QueryManager {
 		final ResultSet resultSet = null;
 		try {
 			return getGroupAttribute(Group.GROUP_PICTURE_URI, groupID);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
@@ -651,7 +650,7 @@ public class DatabaseQueryManager implements QueryManager {
 		final ResultSet resultSet = null;
 		try {
 			return getGroupAttribute(Group.GROUP_NAME, groupID);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
@@ -671,7 +670,7 @@ public class DatabaseQueryManager implements QueryManager {
 			resultSet = preparedStatement.executeQuery();
 			final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
 			return privateQuestions.toArray(new PrivateQuestion[privateQuestions.size()]);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
@@ -683,7 +682,7 @@ public class DatabaseQueryManager implements QueryManager {
 		final ResultSet resultSet = null;
 		try {
 			return getAnswersOfQuestionAndCount(questionID, PublicQuestionToUser.TABLE_NAME, Answer.TABLE_NAME_PUBLIC);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(null, resultSet);
@@ -695,7 +694,7 @@ public class DatabaseQueryManager implements QueryManager {
 		final ResultSet resultSet = null;
 		try {
 			return getAnswersOfQuestionAndCount(questionID, PrivateQuestionToUser.TABLE_NAME, Answer.TABLE_NAME_PRIVATE);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(null, resultSet);
@@ -707,7 +706,7 @@ public class DatabaseQueryManager implements QueryManager {
 		final ResultSet resultSet = null;
 		try {
 			return getPublicQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, false);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(null, resultSet);
@@ -720,7 +719,7 @@ public class DatabaseQueryManager implements QueryManager {
 		final ResultSet resultSet = null;
 		try {
 			return getPrivateQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, true);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(null, resultSet);
@@ -732,7 +731,7 @@ public class DatabaseQueryManager implements QueryManager {
 		final ResultSet resultSet = null;
 		try {
 			return getPublicQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, false);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(null, resultSet);
@@ -745,7 +744,7 @@ public class DatabaseQueryManager implements QueryManager {
 		final ResultSet resultSet = null;
 		try {
 			return getPrivateQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, true);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(null, resultSet);
@@ -768,7 +767,7 @@ public class DatabaseQueryManager implements QueryManager {
 				list.add(pair);
 			}
 			return list.toArray((Pair<String, Integer>[]) new Pair[list.size()]);
-		} catch (SQLException | DriverNotFoundException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
@@ -792,7 +791,7 @@ public class DatabaseQueryManager implements QueryManager {
 				list.add(pair);
 			}
 			return list.toArray((Pair<String, Integer>[]) new Pair[list.size()]);
-		} catch (SQLException | DriverNotFoundException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
@@ -807,7 +806,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public void setLanguage(final long userID, final String newLanguage) throws DatabaseLayerException {
 		try {
 			updateUserAttributes(userID, User.LANGUAGE, newLanguage);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
@@ -816,7 +815,7 @@ public class DatabaseQueryManager implements QueryManager {
 	public void setProfilPictureOfUser(final long userID, final String newProfilePictureURI) throws DatabaseLayerException {
 		try {
 			updateUserAttributes(userID, User.PROFILEPICTURE_URI, newProfilePictureURI);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
@@ -832,7 +831,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(1, groupID);
 			preparedStatement.setString(2, newGroupPictureURI);
 			preparedStatement.executeUpdate();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -844,7 +843,7 @@ public class DatabaseQueryManager implements QueryManager {
 
 		try {
 			updateUserAttributes(userID, User.PASSWORD_HASH, newPasswordHash);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		}
 	}
@@ -861,7 +860,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(2, userID);
 			preparedStatement.setLong(3, questionID);
 			preparedStatement.executeUpdate();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -880,7 +879,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(2, userID);
 			preparedStatement.setLong(3, questionID);
 			preparedStatement.executeUpdate();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -898,7 +897,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(1, answerID);
 			preparedStatement.setLong(2, questionID);
 			preparedStatement.executeUpdate();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -916,7 +915,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(1, newAdmminID);
 			preparedStatement.setLong(2, groupID);
 			preparedStatement.executeUpdate();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -929,7 +928,7 @@ public class DatabaseQueryManager implements QueryManager {
 		final ResultSet resultSet = null;
 		try {
 			updateUserAttributes(userID, User.PHONENUMBER_HASH, newPhoneNumberHash);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
@@ -947,7 +946,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setString(1, newGroupName);
 			preparedStatement.setLong(2, groupID);
 			preparedStatement.executeUpdate();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -960,7 +959,7 @@ public class DatabaseQueryManager implements QueryManager {
 		final ResultSet resultSet = null;
 		try {
 			updateUserAttributes(userID, User.USERNAME, newUsername);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
@@ -978,7 +977,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setBoolean(1, true);
 			preparedStatement.setLong(2, questionID);
 			preparedStatement.executeUpdate();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -996,7 +995,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setBoolean(1, true);
 			preparedStatement.setLong(2, questionID);
 			preparedStatement.executeUpdate();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -1018,7 +1017,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			preparedStatement.executeUpdate();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -1035,7 +1034,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(1, groupID);
 			preparedStatement.setLong(2, userID);
 			preparedStatement.executeUpdate();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -1051,7 +1050,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setLong(1, groupID);
 			preparedStatement.executeUpdate();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -1068,7 +1067,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(1, userID);
 			preparedStatement.setLong(2, userID);
 			preparedStatement.executeUpdate();
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -1099,7 +1098,7 @@ public class DatabaseQueryManager implements QueryManager {
 			resultSet = preparedStatement.executeQuery();
 			final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
 			return privateQuestions.toArray(new PrivateQuestion[privateQuestions.size()]);
-		} catch (SQLException | DriverNotFoundException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
@@ -1121,7 +1120,7 @@ public class DatabaseQueryManager implements QueryManager {
 			resultSet = preparedStatement.executeQuery();
 			final List<PublicQuestion> publicQuestions = ResultSetMapper.mapPublicQuestions(resultSet);
 			return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
-		} catch (SQLException | DriverNotFoundException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
@@ -1138,7 +1137,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement = getReaderPreparedStatement(statement);
 			preparedStatement.setString(1, seachPatternWithWildcards);
 			return getUserArrayFromReaderPreparedStatement(preparedStatement);
-		} catch (DriverNotFoundException | SQLException exception) {
+		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, null);
@@ -1149,7 +1148,7 @@ public class DatabaseQueryManager implements QueryManager {
 	// HELPER METHODS
 	// ================================================================================
 
-	private void updateUserAttributes(final long userID, final String column, final String newValue) throws SQLException, DriverNotFoundException {
+	private void updateUserAttributes(final long userID, final String column, final String newValue) throws SQLException {
 		final String setClausel = column + " = ?";
 		final String whereCondition = User.USER_ID + " = ?";
 		final String statement = SQLFactory.buildUpdateStatement(SCHEMA, User.TABLE_NAME, setClausel, whereCondition);
@@ -1160,7 +1159,7 @@ public class DatabaseQueryManager implements QueryManager {
 		SQLUtil.closeSilentlySQL(preparedStatement, null);
 	}
 
-	private ResultSet getUserAttribute(final String column, final long userID) throws SQLException, DriverNotFoundException {
+	private ResultSet getUserAttribute(final String column, final long userID) throws SQLException {
 		final String[] columns = new String[] { column };
 		final String whereCondition = User.USER_ID + " = ?";
 		final String statement = SQLFactory.buildSelectStatementWithWhereCondition(SCHEMA, User.TABLE_NAME, columns, whereCondition);
@@ -1169,7 +1168,7 @@ public class DatabaseQueryManager implements QueryManager {
 		return preparedStatement.executeQuery();
 	}
 
-	private void addAnswerToAnswerTable(final Answer answer, final String table) throws SQLException, DriverNotFoundException {
+	private void addAnswerToAnswerTable(final Answer answer, final String table) throws SQLException {
 		final String statement = SQLFactory.buildInsertAllStatement(SCHEMA, table, 3);
 		final PreparedStatement preparedStatement = getWriterPreparedStatement(statement);
 		preparedStatement.setLong(1, answer.getAnswerID());
@@ -1178,13 +1177,13 @@ public class DatabaseQueryManager implements QueryManager {
 		preparedStatement.executeUpdate();
 	}
 
-	private PreparedStatement getReaderPreparedStatement(final String statement) throws SQLException, DriverNotFoundException {
+	private PreparedStatement getReaderPreparedStatement(final String statement) throws SQLException {
 		final Connection connection = ConnectionManager.getInstance().getReaderConnection();
 		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
 		return preparedStatement;
 	}
 
-	private PreparedStatement getWriterPreparedStatement(final String statement) throws SQLException, DriverNotFoundException {
+	private PreparedStatement getWriterPreparedStatement(final String statement) throws SQLException {
 		final Connection connection = ConnectionManager.getInstance().getWriterConnection();
 		final PreparedStatement preparedStatement = connection.prepareStatement(statement);
 		return preparedStatement;
@@ -1196,8 +1195,7 @@ public class DatabaseQueryManager implements QueryManager {
 		return users.toArray(new User[users.size()]);
 	}
 
-	private Answer getChoseAnswer(final long questionID, final long userID, final String schema, final String table) throws SQLException,
-			DriverNotFoundException {
+	private Answer getChoseAnswer(final long questionID, final long userID, final String schema, final String table) throws SQLException {
 		final String whereCondition = Answer.QUESTION_ID + " = ? AND userID = ?";
 		final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, table, whereCondition);
 		final PreparedStatement preparedStatement = getReaderPreparedStatement(statement);
@@ -1212,7 +1210,7 @@ public class DatabaseQueryManager implements QueryManager {
 		return answers.get(0);
 	}
 
-	private String getGroupAttribute(final String column, final long groupID) throws SQLException, DriverNotFoundException {
+	private String getGroupAttribute(final String column, final long groupID) throws SQLException {
 		final String[] columns = new String[] { column };
 		final String whereCondition = Group.GROUP_ID + " = ?";
 		final String statement = SQLFactory.buildSelectStatementWithWhereCondition(SCHEMA, Group.TABLE_NAME, columns, whereCondition);
@@ -1227,7 +1225,7 @@ public class DatabaseQueryManager implements QueryManager {
 
 	@SuppressWarnings("unchecked")
 	private Pair<Answer, Integer>[] getAnswersOfQuestionAndCount(final long questionID, final String questionToUserTable, final String answerTable)
-			throws SQLException, DriverNotFoundException {
+			throws SQLException {
 		final String statement = "SELECT A.*, " + "( SELECT COUNT(*) FROM " + questionToUserTable
 				+ " PU WHERE PU.questionID = ? AND PU.choosedAnswerID = A.answerID) counter" + "FROM " + answerTable + " A "
 				+ "WHERE A.questionID = ? ORDER BY counter ASC;";
@@ -1247,7 +1245,7 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	private PublicQuestion[] getPublicQuestionsOfUserDependingOnStatus(final long userID, final int startIndex, final int quantity,
-			final boolean finished) throws SQLException, DriverNotFoundException {
+			final boolean finished) throws SQLException {
 		final String statement = "SELECT P.* FROM " + PublicQuestion.TABLE_NAME + " P JOIN " + PublicQuestionToUser.TABLE_NAME
 				+ " PQU ON PQU.userID = ? AND PQU.questionID = P.questionID WHERE finihed = ?";
 		final ResultSet resultSet = getQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, finished, statement);
@@ -1256,7 +1254,7 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	private PrivateQuestion[] getPrivateQuestionsOfUserDependingOnStatus(final long userID, final int startIndex, final int quantity,
-			final boolean finished) throws SQLException, DriverNotFoundException {
+			final boolean finished) throws SQLException {
 		final String statement = "SELECT P.* FROM " + PrivateQuestion.TABLE_NAME + " P JOIN " + PrivateQuestionToUser.TABLE_NAME
 				+ " PQU ON PQU.userID = ? AND PQU.questionID = P.questionID WHRER finihed = ?";
 		final ResultSet resultSet = getQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, finished, statement);
@@ -1265,7 +1263,7 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	private ResultSet getQuestionsOfUserDependingOnStatus(final long userID, final int startIndex, final int quantity, final boolean finished,
-			final String statement) throws SQLException, DriverNotFoundException {
+			final String statement) throws SQLException {
 		final String orderByClausel = SQLFactory.buildOrderByStatement("P.createDate " + SQLFactory.ASCENDING);
 		final String limitClausel = SQLFactory.buildLimitStatement();
 		final String finalStatement = statement + " " + orderByClausel + " " + limitClausel + ";";
