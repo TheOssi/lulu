@@ -20,8 +20,8 @@ import com.askit.notification.NotificationSupporter;
  * should be closed.
  *
  * @author Kai Müller
- * @version 1.0.0.0
- * @since 1.0.0.0
+ * @version 1.0.0
+ * @since 1.0.0
  *
  */
 public class QuestionEndTimeChecker extends Thread {

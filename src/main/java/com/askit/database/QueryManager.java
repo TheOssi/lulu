@@ -1,3 +1,5 @@
+//TODO javadoc
+
 package com.askit.database;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -9,6 +11,15 @@ import com.askit.entities.PublicQuestion;
 import com.askit.entities.User;
 import com.askit.exception.DatabaseLayerException;
 
+/**
+ * All read, write, alter and delete methods that are allowed on the database
+ * are defined in this interface.
+ * 
+ * @author Kai Müller
+ * @since 1.0.0
+ * @version 1.0.0
+ *
+ */
 public interface QueryManager {
 
 	/**

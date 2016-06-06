@@ -4,8 +4,8 @@ package com.askit.exception;
  * This exception appears if a wrong session hash was send.
  * 
  * @author Max Lenk
- * @version 1.0
- * @since 1.0
+ * @version 1.0.0
+ * @since 1.0.0
  * */
 public class WrongHashException extends Exception {
 	private static final long serialVersionUID = 1L;

@@ -1,5 +1,13 @@
 package com.askit.database.trigger;
 
+/**
+ * enum for the constants of the definition of end of a question
+ * 
+ * @author Kai Müller
+ * @since 1.0.0
+ * @version 1.0.0
+ *
+ */
 public enum DefinitionOfEnd {
 
 	END_BY_TIME(1),
@@ -12,8 +20,12 @@ public enum DefinitionOfEnd {
 		this.id = id;
 	}
 
+	/**
+	 * get the id of a definition
+	 * 
+	 * @return the id
+	 */
 	public int getID() {
 		return id;
 	}
-
 }

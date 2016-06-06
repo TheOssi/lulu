@@ -22,8 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * handler is the instance that helps for not spamming the log file.
  *
  * @author Kai Müller
- * @since 1.0.0.0
- * @version 1.0.0.0
+ * @since 1.0.0
+ * @version 1.0.0
  *
  */
 public class ExceptionHandler {

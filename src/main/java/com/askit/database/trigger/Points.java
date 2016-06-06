@@ -1,5 +1,13 @@
 package com.askit.database.trigger;
 
+/**
+ * enum for the points of a case
+ * 
+ * @author Kai Müller
+ * @since 1.0.0
+ * @version 1.0.0
+ *
+ */
 public enum Points {
 
 	POINTS_PUBLIC_QUESTION_CREATE(10),
@@ -14,6 +22,11 @@ public enum Points {
 		this.points = points;
 	}
 
+	/**
+	 * get the points of a case
+	 * 
+	 * @return the id
+	 */
 	public int getPoints() {
 		return points;
 	}

@@ -4,8 +4,8 @@ package com.askit.exception;
  * This exception appears if a exception occurs when sending a notification
  * 
  * @author Kai Müller
- * @version 1.0
- * @since 1.0
+ * @version 1.0.0
+ * @since 1.0.0
  */
 public class NotificationException extends Exception {
 

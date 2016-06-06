@@ -4,8 +4,18 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 
+ * @author Kai Müller, Max Lenk
+ * @since 1.0.0
+ * @version 1.0.0
+ *
+ */
 public class Notification implements Serializable {
 
+	private static final String JSON_FIELD_PARAM2 = "param2";
+	private static final String JSON_FIELD_PARAM1 = "param1";
+	private static final String JSON_FIELD_CODE = "code";
 	private static final long serialVersionUID = 1L;
 
 	private String to;
@@ -13,15 +23,16 @@ public class Notification implements Serializable {
 
 	public Notification(final String receiverID, final String code, final String param1, final String param2) {
 		to = receiverID;
-		data.put("code", code);
-		data.put("param1:", param1);
-		data.put("param2", param2);
+		data.put(JSON_FIELD_CODE, code);
+		data.put(JSON_FIELD_PARAM1, param1);
+		data.put(JSON_FIELD_PARAM2, param2);
 	}
 
-	public void setTo(String recieverID) {
-		this.to = recieverID;
+	public void setTo(final String recieverID) {
+		to = recieverID;
 	}
-	public String getTo(){
-		return this.to;
+
+	public String getTo() {
+		return to;
 	}
 }

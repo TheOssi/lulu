@@ -9,6 +9,16 @@ import java.util.Properties;
 
 import com.askit.exception.ExceptionHandler;
 
+/**
+ * This enum stores the three database user with username and passwords. Because
+ * of securtity reasons the passwords are stored in a config file and must read
+ * before the first use of any user.
+ * 
+ * @author Kai Müller
+ * @since 1.0.0
+ * @version 1.0.0
+ *
+ */
 public enum DatabaseUser {
 
 	READ_USER("appReader"),
@@ -28,10 +38,20 @@ public enum DatabaseUser {
 		password = "";
 	}
 
+	/**
+	 * get the password of a user
+	 * 
+	 * @return the password
+	 */
 	public String getPassword() {
 		return password;
 	}
 
+	/**
+	 * get the username of a user
+	 * 
+	 * @return the usernmae
+	 */
 	public String getUsername() {
 		return username;
 	}
@@ -40,6 +60,10 @@ public enum DatabaseUser {
 		this.password = password;
 	}
 
+	/**
+	 * All passwords are stored in a config file. This reads all passwords and
+	 * maps them to the corresponding user.
+	 */
 	public static void loadAllPasswordsFromFile() {
 		InputStream inputStream = null;
 		try {

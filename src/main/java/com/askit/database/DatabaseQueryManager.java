@@ -26,6 +26,14 @@ import com.askit.entities.PublicQuestionToUser;
 import com.askit.entities.User;
 import com.askit.exception.DatabaseLayerException;
 
+/**
+ * The main implemetation of the {@link QueryManager}
+ * 
+ * @author Kai Müller
+ * @since 1.0.0
+ * @version 1.0.0
+ *
+ */
 public class DatabaseQueryManager implements QueryManager {
 
 	private static final String SCHEMA = Constants.SCHEMA_NAME;

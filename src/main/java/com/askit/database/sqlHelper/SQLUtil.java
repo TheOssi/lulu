@@ -11,8 +11,8 @@ import com.askit.exception.ExceptionHandler;
  * All sql util methods are stored static in this class.
  * 
  * @author Kai Müller
- * @since 1.0.0.0
- * @version 1.0.0.0
+ * @since 1.0.0
+ * @version 1.0.0
  *
  */
 public class SQLUtil {

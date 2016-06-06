@@ -21,8 +21,23 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+/**
+ * The notification sender sends the notifications stored in the
+ * {@link NotificationHandler}. A thread loops of ther the handler and sends the
+ * notification. If no notification is currently avaible, the thread sleeps for
+ * some time. If a exception occurs, a exception is thrown and handle by the
+ * {@link ExceptionHandler}. The not send notification is add to the
+ * notification handler.
+ * 
+ * @author Kai Müller
+ * @since 1.0.0
+ * @version 1.0.0
+ *
+ */
 public class NotificationSender implements Runnable {
 
+	private static final String JSON_FIELD_ERROR = "error";
+	private static final String JSON_FIELD_RESULTS = "results";
 	private static final int SLEEP_TIME = 5000;
 	private static final NotificationSender INSTANCE = new NotificationSender();
 	private static final String FCM_URL = "https://fcm.googleapis.com/fcm/send";
@@ -39,6 +54,12 @@ public class NotificationSender implements Runnable {
 		authKey = getAuthKey();
 	}
 
+	/**
+	 * The notification sender is implemented as a singelton, so this methods
+	 * returns the only instance of the sender.
+	 * 
+	 * @return the only instance of the sender
+	 */
 	public static synchronized NotificationSender getInstace() {
 		return INSTANCE;
 	}
@@ -85,6 +106,9 @@ public class NotificationSender implements Runnable {
 		}
 	}
 
+	/**
+	 * starts the sending thread
+	 */
 	public void startThread() {
 		if (sendNotificationThread == null || !sendNotificationThread.isAlive()) {
 			sendNotificationThread = new Thread(INSTANCE);
@@ -113,13 +137,19 @@ public class NotificationSender implements Runnable {
 		}
 	}
 
-	// TODO what if not avaible
 	private String getErrorText(final String json) {
 		final JsonElement parsedJSON = new JsonParser().parse(json);
 		JsonObject jsonObject = parsedJSON.getAsJsonObject();
-		final JsonArray jsonArray = jsonObject.getAsJsonArray("results");
-		jsonObject = jsonArray.get(0).getAsJsonObject();
-		final String result = jsonObject.get("error").getAsString();
+		String result = "";
+		if (jsonObject.has(JSON_FIELD_RESULTS)) {
+			final JsonArray jsonArray = jsonObject.getAsJsonArray(JSON_FIELD_RESULTS);
+			if (jsonArray.size() > 0) {
+				jsonObject = jsonArray.get(0).getAsJsonObject();
+				if (jsonObject.has(JSON_FIELD_ERROR)) {
+					result = jsonObject.get(JSON_FIELD_ERROR).getAsString();
+				}
+			}
+		}
 		return result;
 	}
 

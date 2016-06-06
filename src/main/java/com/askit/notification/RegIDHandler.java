@@ -8,8 +8,8 @@ import java.util.Map;
  * implemented as a singelton.
  * 
  * @author Kai Müller
- * @since 1.0.0.0
- * @version 1.0.0.0
+ * @since 1.0.0
+ * @version 1.0.0
  *
  */
 public class RegIDHandler {

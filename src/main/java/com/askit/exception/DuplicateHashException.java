@@ -4,8 +4,8 @@ package com.askit.exception;
  * This exception is thrown if a duplicate hash appears.
  * 
  * @author Max Lenk
- * @version 1.0.0.0
- * @since 1.0.0.0
+ * @version 1.0.0
+ * @since 1.0.0
  */
 public class DuplicateHashException extends Exception {
 

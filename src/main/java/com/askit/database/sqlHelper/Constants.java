@@ -4,8 +4,8 @@ package com.askit.database.sqlHelper;
  * Constants for the database layer
  * 
  * @author Kai Müller
- * @since 1.0.0.0
- * @version 1.0.0.0
+ * @since 1.0.0
+ * @version 1.0.0
  *
  */
 public class Constants {
