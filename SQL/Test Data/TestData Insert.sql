@@ -1,5 +1,3 @@
--- test for trigger_afterInsertOnPublicQuestions_updateScores & trigger_afterUpdateOnPublicQuestionsToUser_updateScores
-
 USE APP;
 
 -- CREATE USERS
@@ -33,14 +31,6 @@ VALUES (2,'THISISAQUESTION','THIS IS ADD INFO',3,'',NOW(),NOW(),'DE',0,default);
 INSERT INTO `app`.`publicquestions`
 VALUES (3,'THISISAQUESTION','THIS IS ADD INFO',3,'',NOW(),NOW(),'DE',0,default);
 
--- Now:
-	-- the user 1 should have 10 point
-	-- the user 3 should have 19 point
-
--- CHECK
-
-SELECT userID,username,scoreOfGlobal FROM users WHERE userID = 1 OR userID = 3;
-
 -- CREATE ANSWERS PUBLIC QUESTION
 
 INSERT INTO `app`.`answerspublicquestions`
@@ -73,13 +63,62 @@ VALUES(2,3,1);
 INSERT INTO `app`.`publicquestionstousers`
 VALUES(2,4,1);
 
+-- CREATE GROUPS
+INSERT INTO `app`.`groups`
+VALUES (1,NOW(),1,'THISISAGROUP','');
 
--- NOW
-	-- User 1: Now:10 + answer:1 + sombdyAns:1 + answer:1 = 13
-	-- User 2: Now:0 + answer:1
-	-- User 3: Now:19 + answer:1 + smbdyAns:1 + sombyAns:1 = 22
-    -- User 4: Now:5 + answer:1 = 6
-    
--- CHECK
+INSERT INTO `app`.`groups`
+VALUES (2,NOW(),2,'THISISAGROUP','');
 
-SELECT userID,username,scoreOfGlobal FROM users;
+-- CREATE GROUPS TO USERS
+INSERT INTO `app`.`groupstousers`
+VALUES (1,1,default);
+
+INSERT INTO `app`.`groupstousers`
+VALUES (2,1,default);
+
+INSERT INTO `app`.`groupstousers`
+VALUES (1,2,3);
+
+INSERT INTO `app`.`groupstousers`
+VALUES (2,2,default);
+
+INSERT INTO `app`.`groupstousers`
+VALUES (1,3,default);
+
+INSERT INTO `app`.`groupstousers`
+VALUES (2,3,7);
+
+-- CREATE PRIVATE QUESTIONS
+INSERT INTO `app`.`privatequestions`
+VALUES (1,'THISISAQUESTION','THISISAADDINFO',1,1,'',NOW(),NOW(),0,1,null,'DE',true,null,false);
+
+INSERT INTO `app`.`privatequestions`
+VALUES (2,'THISISAQUESTION','THISISAADDINFO',2,1,'',NOW(),NOW(),0,2,null,'DE',true,null,false);
+
+INSERT INTO `app`.`privatequestions`
+VALUES (3,'THISISAQUESTION','THISISAADDINFO',3,1,'',NOW(),NOW(),0,2,null,'DE',false,null,false);
+
+INSERT INTO `app`.`privatequestions`
+VALUES (4,'THISISAQUESTION','THISISAADDINFO',1,2,'',NOW(),NOW(),0,3,2,'DE',true,null,false);
+
+INSERT INTO `app`.`privatequestions`
+VALUES (5,'THISISAQUESTION','THISISAADDINFO',1,2,'',NOW(),NOW(),0,3,2,'DE',true,null,false);
+
+-- CREATE ANSWER PRIVATE QUESTION
+INSERT INTO `app`.`answersprivatequestions`
+VALUES(1,1,'THISISAANSWER');
+INSERT INTO `app`.`answersprivatequestions`
+VALUES(6,2,'THISISAANSWER');
+
+INSERT INTO `app`.`answersprivatequestions`
+VALUES(2,2,'THISISAANSWER');
+
+INSERT INTO `app`.`answersprivatequestions`
+VALUES(3,3,'THISISAANSWER');
+
+INSERT INTO `app`.`answersprivatequestions`
+VALUES(4,4,'THISISAANSWER');
+
+INSERT INTO `app`.`answersprivatequestions`
+VALUES(5,5,'THISISAANSWER');

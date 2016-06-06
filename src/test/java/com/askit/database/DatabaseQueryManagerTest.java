@@ -1,40 +1,21 @@
 package com.askit.database;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
-
-import java.util.Date;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
-import com.askit.entities.User;
 import com.askit.exception.DatabaseLayerException;
 
-@FixMethodOrder(MethodSorters.JVM)
 public class DatabaseQueryManagerTest {
-
-	private static final String DEFAULT_PICTURE_URI = "/PATH/TO/PICTURE";
-	private static final long DEFAULT_SCORE_OF_GLOBAL = 1;
-	private static final long DEFAULT_USER_ID = 1;
-	private static final long DEFAULT_GROUP_ID = 1;
 
 	private final QueryManager queryManager = new DatabaseQueryManager();
 
-	private static User defaultUser;
-	private static User defaultChangedUser;
-
 	@BeforeClass()
 	public static void setUpBeforeClass() throws Exception {
-		defaultUser = new User(1L, "PASSWORDHASH", "PHONENUMBERHASH", "USERNAME", new Date(146295926700L), "URI/TO/PICTURE", "DE", 0);
-		defaultChangedUser = new User(1L, "NEWPASSWORDHASH", "NEWPHONENUMBERHASH", "NEWUSERNAME", new Date(146295926700L), "NEW/URI/TO/PICTURE",
-				"EN", 0);
-
 	}
 
 	@AfterClass
@@ -112,7 +93,7 @@ public class DatabaseQueryManagerTest {
 
 	@Test
 	public void testGetUserScoreOfGlobal() throws DatabaseLayerException {
-		assertThat("", queryManager.getUserScoreOfGlobal(1).equals(DEFAULT_PICTURE_URI));
+		fail("Not yet implemented");
 	}
 
 	@Test
@@ -162,7 +143,7 @@ public class DatabaseQueryManagerTest {
 
 	@Test
 	public void testGetGroupPictureURI() throws DatabaseLayerException {
-		assertThat("Path is false", queryManager.getGroupPictureURI(1).equals(DEFAULT_PICTURE_URI));
+		fail("Not yet implemented");
 	}
 
 	@Test

@@ -7,6 +7,14 @@ import java.sql.SQLException;
 
 import com.askit.exception.ExceptionHandler;
 
+/**
+ * All sql util methods are stored static in this class.
+ * 
+ * @author Kai Müller
+ * @since 1.0.0.0
+ * @version 1.0.0.0
+ *
+ */
 public class SQLUtil {
 
 	/**
@@ -27,8 +35,15 @@ public class SQLUtil {
 	}
 
 	/**
+	 * This close a SQL prepared statement, a result set and a connection
+	 * silently, so no exception is thrown. If a exceptions occurs it's handle
+	 * by the exceptionhandler. The sql things are checked for null and if not,
+	 * they tried to closed.
+	 * 
 	 * @param preparedStatement
+	 *            the prepared statement and within the connection to close
 	 * @param resultSet
+	 *            the resultset to close
 	 */
 	public static void closeSilentlySQL(final PreparedStatement preparedStatement, final ResultSet resultSet) {
 		Connection connection = null;
