@@ -13,7 +13,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.askit.exception.DatabaseLayerException;
-import com.askit.exception.DriverNotFoundException;
 import com.askit.exception.DuplicateHashException;
 import com.askit.exception.WrongHashException;
 import com.askit.face.SessionManager;
@@ -23,11 +22,11 @@ public class SessionManagerTest {
 	private static String[] usernames = new String[] { "User1", "User2", "User3", "User4" };
 
 	@BeforeClass
-	public static void setUpBeforeClass() throws IOException, SQLException, DriverNotFoundException {
+	public static void setUpBeforeClass() throws IOException, SQLException {
 	}
 
 	@AfterClass
-	public static void tearDownAfterClass() throws SQLException, DriverNotFoundException {
+	public static void tearDownAfterClass() throws SQLException {
 
 	}
 

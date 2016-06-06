@@ -23,6 +23,7 @@ public class PictureSupporter {
 	public static final String PRIVATE_QUESTION_PATH = "/privateQuestion";
 	public static final String GROUP_QUESTION_PATH = "/group";
 	public static final String USER_QUESTION_PATH = "/user";
+	public static final ExceptionHandler EXCEPTION_HANDLER = ExceptionHandler.getInstance();
 
 	/**
 	 * creates Picturefile at specified path
@@ -39,7 +40,7 @@ public class PictureSupporter {
 		try {
 			writeFile(path, data, id.toString());
 		} catch (final IOException e) {
-			e.printStackTrace();
+			EXCEPTION_HANDLER.handleError(e);
 		}
 		System.out.println("Created File");
 	}
@@ -59,7 +60,7 @@ public class PictureSupporter {
 		try {
 			data = readFile(path);
 		} catch (final IOException e) {
-			e.printStackTrace();
+			EXCEPTION_HANDLER.handleError(e);
 		}
 		return data;
 	}
@@ -88,19 +89,18 @@ public class PictureSupporter {
 	public static void createFile(final String path, final String fileName) {
 		final Path fullPath = Paths.get(path + "/" + fileName);
 		final Path dirPath = Paths.get(path);
-		final ExceptionHandler eHandler = ExceptionHandler.getInstance();
 		if (!Files.exists(dirPath)) {
 			try {
 				Files.createDirectory(dirPath);
 			} catch (final IOException e) {
-				eHandler.handleError(e);
+				EXCEPTION_HANDLER.handleError(e);
 			}
 		}
 		if (!Files.exists(fullPath)) {
 			try {
 				Files.createFile(fullPath);
 			} catch (final IOException e) {
-				eHandler.handleError(e);
+				EXCEPTION_HANDLER.handleError(e);
 			}
 		}
 	}
