@@ -60,7 +60,7 @@ public class SessionManager implements Runnable {
 	 *            the username of the login
 	 * @param passwordHash
 	 *            the passwordHash for the login
-	 * @return
+	 * @return Sessionhash: String
 	 * @throws WrongHashException
 	 *             if the passwordHash is not valid in the combination with the
 	 *             given username
@@ -70,12 +70,13 @@ public class SessionManager implements Runnable {
 	 * @throws DatabaseLayerException
 	 *             if something in the datasbase layer went wrong
 	 */
-	public String createSession(final String username, final String passwordHash) throws WrongHashException, DuplicateHashException,
-			DatabaseLayerException {
+	public String createSession(final String username, final String passwordHash)
+			throws WrongHashException, DuplicateHashException, DatabaseLayerException {
 		if (checkHash(username, passwordHash)) {
 			final String sessionHash = createSessionHash(username);
 			if (!sessionMap.containsKey(sessionHash)) {
-				sessionMap.put(sessionHash, new MappedUserHash(username, Calendar.getInstance().getTimeInMillis() + SESSIONTIME));
+				sessionMap.put(sessionHash,
+						new MappedUserHash(username, Calendar.getInstance().getTimeInMillis() + SESSIONTIME));
 				return sessionHash;
 			} else {
 				throw new DuplicateHashException("Hash already existing");
@@ -86,7 +87,7 @@ public class SessionManager implements Runnable {
 	}
 
 	/**
-	 * Destroys alls session for a certain User
+	 * Destroys als session for a certain User
 	 *
 	 * @param username
 	 *            the username of the user
@@ -144,9 +145,9 @@ public class SessionManager implements Runnable {
 			seed = seed.concat("TestMaxSaschaFabiKai");
 		}
 		for (int i = 0; i < seed.length(); i++) {
-			hash = hash * 31 + seed.charAt(i);
+			hash = hash * 31 + seed.charAt(i) * Double.doubleToLongBits(Math.random() * 100);
 		}
-		return Long.toString(Math.abs(hash)) + Calendar.getInstance().getTimeInMillis() * (Math.random() * 10);
+		return Long.toString(Math.abs((hash) * Calendar.getInstance().getTimeInMillis()), Character.MAX_RADIX);
 	}
 
 	/**

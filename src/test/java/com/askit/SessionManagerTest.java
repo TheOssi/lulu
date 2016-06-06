@@ -73,5 +73,19 @@ public class SessionManagerTest {
 			fail("a exception appeared: " + e.getMessage());
 		}
 	}
-
+	@Test
+	public void testHashUnique() throws WrongHashException, DuplicateHashException, DatabaseLayerException{
+		SessionManager sesManage = SessionManager.getInstance();
+		final int COUNT = 1000000;
+		String [] hashes =  new String[COUNT];
+		for(int i = 0; i<COUNT;i++){
+			hashes[i] = sesManage.createSession("", "blablkas");
+			for(int b = COUNT; b<i;b++){
+				if(hashes[i]==hashes[b]){
+					fail("Duplicate");
+				}
+			}
+		}
+		
+	}
 }

@@ -49,8 +49,8 @@ public class GetRequest extends Request {
 	 * Request
 	 */
 	@Override
-	public void handleRequest() throws DatabaseLayerException, MissingParametersException, ServletException, WrongHashException,
-			DuplicateHashException, NotificationException {
+	public void handleRequest() throws DatabaseLayerException, MissingParametersException, ServletException,
+			WrongHashException, DuplicateHashException, NotificationException {
 		final JSONBuilder jsonBuilder = new JSONBuilder();
 		final QueryManager queryManager = new DatabaseQueryManager();
 		Long groupID = null;
@@ -107,7 +107,8 @@ public class GetRequest extends Request {
 		if (matcher.find()) {
 			if (parameters.containsKey(URLConstants.PARAMETERS_GROUPID)) {
 				groupID = Long.parseLong(parameters.get(URLConstants.PARAMETERS_GROUPID)[0]);
-				out.println("{ groupName: " + queryManager.getGroupName(groupID) + ", pictureUrl: " + queryManager.getGroupPictureURI(groupID) + "}");
+				out.println("{ groupName: " + queryManager.getGroupName(groupID) + ", pictureUrl: "
+						+ queryManager.getGroupPictureURI(groupID) + "}");
 			} else if (userID != null && searchPattern != null) {
 				Group[] groups;
 				groups = queryManager.searchForGroup(userID, searchPattern);
@@ -142,7 +143,7 @@ public class GetRequest extends Request {
 			id = Integer.parseInt(matcher.group(1));
 			if (id != null) {
 				final String username = queryManager.getUsername(id);
-				out.println("{username : " + username + "}");
+				out.println("{\"username\" : " + "\"" + username + "\"" + "}");
 			} else {
 				throw new MissingParametersException("Missing ID in Parameters");
 			}
@@ -174,7 +175,7 @@ public class GetRequest extends Request {
 				} else {
 					userscore = queryManager.getUserScoreOfGlobal(id);
 				}
-				out.println("{Score : " + userscore + "}");
+				out.println("{\"Score\" : " + userscore + "}");
 			} else {
 				throw new MissingParametersException("Missing ID in Parameters");
 			}
@@ -271,9 +272,11 @@ public class GetRequest extends Request {
 					privateQuestions = queryManager.getOldPrivateQuestions(groupID, startIndex, quantity);
 				} else if (questionID != null && groupID == null && quantity == 0 && userID == null) {
 					out.println(jsonBuilder.createJSON(queryManager.getPrivateQuestion(questionID)));
-				} else if (questionID == null && groupID == null && !isExpired && userID != null && startIndex != 0 && quantity != 0) {
+				} else if (questionID == null && groupID == null && !isExpired && userID != null && startIndex != 0
+						&& quantity != 0) {
 					privateQuestions = queryManager.getActivePrivateQuestionsOfUser(userID, startIndex, quantity);
-				} else if (questionID == null && groupID == null && isExpired && userID != null && startIndex != 0 && quantity != 0) {
+				} else if (questionID == null && groupID == null && isExpired && userID != null && startIndex != 0
+						&& quantity != 0) {
 					privateQuestions = queryManager.getOldPrivateQuestionsOfUser(userID, startIndex, quantity);
 				} else if (groupID != null && searchPattern != null && questionID == null && userID == null) {
 					privateQuestions = queryManager.searchForPrivateQuestionInGroup(groupID, searchPattern);

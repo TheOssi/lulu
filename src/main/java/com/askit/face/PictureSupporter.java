@@ -86,6 +86,10 @@ public class PictureSupporter {
 
 	}
 
+	/**
+	 * @param path
+	 * @param fileName
+	 */
 	public static void createFile(final String path, final String fileName) {
 		final Path fullPath = Paths.get(path + "/" + fileName);
 		final Path dirPath = Paths.get(path);

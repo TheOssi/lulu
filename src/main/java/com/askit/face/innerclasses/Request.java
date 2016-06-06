@@ -63,7 +63,7 @@ public class Request {
 				final String passwordHash = parameters.get(URLConstants.PARAMETERS_PASSWORDHASH)[0];
 				// TODO blala?
 				// TODO using gson
-				out.println("{hash : " + SessionManager.getInstance().createSession(passwordHash, "blala") + "}");
+				out.println("{\"hash\" : " + "\"" + SessionManager.getInstance().createSession(passwordHash, "blala") + "\"" + "}");
 			} else {
 				throw new MissingParametersException("Missing PasswordHash");
 			}
