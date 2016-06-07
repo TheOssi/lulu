@@ -187,7 +187,7 @@ public class DatabaseQueryManager implements QueryManager {
 
 	// ================================================================================
 	// ADD METHODS
-	// ================================================================================s
+	// ================================================================================
 
 	@Override
 	public void addUserToGroup(final long groupID, final long userID) throws DatabaseLayerException {
