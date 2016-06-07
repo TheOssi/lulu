@@ -53,18 +53,24 @@ public class Request {
 	public void handleRequest() throws MissingParametersException, WrongHashException, DuplicateHashException,
 			DatabaseLayerException, ServletException, NotificationException {
 		String sessionHash = null;
+		boolean root = false;
 		if (parameters.containsKey(URLConstants.PARAMETERS_SESSIONHASH)) {
 			sessionHash = parameters.get(URLConstants.PARAMETERS_SESSIONHASH)[0];
+		}
+		if (parameters.containsKey(URLConstants.PARAMETERS_ROOT)) {
+			root = Boolean.parseBoolean(parameters.get(URLConstants.PARAMETERS_ROOT)[0]);
 		}
 
 		matcher = regExSessionPattern.matcher(pathInfo);
 		if (matcher.find()) {
-			if (parameters.containsKey(URLConstants.PARAMETERS_PASSWORDHASH)) {
+			if (parameters.containsKey(URLConstants.PARAMETERS_PASSWORDHASH)&&root == false) {
 				final String passwordHash = parameters.get(URLConstants.PARAMETERS_PASSWORDHASH)[0];
 				// TODO blala?
 				// TODO using gson
 				out.println("{\"hash\" : " + "\"" + SessionManager.getInstance().createSession(passwordHash, "blala") + "\"" + "}");
-			} else {
+			}else if(parameters.containsKey(URLConstants.PARAMETERS_PASSWORDHASH)&&root == true){
+				this.out.println(SessionManager.getInstance().getSessionStats());
+			}else {
 				throw new MissingParametersException("Missing PasswordHash");
 			}
 			return;

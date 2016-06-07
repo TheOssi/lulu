@@ -39,4 +39,5 @@ public class URLConstants {
 	public static final String PARAMETERS_ANSWER = "ANSWER";
 	public static final String PARAMETERS_CONTACTID = "CONTACTID";
 	public static final String PARAMETERS_REGID = "REGID";
+	public static final String PARAMETERS_ROOT = "ROOT";
 }

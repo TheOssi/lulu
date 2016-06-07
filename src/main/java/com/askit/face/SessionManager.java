@@ -68,7 +68,7 @@ public class SessionManager implements Runnable {
 	 *             if the generated sessionHash is currently used by another
 	 *             session
 	 * @throws DatabaseLayerException
-	 *             if something in the datasbase layer went wrong
+	 *             if something in the database layer went wrong
 	 */
 	public String createSession(final String username, final String passwordHash)
 			throws WrongHashException, DuplicateHashException, DatabaseLayerException {
@@ -161,7 +161,11 @@ public class SessionManager implements Runnable {
 	public boolean isValidSessionHash(final String sessionHash) {
 		return sessionMap.containsKey(sessionHash);
 	}
-
+	
+	public String getSessionStats(){
+		JSONBuilder jb = new JSONBuilder();
+		return jb.createJSON(sessionMap);
+	}
 	/*
 	 * runing logic(non-Javadoc)
 	 * 
