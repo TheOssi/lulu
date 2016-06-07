@@ -31,8 +31,8 @@ public class QuestionEndTimeChecker extends Thread {
 	private final ExceptionHandler exceptionHandler = ExceptionHandler.getInstance();
 	private static final String STATEMENT = "SELECT R.questionID, R.endDate, R.type FROM ( SELECT PR.questionID, PR.endDate, '"
 			+ PrivateQuestion.TABLE_NAME + "' as \"type\" FROM APP.PrivateQuestions AS PR " + "WHERE PR.endDate IS NOT NULL AND PR.endDate <= ? AND "
-			+ "PR.finished <> 1 AND PR.definitionOfEnd = 1 " + "UNION ALL SELECT PU.questionID, PU.endDate, '" + PublicQuestion.TABLE_NAME
-			+ "' as \"type\" FROM APP.PublicQuestions PU " + "WHERE PU.endDate IS NOT NULL AND PU.endDate <= ? AND PU.finished <> 1 )  AS R "
+			+ "PR.finished != 1 AND PR.definitionOfEnd = 1 " + "UNION ALL SELECT PU.questionID, PU.endDate, '" + PublicQuestion.TABLE_NAME
+			+ "' as \"type\" FROM APP.PublicQuestions PU " + "WHERE PU.endDate IS NOT NULL AND PU.endDate <= ? AND PU.finished != 1 )  AS R "
 			+ "ORDER BY R.endDate ASC LIMIT 1;";
 
 	private QuestionEndTimeChecker() {

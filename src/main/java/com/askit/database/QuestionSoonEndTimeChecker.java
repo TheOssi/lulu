@@ -29,9 +29,9 @@ public class QuestionSoonEndTimeChecker extends Thread {
 	private final ExceptionHandler exceptionHandler = ExceptionHandler.getInstance();
 	private static final String STATEMENT = "SELECT R.questionID, R.endDate, R.type FROM ( SELECT PR.questionID, PR.endDate, '"
 			+ PrivateQuestion.TABLE_NAME + "' as \"type\" FROM APP.PrivateQuestions AS PR "
-			+ "WHERE PR.endDate IS NOT NULL AND PR.endDate BETWEEN ? AND ? AND PR.finished <> 1 AND PR.definitionOfEnd = 1 "
+			+ "WHERE PR.endDate IS NOT NULL AND PR.endDate BETWEEN ? AND ? AND PR.finished != 1 AND PR.definitionOfEnd = 1 "
 			+ "UNION ALL SELECT PU.questionID, PU.endDate, '" + PublicQuestion.TABLE_NAME + "' as \"type\" FROM APP.PublicQuestions PU "
-			+ "WHERE PU.endDate IS NOT NULL AND PU.endDate BETWEEN ? AND ? AND PU.finished <> 1 )  AS R ORDER BY R.endDate ASC LIMIT 1;";
+			+ "WHERE PU.endDate IS NOT NULL AND PU.endDate BETWEEN ? AND ? AND PU.finished != 1 )  AS R ORDER BY R.endDate ASC LIMIT 1;";
 
 	private final List<AbstractQuestion> usedQuestions = Collections.synchronizedList(new ArrayList<AbstractQuestion>());
 
