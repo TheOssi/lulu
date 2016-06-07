@@ -42,7 +42,7 @@ public class ConnectionManager {
 	private static final int MIN_IDLE = 3;
 	private static final int MAX_PARALLEL_CONNECTIONS = 50;
 	private static final int INITIAL_IDLE_CONNECTIONS = 3;
-	private static final int MAX_PARALLEL_PREPARED_STATEMENTS = 50;
+	private static final int MAX_PARALLEL_PREPARED_STATEMENTS = 40;
 	private static final int QUERY_TIMEOUT = 10000;
 	private static final int MAX_CONNECTION_LIFETIME = 10000;
 	private static final String MARIA_DB_DRIVER = "org.mariadb.jdbc.Driver";

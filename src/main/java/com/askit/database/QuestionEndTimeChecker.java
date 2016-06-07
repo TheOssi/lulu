@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.askit.database.sqlHelper.SQLUtil;
 import com.askit.entities.PrivateQuestion;
 import com.askit.entities.PublicQuestion;
 import com.askit.exception.DatabaseLayerException;
@@ -49,18 +50,27 @@ public class QuestionEndTimeChecker extends Thread {
 	}
 
 	private AbstractQuestion getNext() throws SQLException {
-		final Connection connection = ConnectionManager.getInstance().getReaderConnection();
-		final PreparedStatement preparedStatement = connection.prepareStatement(STATEMENT);
-		preparedStatement.setDate(1, new Date(System.currentTimeMillis()));
-		preparedStatement.setDate(2, new Date(System.currentTimeMillis()));
-		final ResultSet resultSet = preparedStatement.executeQuery();
-		if (resultSet.next()) {
-			final long id = resultSet.getLong(1);
-			final long endDate = resultSet.getDate(2).getTime();
-			final String tableName = resultSet.getString(3);
-			return new AbstractQuestion(id, endDate, tableName);
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		Connection connection = null;
+		try {
+			connection = ConnectionManager.getInstance().getReaderConnection();
+			preparedStatement = connection.prepareStatement(STATEMENT);
+			preparedStatement.setDate(1, new Date(System.currentTimeMillis()));
+			preparedStatement.setDate(2, new Date(System.currentTimeMillis()));
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				final long id = resultSet.getLong(1);
+				final long endDate = resultSet.getDate(2).getTime();
+				final String tableName = resultSet.getString(3);
+				return new AbstractQuestion(id, endDate, tableName);
+			}
+			return null;
+		} catch (final SQLException exception) {
+			throw new SQLException(exception);
+		} finally {
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
-		return null;
 	}
 
 	@Override

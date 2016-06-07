@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.askit.database.sqlHelper.SQLUtil;
 import com.askit.entities.PrivateQuestion;
 import com.askit.entities.PublicQuestion;
 import com.askit.exception.DatabaseLayerException;
@@ -53,22 +54,31 @@ public class QuestionSoonEndTimeChecker extends Thread {
 	}
 
 	private AbstractQuestion[] getNext() throws SQLException {
-		final long currentTime = System.currentTimeMillis();
-		final Connection connection = ConnectionManager.getInstance().getReaderConnection();
-		final PreparedStatement preparedStatement = connection.prepareStatement(STATEMENT);
-		preparedStatement.setDate(1, new Date(currentTime - SOON_END_TIME + THRESHOLD_RIGHT));
-		preparedStatement.setDate(2, new Date(currentTime - SOON_END_TIME - THRESHOLD_LEFT));
-		preparedStatement.setDate(3, new Date(currentTime - SOON_END_TIME + THRESHOLD_RIGHT));
-		preparedStatement.setDate(4, new Date(currentTime - SOON_END_TIME - THRESHOLD_LEFT));
-		final ResultSet resultSet = preparedStatement.executeQuery();
-		final List<AbstractQuestion> questions = new ArrayList<AbstractQuestion>();
-		while (resultSet.next()) {
-			final long id = resultSet.getLong(1);
-			final long endDate = resultSet.getDate(2).getTime();
-			final String tableName = resultSet.getString(3);
-			questions.add(new AbstractQuestion(id, endDate, tableName));
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		Connection connection = null;
+		try {
+			final long currentTime = System.currentTimeMillis();
+			connection = ConnectionManager.getInstance().getReaderConnection();
+			preparedStatement = connection.prepareStatement(STATEMENT);
+			preparedStatement.setDate(1, new Date(currentTime - SOON_END_TIME + THRESHOLD_RIGHT));
+			preparedStatement.setDate(2, new Date(currentTime - SOON_END_TIME - THRESHOLD_LEFT));
+			preparedStatement.setDate(3, new Date(currentTime - SOON_END_TIME + THRESHOLD_RIGHT));
+			preparedStatement.setDate(4, new Date(currentTime - SOON_END_TIME - THRESHOLD_LEFT));
+			resultSet = preparedStatement.executeQuery();
+			final List<AbstractQuestion> questions = new ArrayList<AbstractQuestion>();
+			while (resultSet.next()) {
+				final long id = resultSet.getLong(1);
+				final long endDate = resultSet.getDate(2).getTime();
+				final String tableName = resultSet.getString(3);
+				questions.add(new AbstractQuestion(id, endDate, tableName));
+			}
+			return questions.toArray(new AbstractQuestion[questions.size()]);
+		} catch (final SQLException exception) {
+			throw new SQLException(exception);
+		} finally {
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
-		return questions.toArray(new AbstractQuestion[questions.size()]);
 	}
 
 	@Override
