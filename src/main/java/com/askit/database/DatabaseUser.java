@@ -82,7 +82,9 @@ public enum DatabaseUser {
 			ExceptionHandler.getInstance().handleError(e);
 		} finally {
 			try {
-				inputStream.close();
+				if (inputStream != null) {
+					inputStream.close();
+				}
 			} catch (final IOException e) {
 				ExceptionHandler.getInstance().handleError(e);
 			}
