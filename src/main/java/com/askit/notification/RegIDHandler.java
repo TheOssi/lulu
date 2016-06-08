@@ -1,7 +1,7 @@
 package com.askit.notification;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class handels and provides the registrationIDs for the GCM. The class is
@@ -15,7 +15,7 @@ import java.util.Map;
 public class RegIDHandler {
 
 	private static final RegIDHandler INSTANCE = new RegIDHandler();
-	private final Map<Long, String> regIDs = new HashMap<Long, String>();
+	private final Map<Long, String> regIDs = new ConcurrentHashMap<Long, String>();
 
 	private RegIDHandler() {
 	}

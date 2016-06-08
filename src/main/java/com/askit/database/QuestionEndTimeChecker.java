@@ -37,7 +37,6 @@ public class QuestionEndTimeChecker extends Thread {
 			+ "ORDER BY R.endDate ASC LIMIT 1;";
 
 	private QuestionEndTimeChecker() {
-		writeDebug("new QuestionEndTimeChecker");
 	}
 
 	public static synchronized QuestionEndTimeChecker getInstance() {
@@ -47,12 +46,10 @@ public class QuestionEndTimeChecker extends Thread {
 	public void startThread() {
 		if (!this.isAlive() || this.isInterrupted()) {
 			this.start();
-			writeDebug("have started new thread");
 		}
 	}
 
 	private AbstractQuestion getNext() throws SQLException {
-		writeDebug("asking database");
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		Connection connection = null;
@@ -63,7 +60,6 @@ public class QuestionEndTimeChecker extends Thread {
 			preparedStatement.setDate(2, new Date(System.currentTimeMillis()));
 			resultSet = preparedStatement.executeQuery();
 			if (resultSet.next()) {
-				writeDebug("got results");
 				final long id = resultSet.getLong(1);
 				final long endDate = resultSet.getDate(2).getTime();
 				final String tableName = resultSet.getString(3);
@@ -79,7 +75,6 @@ public class QuestionEndTimeChecker extends Thread {
 
 	@Override
 	public void run() {
-		writeDebug("I'm in the run method");
 		final QueryManager queryManager = new DatabaseQueryManager();
 		AbstractQuestion currentQuestion = null;
 		while (true) {
@@ -88,11 +83,9 @@ public class QuestionEndTimeChecker extends Thread {
 				if (currentQuestion != null) {
 					final long currentTime = System.currentTimeMillis();
 					if (currentTime + SLEEP_TIME < currentQuestion.getTime().longValue()) {
-						writeDebug("seeping");
 						Thread.sleep(SLEEP_TIME);
 					} else {
 						final Long questionID = currentQuestion.getId();
-						writeDebug("finishing " + questionID);
 						final Notification notification = new Notification("", NotificationCodes.NOTIFICATION_QUESTION_END.getCode(), "questionID",
 								questionID.toString());
 						if (currentQuestion.getTableName().equals(PrivateQuestion.TABLE_NAME)) {
@@ -115,9 +108,5 @@ public class QuestionEndTimeChecker extends Thread {
 				startThread();
 			}
 		}
-	}
-
-	private void writeDebug(final String msg) {
-		System.err.println("====DEBUG: " + msg + "  =====");
 	}
 }
