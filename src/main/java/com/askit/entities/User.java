@@ -28,7 +28,7 @@ public class User {
 	public User() {
 	}
 
-	public User(final Long userID, final String passwordHash, final String phoneNumberHash, final String email, final String username,
+	public User(final Long userID, final String passwordHash, final String email, final String phoneNumberHash, final String username,
 			final Date accessionDate, final String profilePictureURI, final String language, final int scoreOfGlobal) {
 		this.userID = userID;
 		this.passwordHash = passwordHash;

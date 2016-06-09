@@ -95,7 +95,8 @@ public class QuestionEndTimeChecker extends Thread {
 							queryManager.setPublicQuestionToFinish(questionID);
 							NotificationSupporter.sendNotificationToAllMembersOfPublicQuestion(notification, questionID);
 						}
-						final AbstractQuestion questionToCheck = new AbstractQuestion(currentQuestion.getId(), null, currentQuestion.getTableName());
+						final AbstractQuestion questionToCheck = new AbstractQuestion(currentQuestion.getId(), currentQuestion.getTime(),
+								currentQuestion.getTableName());
 						QuestionSoonEndTimeChecker.getInstance().removeUsedQuestion(questionToCheck);
 					}
 				} else {

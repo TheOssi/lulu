@@ -30,7 +30,7 @@ import com.askit.exception.DatabaseLayerException;
 
 /**
  * The main implemetation of the {@link QueryManager}
- * 
+ *
  * @author Kai Müller
  * @since 1.0.0
  * @version 1.0.0
@@ -320,11 +320,6 @@ public class DatabaseQueryManager implements QueryManager {
 		} finally {
 			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
 		}
-	}
-
-	public static void main(final String[] args) throws DatabaseLayerException {
-		DatabaseUser.loadAllPasswordsFromFile();
-		new DatabaseQueryManager().getPublicQuestions(1, 10, "DE");
 	}
 
 	@Override
