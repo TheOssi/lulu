@@ -1,5 +1,3 @@
-//TODO javadoc
-
 package com.askit.database;
 
 import org.apache.commons.lang3.tuple.Pair;

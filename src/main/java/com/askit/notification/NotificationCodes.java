@@ -19,7 +19,8 @@ public enum NotificationCodes {
 	NOTIFICATION_QUESTION_SOON_END("QSE"),
 	NOTIFICATION_NEW_MESSAGE("NM"),
 	NOTIFICATION_INVITE_PUBLIC("IP");
-	String code;
+
+	private String code;
 
 	private NotificationCodes(final String code) {
 		this.code = code;
