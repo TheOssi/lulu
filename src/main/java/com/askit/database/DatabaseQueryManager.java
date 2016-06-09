@@ -1,5 +1,7 @@
 package com.askit.database;
 
+//TODO alter database
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -167,8 +169,20 @@ public class DatabaseQueryManager implements QueryManager {
 	public void createUser(final User user) throws DatabaseLayerException {
 		PreparedStatement preparedStatement = null;
 		try {
-			final String[] columns = new String[] { User.PASSWORD_HASH, User.PHONENUMBER_HASH, User.USERNAME, User.ACCESSION_DATE,
-					User.PROFILEPICTURE_URI, User.LANGUAGE };
+			final List<String> columnList = new ArrayList<String>();
+			if (user.getPasswordHash() != null) {
+				columnList.add(User.PASSWORD_HASH);
+			}
+			if (user.getEmail() != null) {
+				columnList.add(User.EMAIL);
+			}
+			columnList.add(User.USERNAME);
+			columnList.add(User.ACCESSION_DATE);
+			if (user.getProfilePictureURI() != null) {
+				columnList.add(User.PROFILEPICTURE_URI);
+			}
+			columnList.add(User.LANGUAGE);
+			final String[] columns = columnList.toArray(new String[columnList.size()]);
 			final String statement = SQLFactory.buildInsertStatement(SCHEMA, User.TABLE_NAME, columns);
 			preparedStatement = getWriterPreparedStatement(statement);
 			preparedStatement.setString(1, user.getPasswordHash());
@@ -640,6 +654,22 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	@Override
+	public String getEmail(final long userID) throws DatabaseLayerException {
+		ResultSet resultSet = null;
+		try {
+			resultSet = getUserAttribute(User.EMAIL, userID);
+			if (resultSet.next()) {
+				return resultSet.getString(1);
+			}
+			return null;
+		} catch (final SQLException exception) {
+			throw new DatabaseLayerException(exception);
+		} finally {
+			SQLUtil.closeSilentlySQL(null, resultSet);
+		}
+	}
+
+	@Override
 	public String getGroupPictureURI(final long groupID) throws DatabaseLayerException {
 		final PreparedStatement preparedStatement = null;
 		final ResultSet resultSet = null;
@@ -944,6 +974,19 @@ public class DatabaseQueryManager implements QueryManager {
 	}
 
 	@Override
+	public void setEmail(final long userID, final String newEmail) throws DatabaseLayerException {
+		final PreparedStatement preparedStatement = null;
+		final ResultSet resultSet = null;
+		try {
+			updateUserAttributes(userID, User.EMAIL, newEmail);
+		} catch (final SQLException exception) {
+			throw new DatabaseLayerException(exception);
+		} finally {
+			SQLUtil.closeSilentlySQL(preparedStatement, resultSet);
+		}
+	}
+
+	@Override
 	public void setGroupName(final long groupID, final String newGroupName) throws DatabaseLayerException {
 		PreparedStatement preparedStatement = null;
 		try {
@@ -1014,8 +1057,7 @@ public class DatabaseQueryManager implements QueryManager {
 	// DELETE METHODS
 	// ================================================================================
 
-	// TODO delete also the answers, the user->question (over foreign keys
-	// possible) -> check also the other foreign keys
+	// Deletes also the user->question relation and all answers
 	@Override
 	public void deletePrivateQuestion(final long questionID) throws DatabaseLayerException {
 		PreparedStatement preparedStatement = null;
@@ -1049,6 +1091,8 @@ public class DatabaseQueryManager implements QueryManager {
 		}
 	}
 
+	// Delete also all PrivateQuestions, the corresponding answers, the
+	// user->question realtion and the user->group relation
 	@Override
 	public void deleteGroup(final long groupID) throws DatabaseLayerException {
 		PreparedStatement preparedStatement = null;

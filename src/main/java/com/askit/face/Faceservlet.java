@@ -30,6 +30,10 @@ import com.askit.face.innerclasses.PutRequest;
 import com.askit.face.innerclasses.Request;
 import com.askit.notification.NotificationHandler;
 import com.askit.notification.RegIDHandler;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 /**
  * Servlet implementation class Faceservlet
@@ -57,7 +61,7 @@ public class Faceservlet extends HttpServlet {
 		} catch (final ServletException e) {
 			ExceptionHandler.getInstance().handleError(e);
 		}
-		DatabaseUser.loadAllPasswordsFromFile();
+		DatabaseUser.values(); // init DatabaseUsers
 		ExceptionHandler.getInstance();
 		SessionManager.getInstance().start();
 		// NotificationSender.getInstace().startThread();
@@ -124,10 +128,16 @@ public class Faceservlet extends HttpServlet {
 	 * @param out
 	 */
 	private void handleException(final Exception exception, final HttpServletResponse response, final PrintWriter out) {
-		final JSONBuilder jsonBuilder = new JSONBuilder();
+		final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		int status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 		// TODO nicht nach auﬂen geben
-		out.print(jsonBuilder.createJSON(exception));
+		final JsonObject json = new JsonObject();
+		final JsonArray payloadArray = new JsonArray();
+		final JsonObject payload = new JsonObject();
+		payload.addProperty("detailMessage", exception.getMessage());
+		payloadArray.add(payload);
+		json.add(exception.getClass().getSimpleName(), payloadArray);
+		out.print(gson.toJson(json));
 		ExceptionHandler.getInstance().handleError(exception);
 
 		if (exception instanceof DuplicateHashException || exception instanceof WrongHashException) {

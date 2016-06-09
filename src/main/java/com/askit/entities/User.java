@@ -7,6 +7,7 @@ public class User {
 	public final static String TABLE_NAME = "Users";
 	public final static String USER_ID = "userID";
 	public final static String PASSWORD_HASH = "passwordHash";
+	public final static String EMAIL = "email";
 	public final static String PHONENUMBER_HASH = "phoneNumberHash";
 	public final static String USERNAME = "username";
 	public final static String ACCESSION_DATE = "accessionDate";
@@ -22,12 +23,13 @@ public class User {
 	private String profilePictureURI;
 	private String language;
 	private int scoreOfGlobal;
+	private String email;
 
 	public User() {
 	}
 
-	public User(final Long userID, final String passwordHash, final String phoneNumberHash, final String username, final Date accessionDate,
-			final String profilePictureURI, final String language, final int scoreOfGlobal) {
+	public User(final Long userID, final String passwordHash, final String phoneNumberHash, final String email, final String username,
+			final Date accessionDate, final String profilePictureURI, final String language, final int scoreOfGlobal) {
 		this.userID = userID;
 		this.passwordHash = passwordHash;
 		this.phoneNumberHash = phoneNumberHash;
@@ -36,6 +38,7 @@ public class User {
 		this.profilePictureURI = profilePictureURI;
 		this.language = language;
 		this.scoreOfGlobal = scoreOfGlobal;
+		this.email = email;
 	}
 
 	public Long getUserID() {
@@ -64,6 +67,10 @@ public class User {
 
 	public String getLanguage() {
 		return language;
+	}
+
+	public String getEmail() {
+		return email;
 	}
 
 	public int getScoreOfGlobal() {
@@ -100,6 +107,10 @@ public class User {
 
 	public void setScoreOfGlobal(final int scoreOfGlobal) {
 		this.scoreOfGlobal = scoreOfGlobal;
+	}
+
+	public void setEmail(final String email) {
+		this.email = email;
 	}
 
 }

@@ -11,7 +11,7 @@ ALTER TABLE PrivateQuestions
 			ON UPDATE NO ACTION,
 	ADD CONSTRAINT fk_PrivateQuestions_selectedAnswerID
 		FOREIGN KEY ( selectedAnswerID ) REFERENCES AnswersPrivateQuestions ( answerID )
-			ON DELETE NO ACTION
+			ON DELETE SET NULL
 			ON UPDATE NO ACTION;
 			
 ALTER TABLE AnswersPrivateQuestions

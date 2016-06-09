@@ -67,7 +67,8 @@ CREATE TABLE GroupsToUsers (
                         
 CREATE TABLE Users ( 
 	userID 	MEDIUMINT UNSIGNED UNIQUE NOT NULL AUTO_INCREMENT,
-	passwordHash VARCHAR(100) NOT NULL,
+	passwordHash VARCHAR(100),
+	email VARCHAR(100),
 	phoneNumberHash VARCHAR(100) UNIQUE,
 	username VARCHAR(25) NOT NULL UNIQUE,
 	accessionDate DATETIME NOT NULL,

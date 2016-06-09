@@ -516,7 +516,14 @@ public interface QueryManager {
 	 *            the groupID
 	 * @return
 	 */
-	public Pair<String, Integer>[] getUsersOfGroupsWithScore(long groupID) throws DatabaseLayerException;;
+	public Pair<String, Integer>[] getUsersOfGroupsWithScore(long groupID) throws DatabaseLayerException;
+
+	/**
+	 * @param userID
+	 * @return
+	 * @throws DatabaseLayerException
+	 */
+	String getEmail(long userID) throws DatabaseLayerException;
 
 	// ================================================================================
 	// SET METHODS
@@ -642,6 +649,13 @@ public interface QueryManager {
 	 */
 	public void setPrivateQuestionToFinish(long questionID) throws DatabaseLayerException;
 
+	/**
+	 * @param userID
+	 * @param newEmail
+	 * @throws DatabaseLayerException
+	 */
+	public void setEmail(long userID, String newEmail) throws DatabaseLayerException;
+
 	// ================================================================================
 	// DELETE METHODS
 	// ================================================================================
@@ -713,4 +727,5 @@ public interface QueryManager {
 	 *             if a exception occurs in the database
 	 */
 	public PublicQuestion[] searchForPublicQuestion(String nameSearchPattern, String language) throws DatabaseLayerException;
+
 }
