@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 import org.junit.Test;
 
-public class ConnectionFactoryTest {
+public class ConnectionManagerTest {
 
 	@Test
 	public void testGetInstanceMethod() {
