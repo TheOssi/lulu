@@ -11,20 +11,18 @@ import com.askit.exception.DatabaseLayerException;
 
 public class Trigger {
 
-	public static void setPointsForRightAnswerInPrivateBet(final long selectedAnswerID, final long questionID, final long groupID)
-			throws DatabaseLayerException {
+	public static void setPointsForRightAnswerInPrivateBet(final long selectedAnswerID, final long questionID) throws DatabaseLayerException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		try {
 			final int pointsToAdd = Points.POINTS_PRIVATE_BET_RIGHT_ANSWER.getPoints();
 			connection = ConnectionManager.getInstance().getWriterConnection();
 			final String statement = " UPDATE APP.GroupsToUsers G INNER JOIN APP.PrivateQuestionsToUsers P ON P.choosedAnswerID = ? AND P.questionID = ?"
-					+ " SET score = (score + ?)  WHERE G.groupID = ? AND G.userID = P.userID;";
+					+ " SET score = (score + ?)  WHERE G.groupID = ( SELECT groupID FROM PrivateQuestions WHERE questionID = 1 ) AND G.userID = P.userID;";
 			preparedStatement = connection.prepareStatement(statement);
 			preparedStatement.setLong(1, selectedAnswerID);
 			preparedStatement.setLong(2, questionID);
 			preparedStatement.setInt(3, pointsToAdd);
-			preparedStatement.setLong(4, groupID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
@@ -51,7 +49,7 @@ public class Trigger {
 		}
 	}
 
-	public static void setPointsForAnsweringAPublicQuestion(final long userID, final long hostID) throws DatabaseLayerException {
+	public static void setPointsForAnsweringAPublicQuestion(final long userID, final long questionID) throws DatabaseLayerException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 
@@ -72,10 +70,10 @@ public class Trigger {
 		try {
 			final int pointsToAddForAdmin = Points.POINTS_PUBLIC_QUESTION_ANSWERED_FOR_HOST.getPoints();
 			connection = ConnectionManager.getInstance().getWriterConnection();
-			final String statement = "UPDATE APP.Users SET scoreOfGlobal = (scoreOfGlobal + ? ) WHERE userID = ?;";
+			final String statement = "UPDATE APP.Users SET scoreOfGlobal = (scoreOfGlobal + ? ) WHERE userID = (SELECT hostID FROM PublicQuestion WHERE questionID = ?);";
 			preparedStatement = connection.prepareStatement(statement);
 			preparedStatement.setInt(1, pointsToAddForAdmin);
-			preparedStatement.setLong(2, hostID);
+			preparedStatement.setLong(2, questionID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);

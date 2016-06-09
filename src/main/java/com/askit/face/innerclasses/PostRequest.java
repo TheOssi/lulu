@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 
 import com.askit.database.DatabaseQueryManager;
 import com.askit.database.QueryManager;
+import com.askit.database.trigger.Trigger;
 import com.askit.entities.Answer;
 import com.askit.entities.Group;
 import com.askit.entities.PrivateQuestion;
@@ -46,7 +47,7 @@ public class PostRequest extends Request {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see com.askit.face.innerclasses.Request#handleRequest() handles
 	 * PostRequest
 	 */
@@ -165,14 +166,14 @@ public class PostRequest extends Request {
 		}
 		/*
 		 * POST /USER
-		 *
+		 * 
 		 * @params: USERNAME: String PHONEHASH: String PASSWORDHASH: String
 		 * LANGUAGE: String
 		 */
 
 		/*
 		 * POST /USER
-		 *
+		 * 
 		 * @params: USERID: Long CONTACTID: Long
 		 */
 
@@ -216,7 +217,7 @@ public class PostRequest extends Request {
 
 		/*
 		 * POST /GROUP
-		 *
+		 * 
 		 * @params: GROUPNAME: String ADMINID: Long PICTUREURL: String
 		 */
 		matcher = regExGroupPattern.matcher(pathInfo);
@@ -234,7 +235,7 @@ public class PostRequest extends Request {
 
 		/*
 		 * POST /QUESTION
-		 *
+		 * 
 		 * @params: PUBLIC: Boolean, defines if Public or Private Question
 		 * QUESTION: String INFORMATION: String, additional Information HOSTID:
 		 * Long ENDDATE: Long EXTENSION: Boolean ACTIVE: Boolean LANGUAGE:
@@ -252,6 +253,7 @@ public class PostRequest extends Request {
 				final PublicQuestion publicQuestion = new PublicQuestion(question, additionalInformation, hostID, pictureUrl, createDate, endDate,
 						optionExtension, isExpired, language);
 				queryManager.createPublicQuestion(publicQuestion);
+				Trigger.setPointsForCreatePublicQuestion(hostID);
 				regID = regHandler.getRegIDFromUser(hostID);
 				final Notification not = new Notification(regID, NotificationCodes.NOTIFICATION_NEW_QUESTION.getCode(), "hostID", hostID.toString());
 				notificationHandler.addNotification(not);
@@ -280,7 +282,7 @@ public class PostRequest extends Request {
 		// Answer
 		/*
 		 * POST /ANSWER
-		 *
+		 * 
 		 * @params: PUBLIC: Boolean, defines if related to Public or Private
 		 * Question QUESTIONID: Long ANSWER: String, answer as Text ANSWERID:
 		 * Long, when related to another answer

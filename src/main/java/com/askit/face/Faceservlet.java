@@ -1,10 +1,11 @@
 package com.askit.face;
 
-//TODO add trigger calls
 //TODO NumberParsException handling
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.rmi.ServerException;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -30,24 +31,18 @@ import com.askit.face.innerclasses.Request;
 import com.askit.notification.NotificationHandler;
 import com.askit.notification.RegIDHandler;
 
-/** 
+/**
  * Servlet implementation class Faceservlet
- * @author lelmac
+ * 
+ * @author Max Lenk
  * @version 1.0.0
  * @since 1.0.0
  *
- *        
+ * 
  */
 @WebServlet("/Face/*")
 public class Faceservlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public Faceservlet() {
-		super();
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -58,14 +53,14 @@ public class Faceservlet extends HttpServlet {
 	@Override
 	public void init(final ServletConfig config) {
 		try {
-			super.init();
+			super.init(config);
 		} catch (final ServletException e) {
 			ExceptionHandler.getInstance().handleError(e);
 		}
 		DatabaseUser.loadAllPasswordsFromFile();
 		ExceptionHandler.getInstance();
 		SessionManager.getInstance().start();
-		//NotificationSender.getInstace().startThread();
+		// NotificationSender.getInstace().startThread();
 		QuestionEndTimeChecker.getInstance().startThread();
 		QuestionSoonEndTimeChecker.getInstance().startThread();
 		RegIDHandler.getInstance();
@@ -77,10 +72,8 @@ public class Faceservlet extends HttpServlet {
 	 *      response)
 	 */
 	@Override
-	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) {
-
-		final PrintWriter out = getPrintWriterSlienty(response);
-
+	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+		final PrintWriter out = getPrintWriter(response);
 		final GetRequest resourceValues = new GetRequest(request.getPathInfo(), request.getParameterMap(), out);
 		handleRequest(resourceValues, response, out);
 		out.close();
@@ -90,13 +83,9 @@ public class Faceservlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	/**
-	 * @param request
-	 * @param response
-	 */
 	@Override
-	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) {
-		final PrintWriter out = getPrintWriterSlienty(response);
+	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+		final PrintWriter out = getPrintWriter(response);
 		final String body = getBody(request);
 		final PostRequest post = new PostRequest(request.getPathInfo(), request.getParameterMap(), out, body);
 		handleRequest(post, response, out);
@@ -104,38 +93,32 @@ public class Faceservlet extends HttpServlet {
 	}
 
 	/**
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
+	 * @see HttpServlet#doPut(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
 	@Override
-	protected void doPut(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-		final PrintWriter out = getPrintWriterSlienty(response);
+	protected void doPut(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+		final PrintWriter out = getPrintWriter(response);
 		final PutRequest put = new PutRequest(request.getPathInfo(), request.getParameterMap(), out);
 		handleRequest(put, response, out);
 		out.close();
 	}
 
 	/**
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
+	 * @see HttpServlet#doPut(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
 	@Override
-	protected void doDelete(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-		final PrintWriter out = getPrintWriterSlienty(response);
+	protected void doDelete(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+		final PrintWriter out = getPrintWriter(response);
 		final DeleteRequest delete = new DeleteRequest(request.getPathInfo(), request.getParameterMap(), out);
 		handleRequest(delete, response, out);
 		out.close();
-
 	}
 
-	/*
-	 * handles various Exceptions and prints stacktrace to log
-	 */
 	/**
+	 * handles various Exceptions and prints stacktrace to log
+	 * 
 	 * @param exception
 	 * @param response
 	 * @param out
@@ -158,13 +141,15 @@ public class Faceservlet extends HttpServlet {
 	/**
 	 * @param response
 	 * @return Printwriter out
+	 * @throws ServerException
 	 */
-	private PrintWriter getPrintWriterSlienty(final HttpServletResponse response) {
+	private PrintWriter getPrintWriter(final HttpServletResponse response) throws IOException {
 		PrintWriter out = null;
 		try {
 			out = response.getWriter();
 		} catch (final IOException e) {
 			ExceptionHandler.getInstance().handleError(e);
+			throw new IOException("problem get printwriter", e);
 		}
 		return out;
 	}
@@ -181,7 +166,6 @@ public class Faceservlet extends HttpServlet {
 				| NotificationException e) {
 			handleException(e, response, out);
 		}
-
 	}
 
 	/**
