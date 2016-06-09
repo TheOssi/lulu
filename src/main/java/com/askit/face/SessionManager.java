@@ -47,7 +47,7 @@ public class SessionManager implements Runnable {
 	/**
 	 * returns the Instance of the SessionManager
 	 *
-	 * @return
+	 * @return Instance
 	 */
 	public static synchronized SessionManager getInstance() {
 		return INSTANCE;

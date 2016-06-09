@@ -29,12 +29,13 @@ import com.askit.face.innerclasses.Request;
 import com.askit.notification.NotificationHandler;
 import com.askit.notification.RegIDHandler;
 
-/**
+/** 
+ * Servlet implementation class Faceservlet
  * @author lelmac
- * @version 1.0.0.0
- * @since 1.0.0.0
+ * @version 1.0.0
+ * @since 1.0.0
  *
- *        Servlet implementation class Faceservlet
+ *        
  */
 @WebServlet("/Face/*")
 public class Faceservlet extends HttpServlet {
@@ -155,14 +156,14 @@ public class Faceservlet extends HttpServlet {
 
 	/**
 	 * @param response
-	 * @return
+	 * @return Printwriter out
 	 */
 	private PrintWriter getPrintWriterSlienty(final HttpServletResponse response) {
 		PrintWriter out = null;
 		try {
 			out = response.getWriter();
 		} catch (final IOException e) {
-			e.printStackTrace();
+			ExceptionHandler.getInstance().handleError(e);
 		}
 		return out;
 	}
@@ -200,7 +201,7 @@ public class Faceservlet extends HttpServlet {
 			bodyBufferedreader.close();
 			body = stringBuilder.toString();
 		} catch (final IOException e) {
-			e.printStackTrace();
+			ExceptionHandler.getInstance().handleError(e);
 		}
 		return body;
 	}

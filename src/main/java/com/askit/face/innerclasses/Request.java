@@ -54,13 +54,18 @@ public class Request {
 			DatabaseLayerException, ServletException, NotificationException {
 		String sessionHash = null;
 		boolean root = false;
+		
 		if (parameters.containsKey(URLConstants.PARAMETERS_SESSIONHASH)) {
 			sessionHash = parameters.get(URLConstants.PARAMETERS_SESSIONHASH)[0];
 		}
 		if (parameters.containsKey(URLConstants.PARAMETERS_ROOT)) {
 			root = Boolean.parseBoolean(parameters.get(URLConstants.PARAMETERS_ROOT)[0]);
 		}
-
+		
+		if(pathInfo.equals(null)||pathInfo.equals("")){
+			throw new ServletException("Malformed URL");
+		}
+		
 		matcher = regExSessionPattern.matcher(pathInfo);
 		if (matcher.find()) {
 			if (parameters.containsKey(URLConstants.PARAMETERS_PASSWORDHASH)&&root == false) {
