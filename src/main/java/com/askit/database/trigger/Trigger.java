@@ -27,7 +27,7 @@ public class Trigger {
 		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			SQLUtil.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
 		}
 	}
 
@@ -45,7 +45,7 @@ public class Trigger {
 		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			SQLUtil.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
 		}
 	}
 
@@ -64,7 +64,7 @@ public class Trigger {
 		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			SQLUtil.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
 		}
 
 		try {
@@ -78,7 +78,7 @@ public class Trigger {
 		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			SQLUtil.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
 		}
 	}
 
@@ -98,13 +98,15 @@ public class Trigger {
 		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			SQLUtil.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
 		}
 	}
 
 	public static void afterAnsweringCheckForEndOfQuestionAndSetPoints(final long questionID) throws DatabaseLayerException {
 		ResultSet resultSet = null;
 		String statement = "";
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
 		try {
 			// get definition of end
 			statement = " SELECT definitionOfEnd FROM final APP.PrivateQuestions WHERE questionID = ? INTO l_definitionOfEnd;";
@@ -146,14 +148,16 @@ public class Trigger {
 				if (sumOfAnsweredUsersReached && definitionOfEnd == DefinitionOfEnd.END_BY_SUM_ANERWERED.getID() || allUsersHaveAnswered
 						&& definitionOfEnd == DefinitionOfEnd.END_BY_ALL_ANSWERED.getID()) {
 					statement = "UPDATE APP.PrivateQuestions SET finished = 1 final WHERE questionID = ?;";
-					final Connection connection = ConnectionManager.getInstance().getWriterConnection();
-					final PreparedStatement preparedStatement = connection.prepareStatement(statement);
+					connection = ConnectionManager.getInstance().getWriterConnection();
+					preparedStatement = connection.prepareStatement(statement);
 					preparedStatement.setLong(1, questionID);
 					preparedStatement.executeUpdate();
 				}
 			}
 		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
+		} finally {
+			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
 		}
 	}
 
@@ -168,7 +172,7 @@ public class Trigger {
 		} catch (final SQLException exception) {
 			throw new DatabaseLayerException(exception);
 		} finally {
-			SQLUtil.closeSilentlySQL(preparedStatement, null);
+			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
 		}
 	}
 }

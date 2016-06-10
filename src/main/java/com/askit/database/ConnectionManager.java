@@ -39,11 +39,14 @@ import com.askit.database.sqlHelper.Constants;
  *
  */
 public class ConnectionManager {
-	private static final int _30000 = 30000;
+	private static final String VALIDATION_QUERY = "SELECT 1";
+	private static final int ABANDONED_TIMEOUT = 60;
+	private static final int VALIDATION_INTERVALL = 30000;
+	private static final int MIN_EVICTABLE_IDLE = 30000;
 	private static final int MAX_IDLE = 20;
-	private static final int MIN_IDLE = 3;
+	private static final int MIN_IDLE = 5;
 	private static final int MAX_PARALLEL_CONNECTIONS = 50;
-	private static final int INITIAL_IDLE_CONNECTIONS = 3;
+	private static final int INITIAL_IDLE_CONNECTIONS = 5;
 	private static final int MAX_WAIT_TIME = 30000;
 	private static final String MARIA_DB_DRIVER = "org.mariadb.jdbc.Driver";
 	private static final String IP_OF_DATABASE = "localhost";
@@ -57,16 +60,7 @@ public class ConnectionManager {
 
 	// TODO
 
-	// p.setTestWhileIdle(false);
-	// p.setTestOnBorrow(true);
-	// p.setValidationQuery("SELECT 1");
-	// p.setValidationInterval(30000);
-
 	// p.setTimeBetweenEvictionRunsMillis(30000);
-
-	// p.setRemoveAbandonedTimeout(60);
-	// p.setRemoveAbandoned(true);
-	// p.setLogAbandoned(true);
 
 	// p.setJdbcInterceptors("org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;"
 	// + "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
@@ -116,8 +110,15 @@ public class ConnectionManager {
 		properties.setMaxActive(MAX_PARALLEL_CONNECTIONS);
 		properties.setInitialSize(INITIAL_IDLE_CONNECTIONS);
 		properties.setMaxWait(MAX_WAIT_TIME);
-		properties.setMinEvictableIdleTimeMillis(_30000);
+		properties.setMinEvictableIdleTimeMillis(MIN_EVICTABLE_IDLE);
 		properties.setTestOnReturn(false);
+		properties.setTestWhileIdle(true);
+		properties.setTestOnBorrow(true);
+		properties.setValidationQuery(VALIDATION_QUERY);
+		properties.setValidationInterval(VALIDATION_INTERVALL);
+		properties.setRemoveAbandonedTimeout(ABANDONED_TIMEOUT);
+		properties.setRemoveAbandoned(true);
+		properties.setLogAbandoned(true);
 	}
 
 	/**
@@ -129,6 +130,14 @@ public class ConnectionManager {
 	 */
 	public static synchronized ConnectionManager getInstance() {
 		return INSTANCE;
+	}
+
+	public static void main(final String[] args) throws SQLException {
+		final ConnectionManager manager = ConnectionManager.getInstance();
+		final Connection connection = manager.getWriterConnection();
+		System.out.println("Active: " + manager.writerDataSource.getActive());
+		connection.close();
+		System.out.println("Active: " + manager.writerDataSource.getActive());
 	}
 
 	/**

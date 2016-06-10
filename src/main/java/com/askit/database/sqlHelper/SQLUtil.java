@@ -40,19 +40,19 @@ public class SQLUtil {
 	 * by the exceptionhandler. The sql things are checked for null and if not,
 	 * they tried to closed.
 	 * 
+	 * @param connection
+	 *            the connection to close
 	 * @param preparedStatement
-	 *            the prepared statement and within the connection to close
+	 *            the prepared statement
 	 * @param resultSet
 	 *            the resultset to close
 	 */
-	public static void closeSilentlySQL(final PreparedStatement preparedStatement, final ResultSet resultSet) {
-		Connection connection = null;
+	public static void closeSilentlySQL(final Connection connection, final PreparedStatement preparedStatement, final ResultSet resultSet) {
 		try {
 			if (resultSet != null) {
 				resultSet.close();
 			}
 			if (preparedStatement != null) {
-				connection = preparedStatement.getConnection();
 				preparedStatement.close();
 			}
 			if (connection != null) {
