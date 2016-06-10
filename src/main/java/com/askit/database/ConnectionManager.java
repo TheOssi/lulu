@@ -55,6 +55,8 @@ public class ConnectionManager {
 	private DataSource writerDataSource;
 	private DataSource deleterDataSource;
 
+	// TODO
+
 	// p.setTestWhileIdle(false);
 	// p.setTestOnBorrow(true);
 	// p.setValidationQuery("SELECT 1");
@@ -133,6 +135,7 @@ public class ConnectionManager {
 	 *
 	 * @return a connection to the database with the "reader" user
 	 * @throws SQLException
+	 *             if a database access error occurs
 	 */
 	public synchronized Connection getReaderConnection() throws SQLException {
 		return readerDataSource.getConnection();
@@ -142,6 +145,7 @@ public class ConnectionManager {
 	 *
 	 * @return a connection to the database with the "writer" user
 	 * @throws SQLException
+	 *             if a database access error occurs
 	 */
 	public synchronized Connection getWriterConnection() throws SQLException {
 		return writerDataSource.getConnection();
@@ -151,6 +155,7 @@ public class ConnectionManager {
 	 *
 	 * @return a connection to the database with the "delete" user
 	 * @throws SQLException
+	 *             if a database access error occurs
 	 */
 	public synchronized Connection getDeleteConnection() throws SQLException {
 		return deleterDataSource.getConnection();
