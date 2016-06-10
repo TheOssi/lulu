@@ -1,6 +1,6 @@
 package com.askit.database;
 
-//TODO alter database
+//TODO alter database passwordhash & email
 
 import java.sql.Connection;
 import java.sql.Date;

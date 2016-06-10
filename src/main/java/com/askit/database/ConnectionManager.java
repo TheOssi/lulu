@@ -3,7 +3,8 @@ package com.askit.database;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.apache.tomcat.jdbc.pool.PoolProperties;
 
 import com.askit.database.sqlHelper.Constants;
 
@@ -38,22 +39,35 @@ import com.askit.database.sqlHelper.Constants;
  *
  */
 public class ConnectionManager {
+	private static final int _30000 = 30000;
 	private static final int MAX_IDLE = 20;
 	private static final int MIN_IDLE = 3;
 	private static final int MAX_PARALLEL_CONNECTIONS = 50;
 	private static final int INITIAL_IDLE_CONNECTIONS = 3;
-	private static final int MAX_PARALLEL_PREPARED_STATEMENTS = 40;
-	private static final int QUERY_TIMEOUT = 10000;
-	private static final int MAX_CONNECTION_LIFETIME = 0;
+	private static final int MAX_WAIT_TIME = 30000;
 	private static final String MARIA_DB_DRIVER = "org.mariadb.jdbc.Driver";
 	private static final String IP_OF_DATABASE = "localhost";
 	private static final String JDBC_PROTOCOLL = "jdbc:mysql";
 	private static final String URL = JDBC_PROTOCOLL + "://" + IP_OF_DATABASE + "/" + Constants.SCHEMA_NAME;
 	private static final ConnectionManager INSTANCE = new ConnectionManager();
 
-	private BasicDataSource readerDataSource;
-	private BasicDataSource writerDataSource;
-	private BasicDataSource deleterDataSource;
+	private DataSource readerDataSource;
+	private DataSource writerDataSource;
+	private DataSource deleterDataSource;
+
+	// p.setTestWhileIdle(false);
+	// p.setTestOnBorrow(true);
+	// p.setValidationQuery("SELECT 1");
+	// p.setValidationInterval(30000);
+
+	// p.setTimeBetweenEvictionRunsMillis(30000);
+
+	// p.setRemoveAbandonedTimeout(60);
+	// p.setRemoveAbandoned(true);
+	// p.setLogAbandoned(true);
+
+	// p.setJdbcInterceptors("org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;"
+	// + "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
 
 	private ConnectionManager() {
 		setDeleterDataSource();
@@ -62,40 +76,46 @@ public class ConnectionManager {
 	}
 
 	private void setReaderDataSource() {
-		readerDataSource = new BasicDataSource();
-		setDefaultSettings(readerDataSource);
-		readerDataSource.setUsername(DatabaseUser.READ_USER.getUsername());
-		readerDataSource.setPassword(DatabaseUser.READ_USER.getPassword());
-		readerDataSource.setDefaultReadOnly(true);
+		final PoolProperties properties = new PoolProperties();
+		setDefaultSettings(properties);
+		properties.setUsername(DatabaseUser.READ_USER.getUsername());
+		properties.setPassword(DatabaseUser.READ_USER.getPassword());
+		properties.setDefaultReadOnly(true);
+		readerDataSource = new DataSource();
+		readerDataSource.setPoolProperties(properties);
 	}
 
 	private void setWriterDataSource() {
-		writerDataSource = new BasicDataSource();
-		setDefaultSettings(writerDataSource);
-		writerDataSource.setUsername(DatabaseUser.WRITE_USER.getUsername());
-		writerDataSource.setPassword(DatabaseUser.WRITE_USER.getPassword());
-		writerDataSource.setDefaultReadOnly(false);
+		final PoolProperties properties = new PoolProperties();
+		setDefaultSettings(properties);
+		properties.setUsername(DatabaseUser.WRITE_USER.getUsername());
+		properties.setPassword(DatabaseUser.WRITE_USER.getPassword());
+		properties.setDefaultReadOnly(false);
+		writerDataSource = new DataSource();
+		writerDataSource.setPoolProperties(properties);
 	}
 
 	private void setDeleterDataSource() {
-		deleterDataSource = new BasicDataSource();
-		setDefaultSettings(deleterDataSource);
-		deleterDataSource.setUsername(DatabaseUser.DELETE_USER.getUsername());
-		deleterDataSource.setPassword(DatabaseUser.DELETE_USER.getPassword());
-		deleterDataSource.setDefaultAutoCommit(true);
+		final PoolProperties properties = new PoolProperties();
+		setDefaultSettings(properties);
+		properties.setUsername(DatabaseUser.DELETE_USER.getUsername());
+		properties.setPassword(DatabaseUser.DELETE_USER.getPassword());
+		properties.setDefaultAutoCommit(true);
+		deleterDataSource = new DataSource();
+		deleterDataSource.setPoolProperties(properties);
 	}
 
-	private void setDefaultSettings(final BasicDataSource basicDataSource) {
-		basicDataSource.setDriverClassName(MARIA_DB_DRIVER);
-		basicDataSource.setUrl(URL);
-		basicDataSource.setDefaultAutoCommit(true);
-		basicDataSource.setMinIdle(MIN_IDLE);
-		basicDataSource.setMaxIdle(MAX_IDLE);
-		basicDataSource.setMaxTotal(MAX_PARALLEL_CONNECTIONS);
-		basicDataSource.setInitialSize(INITIAL_IDLE_CONNECTIONS);
-		basicDataSource.setMaxOpenPreparedStatements(MAX_PARALLEL_PREPARED_STATEMENTS);
-		basicDataSource.setDefaultQueryTimeout(QUERY_TIMEOUT);
-		basicDataSource.setMaxConnLifetimeMillis(MAX_CONNECTION_LIFETIME);
+	private void setDefaultSettings(final PoolProperties properties) {
+		properties.setDriverClassName(MARIA_DB_DRIVER);
+		properties.setUrl(URL);
+		properties.setDefaultAutoCommit(true);
+		properties.setMinIdle(MIN_IDLE);
+		properties.setMaxIdle(MAX_IDLE);
+		properties.setMaxActive(MAX_PARALLEL_CONNECTIONS);
+		properties.setInitialSize(INITIAL_IDLE_CONNECTIONS);
+		properties.setMaxWait(MAX_WAIT_TIME);
+		properties.setMinEvictableIdleTimeMillis(_30000);
+		properties.setTestOnReturn(false);
 	}
 
 	/**
