@@ -12,10 +12,8 @@ import com.askit.exception.DuplicateHashException;
 import com.askit.exception.MissingParametersException;
 import com.askit.exception.NotificationException;
 import com.askit.exception.WrongHashException;
+import com.askit.face.JSONBuilder;
 import com.askit.face.SessionManager;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 
 public class Request {
 	Integer id;
@@ -23,7 +21,6 @@ public class Request {
 	String pathInfo;
 	PrintWriter out;
 	Map<String, String[]> parameters;
-	Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 	final static Pattern regExQuestionPattern = Pattern.compile("/QUESTION/([0-9]+)$|/QUESTION$");
 	final static Pattern regExQuestionsPattern = Pattern.compile("/QUESTIONS");
@@ -87,7 +84,7 @@ public class Request {
 				// TODO get this from a url parameter
 				final String username = "blala";
 				final String generatedSessionHash = SessionManager.getInstance().createSession(username, passwordHash);
-				out.println(buildOutputJSON(generatedSessionHash));
+				out.println(new JSONBuilder().createJSONforSingleAttribute("hash",generatedSessionHash));
 			} else if (parameters.containsKey(URLConstants.PARAMETERS_PASSWORDHASH) && root == true) {
 				out.println(SessionManager.getInstance().getSessionStats());
 			} else {
@@ -103,11 +100,5 @@ public class Request {
 				throw new MissingParametersException("Missing SessionHash");
 			}
 		}
-	}
-
-	private String buildOutputJSON(final String sessionHash) {
-		final JsonObject json = new JsonObject();
-		json.addProperty("hash", sessionHash);
-		return gson.toJson(json);
 	}
 }
