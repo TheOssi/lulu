@@ -4,15 +4,16 @@ USE APP;
 -- AFTER UPDATE ON PrivateQuestions
 -- 		This creates the connection between the users of a group and the private question
 -- ================================================================================
-DELIMITER \\
+
+DELIMITER &
 CREATE DEFINER = 'appAdmin'@'localhost'
 	TRIGGER tg_afterUpdate_PrivateQuestions
-	AFTER INSERT ON privatequestions
+	AFTER INSERT ON PrivateQuestions
     FOR EACH ROW BEGIN
 		
-			INSERT INTO privatequestionstousers (questionID, userID, choosedAnswerID)
-				SELECT NEW.questionID, G.userID, null FROM groupstousers G
+			INSERT INTO PrivateQuestionsToUsers (questionID, userID, choosedAnswerID)
+				SELECT NEW.questionID, G.userID, null FROM GroupsToUsers G
 					WHERE G.groupID = NEW.groupID;
 		
-END \\
+END &
 DELIMITER ;
