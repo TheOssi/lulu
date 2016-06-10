@@ -143,7 +143,7 @@ public class GetRequest extends Request {
 			id = Integer.parseInt(matcher.group(1));
 			if (id != null) {
 				final String username = queryManager.getUsername(id);
-				out.println("{\"username\" : " + "\"" + username + "\"" + "}");
+				out.println(new JSONBuilder().createJSONforSingleAttribute("username", username));
 			} else {
 				throw new MissingParametersException("Missing ID in Parameters");
 			}
@@ -175,7 +175,7 @@ public class GetRequest extends Request {
 				} else {
 					userscore = queryManager.getUserScoreOfGlobal(id);
 				}
-				out.println("{\"Score\" : " + userscore + "}");
+				out.println(new JSONBuilder().createJSONforSingleAttribute("score", userscore));
 			} else {
 				throw new MissingParametersException("Missing ID in Parameters");
 			}

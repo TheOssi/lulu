@@ -34,6 +34,16 @@ public class JSONBuilder {
 		jsonObject.add(object.getClass().getSimpleName(), jsonArray);
 		return gson.toJson(jsonObject);
 	}
+	public String createJSONforSingleAttribute(final String property,final String value) {
+		final JsonObject json = new JsonObject();
+		json.addProperty(property, value);
+		return gson.toJson(json);
+	}
+	public String createJSONforSingleAttribute(final String property,final Long value) {
+		final JsonObject json = new JsonObject();
+		json.addProperty(property, value);
+		return gson.toJson(json);
+	}
 
 	/**
 	 * Generates a JSON from a collection
@@ -51,6 +61,7 @@ public class JSONBuilder {
 		jsonObject.add(objectArray.getClass().getSimpleName().substring(0, objectArray.getClass().getSimpleName().length() - 2), jsonArray);
 		return gson.toJson(jsonObject);
 	}
+	
 
 	/**
 	 * Removes all null's of a JSON
