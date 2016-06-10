@@ -25,6 +25,10 @@ public enum DatabaseUser {
 	WRITE_USER("appWriter"),
 	DELETE_USER("appDeleter");
 
+	static {
+		loadAllPasswordsFromFile();
+	}
+
 	private String password;
 	private String username;
 
@@ -64,7 +68,7 @@ public enum DatabaseUser {
 	 * All passwords are stored in a config file. This reads all passwords and
 	 * maps them to the corresponding user.
 	 */
-	public static void loadAllPasswordsFromFile() {
+	private static void loadAllPasswordsFromFile() {
 		InputStream inputStream = null;
 		try {
 			final File propertiesFile = new File("./config", "config.properties");

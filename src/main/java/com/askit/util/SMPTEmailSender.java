@@ -1,4 +1,4 @@
-package com.askit.etc;
+package com.askit.util;
 
 import java.util.Properties;
 
@@ -13,10 +13,10 @@ import javax.mail.internet.MimeMessage;
 
 public class SMPTEmailSender {
 
-	// TODO other account
+	// TODO account + in config file
 
-	private static final String SMTP_HOST_NAME = "smtp.gmail.com";
-	private static final String SMTP_AUTH_USER = "kai.jmueller@gmail.com";
+	private static final String SMTP_HOST_NAME = "";
+	private static final String SMTP_AUTH_USER = "";
 	private static final String SMTP_AUTH_PWD = "";
 
 	/**
@@ -78,5 +78,4 @@ public class SMPTEmailSender {
 			return new PasswordAuthentication(username, password);
 		}
 	}
-
 }

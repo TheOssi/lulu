@@ -1,14 +1,13 @@
 package com.askit.face.innerclasses;
 
 /**
- * @author
- *URLConstats
+ * This class holds all url constants
+ *
+ * @author Max Lenk
+ * @since 1.0.0
+ * @version 1.0.0
  */
 public class URLConstants {
-	/*
-	 * Parameters Constants
-	 */
-	
 	public static final String PARAMETERS_GROUPID = "GROUPID";
 	public static final String PARAMETERS_ADMINID = "ADMINID";
 	public static final String PARAMETERS_GROUPNAME = "GROUPNAME";
@@ -16,6 +15,7 @@ public class URLConstants {
 	public static final String PARAMETERS_USERNAME = "USERNAME";
 	public static final String PARAMETERS_PASSWORDHASH = "PASSWORDHASH";
 	public static final String PARAMETERS_PHONEHASH = "PHONEHASH";
+	public static final String PARAMETERS_EMAIL = "EMAIL";
 	public static final String PARAMETERS_SEARCH = "SEARCH";
 	public static final String PARAMETERS_PUBLIC = "PUBLIC";
 	public static final String PARAMETERS_QUESTION = "QUESTION";

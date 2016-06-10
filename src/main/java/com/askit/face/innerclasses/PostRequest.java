@@ -27,7 +27,9 @@ import com.askit.notification.NotificationHandler;
 import com.askit.notification.RegIDHandler;
 
 /**
- * @author D062367
+ * @author Max Lenk
+ * @version 1.0.0
+ * @since 1.0.0
  *
  */
 
@@ -69,6 +71,7 @@ public class PostRequest extends Request {
 		String userName = null;
 		String passwordHash = null;
 		String phoneNumberHash = null;
+		String email = null;
 		Long adminID = null;
 		String groupName = null;
 		String pictureUrl = null;
@@ -112,6 +115,9 @@ public class PostRequest extends Request {
 		}
 		if (parameters.containsKey(URLConstants.PARAMETERS_PASSWORDHASH)) {
 			passwordHash = parameters.get(URLConstants.PARAMETERS_PASSWORDHASH)[0];
+		}
+		if (parameters.containsKey(URLConstants.PARAMETERS_EMAIL)) {
+			email = parameters.get(URLConstants.PARAMETERS_EMAIL)[0];
 		}
 		if (parameters.containsKey(URLConstants.PARAMETERS_PHONEHASH)) {
 			phoneNumberHash = parameters.get(URLConstants.PARAMETERS_PHONEHASH)[0];
@@ -181,11 +187,12 @@ public class PostRequest extends Request {
 		if (matcher.find()) {
 			final NotificationHandler notificationHandler = NotificationHandler.getInstance();
 			final RegIDHandler regHandler = RegIDHandler.getInstance();
-			if (userName != null && phoneNumberHash != null && passwordHash != null && language != null) {
-				final Date accessionDate = null;
+			if (userName != null && phoneNumberHash != null && language != null) {
+				final Date accessionDate = new Date();
 				final String profilePictureURI = null;
 				final int scoreOfGlobal = 0;
-				final User user = new User(userID, passwordHash, phoneNumberHash, userName, accessionDate, profilePictureURI, language, scoreOfGlobal);
+				final User user = new User(userID, passwordHash, email, phoneNumberHash, userName, accessionDate, profilePictureURI, language,
+						scoreOfGlobal);
 				queryManager.createUser(user);
 				out.println("{message: " + "Sucessfully create User}");
 			} else if (userID != null && contactID != null) {
