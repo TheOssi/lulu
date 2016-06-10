@@ -148,6 +148,10 @@ public class PutRequest extends Request {
 			}
 			return;
 		}
-		throw new ServletException("Invalid URI");
+		matcher = regExSessionPattern.matcher(pathInfo);
+		if (matcher.find()) {
+		} else {
+			throw new ServletException("Invalid URI");
+		}
 	}
 }

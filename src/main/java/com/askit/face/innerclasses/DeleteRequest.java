@@ -93,7 +93,11 @@ public class DeleteRequest extends Request {
 			return;
 		}
 
-		throw new ServletException();
+		matcher = regExSessionPattern.matcher(pathInfo);
+		if (matcher.find()) {
+		} else {
+			throw new ServletException("Invalid URI");
+		}
 
 	}
 
