@@ -50,7 +50,6 @@ public class DatabaseQueryManager implements QueryManager {
 			final String statement = SQLFactory.buildSelectAllStatementWithWhereCondition(SCHEMA, User.TABLE_NAME, whereCondition);
 			connection = connectionManager.getReaderConnection();
 			preparedStatement = connection.prepareStatement(statement);
-			preparedStatement = connection.prepareStatement(statement);
 			preparedStatement.setString(1, passwordHash);
 			preparedStatement.setString(2, username);
 			resultSet = preparedStatement.executeQuery();

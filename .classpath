@@ -69,6 +69,7 @@
 	<classpathentry kind="lib" path="lib/tomcat-juli.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-8.0-doc/api"/>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
