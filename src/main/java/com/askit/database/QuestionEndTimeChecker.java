@@ -67,7 +67,7 @@ public class QuestionEndTimeChecker extends Thread {
 			}
 			return null;
 		} catch (final SQLException exception) {
-			throw new SQLException(exception);
+			throw exception;
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
 		}

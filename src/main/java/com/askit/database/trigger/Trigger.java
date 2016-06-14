@@ -25,6 +25,7 @@ public class Trigger {
 			preparedStatement.setInt(3, pointsToAdd);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -43,6 +44,7 @@ public class Trigger {
 			preparedStatement.setLong(2, userID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -62,6 +64,7 @@ public class Trigger {
 			preparedStatement.setLong(2, userID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -76,6 +79,7 @@ public class Trigger {
 			preparedStatement.setLong(2, questionID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -96,6 +100,7 @@ public class Trigger {
 			preparedStatement.setLong(3, userID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -155,6 +160,7 @@ public class Trigger {
 				}
 			}
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -170,6 +176,7 @@ public class Trigger {
 			preparedStatement.setLong(1, questionID);
 			return preparedStatement.executeQuery();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);

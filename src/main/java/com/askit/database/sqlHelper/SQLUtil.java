@@ -62,4 +62,14 @@ public class SQLUtil {
 			ExceptionHandler.getInstance().handleError(exception);
 		}
 	}
+
+	public static void rollbackSilently(final Connection connection) {
+		try {
+			if (connection != null) {
+				connection.rollback();
+			}
+		} catch (final SQLException e) {
+			ExceptionHandler.getInstance().handleError(e);
+		}
+	}
 }

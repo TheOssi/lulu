@@ -13,8 +13,7 @@ import javax.mail.internet.MimeMessage;
 
 public class SMPTEmailSender {
 
-	// TODO account + in config file
-
+	private static final String TEXT_PLAIN = "text/plain";
 	private static final String SMTP_HOST_NAME = "";
 	private static final String SMTP_AUTH_USER = "";
 	private static final String SMTP_AUTH_PWD = "";
@@ -57,13 +56,17 @@ public class SMPTEmailSender {
 
 			msg.setSubject(subject);
 
-			msg.setContent(message, "text/plain");
+			msg.setContent(message, TEXT_PLAIN);
 
 			Transport.send(msg);
 
 		} catch (final Throwable e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static void setAuth() {
+		// TODO
 	}
 
 	/**

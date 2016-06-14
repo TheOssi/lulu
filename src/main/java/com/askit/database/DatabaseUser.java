@@ -1,13 +1,11 @@
 package com.askit.database;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 import com.askit.exception.ExceptionHandler;
+import com.askit.util.PropertiesFileHelper;
 
 /**
  * This enum stores the three database user with username and passwords. Because
@@ -69,29 +67,14 @@ public enum DatabaseUser {
 	 * maps them to the corresponding user.
 	 */
 	private static void loadAllPasswordsFromFile() {
-		InputStream inputStream = null;
 		try {
-			final File propertiesFile = new File("./config", "config.properties");
-			if (propertiesFile.exists() == false) {
-				throw new FileNotFoundException("Propertiesfile not found; " + propertiesFile.getAbsolutePath());
-			}
-			final Properties properties = new Properties();
-			inputStream = new FileInputStream(propertiesFile);
-			properties.load(inputStream);
-
+			final Properties properties = PropertiesFileHelper
+					.loadPropertiesFile(new File(PropertiesFileHelper.CONFIG_RROT_DIR, "config.properties"));
 			setPassword(properties, READ_USER);
 			setPassword(properties, WRITE_USER);
 			setPassword(properties, DELETE_USER);
 		} catch (final IOException e) {
 			ExceptionHandler.getInstance().handleError(e);
-		} finally {
-			try {
-				if (inputStream != null) {
-					inputStream.close();
-				}
-			} catch (final IOException e) {
-				ExceptionHandler.getInstance().handleError(e);
-			}
 		}
 	}
 

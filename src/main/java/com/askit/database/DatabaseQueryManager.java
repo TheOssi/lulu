@@ -55,6 +55,7 @@ public class DatabaseQueryManager implements QueryManager {
 			resultSet = preparedStatement.executeQuery();
 			return resultSet.next();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -80,6 +81,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setString(4, group.getGroupPictureURI());
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -107,6 +109,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setString(8, question.getLanguage());
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -139,6 +142,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setBoolean(12, question.getIsBet());
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -169,6 +173,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setBoolean(11, question.getIsBet());
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -205,6 +210,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setString(6, user.getLanguage());
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -228,6 +234,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(2, userID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -246,6 +253,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(2, userIDofContact);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -265,6 +273,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(2, userID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -294,6 +303,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(2, userID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -324,6 +334,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final List<PublicQuestion> publicQuestions = ResultSetMapper.mapPublicQuestions(resultSet);
 			return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -346,6 +357,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final List<PublicQuestion> publicQuestions = ResultSetMapper.mapPublicQuestions(resultSet);
 			return publicQuestions.get(0);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -367,6 +379,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
 			return privateQuestions.get(0);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -393,6 +406,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
 			return privateQuestions.toArray(new PrivateQuestion[privateQuestions.size()]);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -417,6 +431,7 @@ public class DatabaseQueryManager implements QueryManager {
 			resultSet = preparedStatement.executeQuery();
 			return getUserArrayFromResultSet(resultSet);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -436,6 +451,7 @@ public class DatabaseQueryManager implements QueryManager {
 			resultSet = preparedStatement.executeQuery();
 			return getUserArrayFromResultSet(resultSet);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -455,6 +471,7 @@ public class DatabaseQueryManager implements QueryManager {
 			resultSet = preparedStatement.executeQuery();
 			return getUserArrayFromResultSet(resultSet);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -474,6 +491,7 @@ public class DatabaseQueryManager implements QueryManager {
 			resultSet = preparedStatement.executeQuery();
 			return getUserArrayFromResultSet(resultSet);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -493,6 +511,7 @@ public class DatabaseQueryManager implements QueryManager {
 			resultSet = preparedStatement.executeQuery();
 			return getUserArrayFromResultSet(resultSet);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -517,6 +536,7 @@ public class DatabaseQueryManager implements QueryManager {
 			}
 			return null;
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -542,6 +562,7 @@ public class DatabaseQueryManager implements QueryManager {
 			}
 			return null;
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -577,6 +598,7 @@ public class DatabaseQueryManager implements QueryManager {
 			resultSet = preparedStatement.executeQuery();
 			return ResultSetMapper.mapAnswers(resultSet).get(0);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -607,6 +629,7 @@ public class DatabaseQueryManager implements QueryManager {
 			}
 			return null;
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -659,6 +682,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
 			return privateQuestions.toArray(new PrivateQuestion[privateQuestions.size()]);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -715,6 +739,7 @@ public class DatabaseQueryManager implements QueryManager {
 			}
 			return list.toArray((Pair<String, Integer>[]) new Pair[list.size()]);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -741,6 +766,7 @@ public class DatabaseQueryManager implements QueryManager {
 			}
 			return list.toArray((Pair<String, Integer>[]) new Pair[list.size()]);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -775,6 +801,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setString(2, newGroupPictureURI);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -801,6 +828,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(3, questionID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -822,6 +850,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(3, questionID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -842,6 +871,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(2, questionID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -862,6 +892,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(2, groupID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -892,6 +923,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(2, groupID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -917,6 +949,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(2, questionID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -937,6 +970,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(2, questionID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -960,6 +994,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(1, questionID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -979,6 +1014,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(2, userID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -999,6 +1035,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(1, groupID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -1018,6 +1055,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(2, userID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -1051,6 +1089,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
 			return privateQuestions.toArray(new PrivateQuestion[privateQuestions.size()]);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -1075,6 +1114,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final List<PublicQuestion> publicQuestions = ResultSetMapper.mapPublicQuestions(resultSet);
 			return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -1096,6 +1136,7 @@ public class DatabaseQueryManager implements QueryManager {
 			resultSet = preparedStatement.executeQuery();
 			return getUserArrayFromResultSet(resultSet);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -1120,6 +1161,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(2, userID);
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -1143,6 +1185,7 @@ public class DatabaseQueryManager implements QueryManager {
 			}
 			return null;
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -1161,6 +1204,7 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setString(3, answer.getAnswer());
 			preparedStatement.executeUpdate();
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, null);
@@ -1186,6 +1230,7 @@ public class DatabaseQueryManager implements QueryManager {
 			resultSet = preparedStatement.executeQuery();
 			return ResultSetMapper.mapAnswers(resultSet).get(0);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -1209,6 +1254,7 @@ public class DatabaseQueryManager implements QueryManager {
 			}
 			return null;
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -1240,6 +1286,7 @@ public class DatabaseQueryManager implements QueryManager {
 			}
 			return answersWithCount.toArray((Pair<Answer, Integer>[]) new Pair[answersWithCount.size()]);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -1267,6 +1314,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final List<PublicQuestion> publicQuestions = ResultSetMapper.mapPublicQuestions(resultSet);
 			return publicQuestions.toArray(new PublicQuestion[publicQuestions.size()]);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
@@ -1294,6 +1342,7 @@ public class DatabaseQueryManager implements QueryManager {
 			final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
 			return privateQuestions.toArray(new PrivateQuestion[privateQuestions.size()]);
 		} catch (final SQLException exception) {
+			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
 		} finally {
 			SQLUtil.closeSilentlySQL(connection, preparedStatement, resultSet);
