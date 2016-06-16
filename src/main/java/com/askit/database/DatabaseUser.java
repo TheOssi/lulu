@@ -1,10 +1,7 @@
 package com.askit.database;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Properties;
+import javax.xml.bind.PropertyException;
 
-import com.askit.exception.ExceptionHandler;
 import com.askit.util.PropertiesFileHelper;
 
 /**
@@ -67,22 +64,17 @@ public enum DatabaseUser {
 	 * maps them to the corresponding user.
 	 */
 	private static void loadAllPasswordsFromFile() {
-		try {
-			final Properties properties = PropertiesFileHelper
-					.loadPropertiesFile(new File(PropertiesFileHelper.CONFIG_RROT_DIR, "config.properties"));
-			setPassword(properties, READ_USER);
-			setPassword(properties, WRITE_USER);
-			setPassword(properties, DELETE_USER);
-		} catch (final IOException e) {
-			ExceptionHandler.getInstance().handleError(e);
-		}
+		setPassword(READ_USER);
+		setPassword(WRITE_USER);
+		setPassword(DELETE_USER);
 	}
 
-	private static void setPassword(final Properties properties, final DatabaseUser user) {
-		final String password = properties.getProperty(user.getUsername());
-		if (password == null || password.trim().length() == 0) {
-			throw new NullPointerException("Password of user " + user.getUsername() + " not set");
+	private static void setPassword(final DatabaseUser user) {
+		try {
+			final String password = PropertiesFileHelper.getProperty(user.getUsername());
+			user.setPassword(password);
+		} catch (final PropertyException e) {
+			throw new NullPointerException("Password of user " + user.getUsername() + " not set; not found");
 		}
-		user.setPassword(password);
 	}
 }

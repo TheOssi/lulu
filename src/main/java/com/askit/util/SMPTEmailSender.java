@@ -1,7 +1,5 @@
 package com.askit.util;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Properties;
 
 import javax.mail.Authenticator;
@@ -12,6 +10,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.xml.bind.PropertyException;
 
 import com.askit.exception.ExceptionHandler;
 
@@ -75,14 +74,12 @@ public class SMPTEmailSender {
 	}
 
 	private static void setAuth() {
-		Properties properties = null;
 		try {
-			properties = PropertiesFileHelper.loadPropertiesFile(new File(PropertiesFileHelper.CONFIG_RROT_DIR, "email.properties"));
-		} catch (final IOException e) {
+			smptpUser = PropertiesFileHelper.getProperty("email");
+			smptPassword = PropertiesFileHelper.getProperty("password");
+		} catch (final PropertyException e) {
 			ExceptionHandler.getInstance().handleError(e);
 		}
-		smptpUser = properties.getProperty("email");
-		smptPassword = properties.getProperty("password");
 	}
 
 	/**
