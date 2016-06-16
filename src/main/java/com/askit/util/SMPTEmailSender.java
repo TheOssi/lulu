@@ -10,14 +10,16 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.xml.bind.PropertyException;
+
+import com.askit.exception.ExceptionHandler;
 
 public class SMPTEmailSender {
 
-	// TODO account + in config file
-
+	private static final String TEXT_PLAIN = "text/plain";
 	private static final String SMTP_HOST_NAME = "";
-	private static final String SMTP_AUTH_USER = "";
-	private static final String SMTP_AUTH_PWD = "";
+	private static String smptpUser = "";
+	private static String smptPassword = "";
 
 	/**
 	 * This Method sends a simple email over SMTP
@@ -30,6 +32,11 @@ public class SMPTEmailSender {
 	 *            the message of the email
 	 * @throws MessagingException
 	 */
+
+	static {
+		setAuth();
+	}
+
 	public static void sendMail(final String recipients[], final String subject, final String message) throws MessagingException {
 		try {
 			final boolean debug = false;
@@ -45,7 +52,7 @@ public class SMPTEmailSender {
 			final Message msg = new MimeMessage(session);
 
 			// simple way, because the user of the acooount send the email
-			final String emailFrom = SMTP_AUTH_USER;
+			final String emailFrom = smptpUser;
 
 			final InternetAddress addressFrom = new InternetAddress(emailFrom);
 			msg.setFrom(addressFrom);
@@ -57,12 +64,21 @@ public class SMPTEmailSender {
 
 			msg.setSubject(subject);
 
-			msg.setContent(message, "text/plain");
+			msg.setContent(message, TEXT_PLAIN);
 
 			Transport.send(msg);
 
 		} catch (final Throwable e) {
 			e.printStackTrace();
+		}
+	}
+
+	private static void setAuth() {
+		try {
+			smptpUser = PropertiesFileHelper.getProperty("email");
+			smptPassword = PropertiesFileHelper.getProperty("password");
+		} catch (final PropertyException e) {
+			ExceptionHandler.getInstance().handleError(e);
 		}
 	}
 
@@ -73,8 +89,8 @@ public class SMPTEmailSender {
 	private static class SMTPAuthenticator extends javax.mail.Authenticator {
 		@Override
 		public PasswordAuthentication getPasswordAuthentication() {
-			final String username = SMTP_AUTH_USER;
-			final String password = SMTP_AUTH_PWD;
+			final String username = smptpUser;
+			final String password = smptPassword;
 			return new PasswordAuthentication(username, password);
 		}
 	}

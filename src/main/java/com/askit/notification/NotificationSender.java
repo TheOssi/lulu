@@ -2,18 +2,16 @@ package com.askit.notification;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Properties;
 
 import javax.net.ssl.HttpsURLConnection;
+import javax.xml.bind.PropertyException;
 
 import com.askit.exception.ExceptionHandler;
 import com.askit.exception.NotificationException;
+import com.askit.util.PropertiesFileHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -156,27 +154,10 @@ public class NotificationSender implements Runnable {
 	private String getAuthKey() {
 		String authKey = "";
 		try {
-			final File propertiesFile = new File("./config/cm.properties");
-			if (propertiesFile.exists() == false) {
-				throw new IOException("Properties file (" + propertiesFile.getAbsolutePath() + ") does not exist");
-			}
-
-			final Properties properties = new Properties();
-			final InputStream inputStream = new FileInputStream(propertiesFile);
-			properties.load(inputStream);
-			closeSilentlyInputStream(inputStream);
-			authKey = properties.getProperty("auth_key");
-		} catch (final IOException e) {
+			authKey = PropertiesFileHelper.getProperty("auth_key");
+		} catch (final PropertyException e) {
 			exceptionHandler.handleError(e);
 		}
 		return authKey;
-	}
-
-	private static void closeSilentlyInputStream(final InputStream inputStream) {
-		try {
-			inputStream.close();
-		} catch (final IOException e) {
-			ExceptionHandler.getInstance().handleError(e);
-		}
 	}
 }
