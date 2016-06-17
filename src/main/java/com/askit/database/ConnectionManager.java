@@ -67,7 +67,6 @@ public class ConnectionManager {
 		final PoolProperties properties = new PoolProperties();
 		setDefaultSettings(properties);
 		properties.setUsername(DatabaseUser.READ_USER.getUsername());
-		System.out.println(DatabaseUser.READ_USER.getPassword());
 		properties.setPassword(DatabaseUser.READ_USER.getPassword());
 		properties.setDefaultReadOnly(true);
 		readerDataSource = new DataSource();

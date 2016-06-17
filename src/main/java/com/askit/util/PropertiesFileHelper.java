@@ -27,6 +27,7 @@ public class PropertiesFileHelper {
 		}
 		final String value = propteries.getProperty(key);
 		if (value == null) {
+			// TODO better
 			throw new PropertyException("Property " + key + " not found");
 		}
 		return value;

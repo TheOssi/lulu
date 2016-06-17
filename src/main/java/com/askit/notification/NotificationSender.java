@@ -32,7 +32,7 @@ import com.google.gson.JsonParser;
  * @version 1.0.0
  *
  */
-public class NotificationSender implements Runnable {
+public class NotificationSender {
 
 	private static final String JSON_FIELD_ERROR = "error";
 	private static final String JSON_FIELD_RESULTS = "results";
@@ -109,30 +109,34 @@ public class NotificationSender implements Runnable {
 	 */
 	public void startThread() {
 		if (sendNotificationThread == null || !sendNotificationThread.isAlive()) {
-			sendNotificationThread = new Thread(INSTANCE);
+			sendNotificationThread = new Thread(getRunnable());
 			sendNotificationThread.start();
 		}
 	}
 
-	@Override
-	public void run() {
-		while (true) {
-			if (notificationHandler.hasNotifications()) {
-				try {
-					send(notificationHandler.getNextNotificationAndDelete());
-				} catch (final NotificationException e) {
-					exceptionHandler.handleError(e);
-				}
-			} else {
-				try {
-					Thread.sleep(SLEEP_TIME);
-				} catch (final InterruptedException e) {
-					if (!sendNotificationThread.isAlive() || sendNotificationThread.isInterrupted()) {
-						sendNotificationThread.start();
+	private Runnable getRunnable() {
+		return new Runnable() {
+			@Override
+			public void run() {
+				while (true) {
+					if (notificationHandler.hasNotifications()) {
+						try {
+							send(notificationHandler.getNextNotificationAndDelete());
+						} catch (final NotificationException e) {
+							exceptionHandler.handleError(e);
+						}
+					} else {
+						try {
+							Thread.sleep(SLEEP_TIME);
+						} catch (final InterruptedException e) {
+							if (!sendNotificationThread.isAlive() || sendNotificationThread.isInterrupted()) {
+								sendNotificationThread.start();
+							}
+						}
 					}
 				}
 			}
-		}
+		};
 	}
 
 	private String getErrorText(final String json) {

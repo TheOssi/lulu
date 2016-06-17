@@ -19,7 +19,7 @@ import com.askit.notification.Notification;
 import com.askit.notification.NotificationCodes;
 import com.askit.notification.NotificationSupporter;
 
-public class QuestionSoonEndTimeChecker extends Thread {
+public class QuestionSoonEndTimeChecker {
 	private static final QuestionSoonEndTimeChecker INSTANCE = new QuestionSoonEndTimeChecker();
 	private static final long SLEEP_TIME = 5000L; // 5s
 	private static final long SOON_END_TIME = 14400000L; // 2h
@@ -33,6 +33,7 @@ public class QuestionSoonEndTimeChecker extends Thread {
 			+ "WHERE PU.endDate IS NOT NULL AND PU.endDate BETWEEN ? AND ? AND PU.finished != 1 )  AS R ORDER BY R.endDate ASC LIMIT 1;";
 
 	private final List<AbstractQuestion> usedQuestions = Collections.synchronizedList(new ArrayList<AbstractQuestion>());
+	private Thread thread = null;
 
 	private QuestionSoonEndTimeChecker() {
 	}
@@ -42,8 +43,12 @@ public class QuestionSoonEndTimeChecker extends Thread {
 	}
 
 	public void startThread() {
-		if (!this.isAlive() || this.isInterrupted()) {
-			this.start();
+		if (thread == null) {
+			thread = new Thread(getRunnable());
+		}
+
+		if (!thread.isAlive() || thread.isInterrupted()) {
+			thread.start();
 		}
 	}
 
@@ -79,39 +84,44 @@ public class QuestionSoonEndTimeChecker extends Thread {
 		}
 	}
 
-	@Override
-	public void run() {
-		AbstractQuestion[] currentQuestions = null;
-		final QueryManager queryManager = new DatabaseQueryManager();
-		while (true) {
-			try {
-				currentQuestions = getNext();
-				if (currentQuestions.length != 0) {
-					for (final AbstractQuestion currentQuestion : currentQuestions) {
-						final Long questionID = currentQuestion.getId();
-						final AbstractQuestion questionToCheck = new AbstractQuestion(currentQuestion.getId(), null, currentQuestion.getTableName());
-						if (!usedQuestions.contains(questionToCheck)) {
-							usedQuestions.add(questionToCheck);
-							final Notification notification = new Notification("", NotificationCodes.NOTIFICATION_QUESTION_SOON_END.getCode(),
-									"questionID", questionID.toString());
-							if (currentQuestion.getTableName().equals(PrivateQuestion.TABLE_NAME)) {
-								queryManager.setPrivateQuestionToFinish(questionID);
-								NotificationSupporter.sendNotificationToAllMembersOfPrivateQuestion(notification, questionID);
-							} else if (currentQuestion.getTableName().equals(PublicQuestion.TABLE_NAME)) {
-								queryManager.setPublicQuestionToFinish(questionID);
-								NotificationSupporter.sendNotificationToAllMembersOfPublicQuestion(notification, questionID);
+	private Runnable getRunnable() {
+		return new Runnable() {
+			@Override
+			public void run() {
+				AbstractQuestion[] currentQuestions = null;
+				final QueryManager queryManager = new DatabaseQueryManager();
+				while (true) {
+					try {
+						currentQuestions = getNext();
+						if (currentQuestions.length != 0) {
+							for (final AbstractQuestion currentQuestion : currentQuestions) {
+								final Long questionID = currentQuestion.getId();
+								final AbstractQuestion questionToCheck = new AbstractQuestion(currentQuestion.getId(), null,
+										currentQuestion.getTableName());
+								if (!usedQuestions.contains(questionToCheck)) {
+									usedQuestions.add(questionToCheck);
+									final Notification notification = new Notification("",
+											NotificationCodes.NOTIFICATION_QUESTION_SOON_END.getCode(), "questionID", questionID.toString());
+									if (currentQuestion.getTableName().equals(PrivateQuestion.TABLE_NAME)) {
+										queryManager.setPrivateQuestionToFinish(questionID);
+										NotificationSupporter.sendNotificationToAllMembersOfPrivateQuestion(notification, questionID);
+									} else if (currentQuestion.getTableName().equals(PublicQuestion.TABLE_NAME)) {
+										queryManager.setPublicQuestionToFinish(questionID);
+										NotificationSupporter.sendNotificationToAllMembersOfPublicQuestion(notification, questionID);
+									}
+								}
 							}
+						} else {
+							Thread.sleep(SLEEP_TIME);
 						}
+					} catch (final SQLException | DatabaseLayerException | NotificationException e) {
+						exceptionHandler.handleError(e);
+					} catch (final InterruptedException e) {
+						exceptionHandler.handleError(e);
+						startThread();
 					}
-				} else {
-					Thread.sleep(SLEEP_TIME);
 				}
-			} catch (final SQLException | DatabaseLayerException | NotificationException e) {
-				exceptionHandler.handleError(e);
-			} catch (final InterruptedException e) {
-				exceptionHandler.handleError(e);
-				startThread();
 			}
-		}
+		};
 	}
 }
