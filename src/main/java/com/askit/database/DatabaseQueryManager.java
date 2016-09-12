@@ -355,6 +355,9 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(1, questionID);
 			resultSet = preparedStatement.executeQuery();
 			final List<PublicQuestion> publicQuestions = ResultSetMapper.mapPublicQuestions(resultSet);
+			if (publicQuestions.size() == 0) {
+				return null;
+			}
 			return publicQuestions.get(0);
 		} catch (final SQLException exception) {
 			SQLUtil.rollbackSilently(connection);
@@ -377,6 +380,9 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement.setLong(1, questionID);
 			resultSet = preparedStatement.executeQuery();
 			final List<PrivateQuestion> privateQuestions = ResultSetMapper.mapPrivateQuestions(resultSet);
+			if (privateQuestions.size() == 0) {
+				return null;
+			}
 			return privateQuestions.get(0);
 		} catch (final SQLException exception) {
 			SQLUtil.rollbackSilently(connection);
@@ -596,7 +602,11 @@ public class DatabaseQueryManager implements QueryManager {
 			preparedStatement = connection.prepareStatement(statement);
 			preparedStatement.setLong(1, questionID);
 			resultSet = preparedStatement.executeQuery();
-			return ResultSetMapper.mapAnswers(resultSet).get(0);
+			final List<Answer> answers = ResultSetMapper.mapAnswers(resultSet);
+			if (answers.size() == 0) {
+				return null;
+			}
+			return answers.get(0);
 		} catch (final SQLException exception) {
 			SQLUtil.rollbackSilently(connection);
 			throw new DatabaseLayerException(exception);
@@ -720,6 +730,7 @@ public class DatabaseQueryManager implements QueryManager {
 		return getPrivateQuestionsOfUserDependingOnStatus(userID, startIndex, quantity, true);
 	}
 
+	// TODO global score
 	@SuppressWarnings("unchecked")
 	@Override
 	public Pair<String, Integer>[] getAllGroupScoresAndGlobalScoreOfUser(final long userID) throws DatabaseLayerException {

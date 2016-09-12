@@ -24,11 +24,11 @@ public interface QueryManager {
 	 * Checks if the combination of username and passwordHash is present in the
 	 * database.
 	 * 
-	 * @param user
+	 * @param username
 	 *            the username the username of the user
 	 * @param passwordHash
 	 *            the passwordhash of the user
-	 * @return
+	 * @return true, if the combination matches, else false
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
@@ -49,17 +49,17 @@ public interface QueryManager {
 	public void createUser(User user) throws DatabaseLayerException;
 
 	/**
-	 * create a new Group
+	 * Creates a new Group
 	 *
-	 * @param user
-	 *            the group to add
+	 * @param group
+	 *            the group to create
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void createNewGroup(Group group) throws DatabaseLayerException;
 
 	/**
-	 * crate a new public question
+	 * Crates a new public question
 	 *
 	 * @param question
 	 *            the question to create
@@ -70,7 +70,7 @@ public interface QueryManager {
 
 	/**
 	 *
-	 * create a new question in a group
+	 * Creates a new question in a group
 	 *
 	 * @param question
 	 *            the question to create
@@ -80,7 +80,7 @@ public interface QueryManager {
 	public void createNewPrivateQuestionInGroup(PrivateQuestion question) throws DatabaseLayerException;
 
 	/**
-	 * create a new oneTimeQuestion
+	 * Creates a new one-time question
 	 *
 	 * @param question
 	 *            the question to create
@@ -94,10 +94,10 @@ public interface QueryManager {
 	// ================================================================================
 
 	/**
-	 * add a user to a group
+	 * Adds a user to a group
 	 *
 	 * @param groupID
-	 *            the groupID of the group
+	 *            the id of the group
 	 * @param userID
 	 *            the id of the user
 	 * @throws DatabaseLayerException
@@ -106,56 +106,58 @@ public interface QueryManager {
 	public void addUserToGroup(long groupID, long userID) throws DatabaseLayerException;
 
 	/**
-	 * add a contact to a user
+	 * Adds a contact to a user
 	 *
 	 * @param userIDOfUser
 	 *            the id of the user
 	 * @param userIDofContact
-	 *            the id of the contact to ad
+	 *            the id of the contact
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void addContact(long userIDOfUser, long userIDofContact) throws DatabaseLayerException;
 
 	/**
-	 * add a user to a oneTimeQuestion
+	 * Adds a user to a one-time question
 	 *
 	 * @param userID
 	 *            the id of the user
 	 * @param questionID
-	 *            the questionID
+	 *            the id of the question
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void addUserToOneTimeQuestion(long userID, long questionID) throws DatabaseLayerException;
 
 	/**
-	 * add answer to a public question
+	 * Creates an answer and adds this to a public question
 	 *
 	 * @param answer
-	 *            the answer to add
+	 *            the answer to create
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void addAnswerToPublicQuestion(Answer answer) throws DatabaseLayerException;
 
 	/**
-	 * add a answer to a private question
+	 * Creates an answer and adds this to a private question
 	 * 
 	 * @param answer
-	 *            the answer to add
+	 *            the answer to create
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void addAnswerToPrivateQuestion(Answer answer) throws DatabaseLayerException;
 
 	/**
-	 * add a user to a public question
+	 * Adds a user to a public question
 	 *
-	 * @param question
-	 *            the questionID
-	 * @param user
+	 * @param questionID
+	 *            the id of the question
+	 * @param userID
 	 *            the id of the user
+	 * @throws DatabaseLayerException
+	 *             if a exception occurs in the database
 	 */
 	public void addUserToPublicQuestion(long questionID, long userID) throws DatabaseLayerException;
 
@@ -164,364 +166,411 @@ public interface QueryManager {
 	// ================================================================================
 
 	/**
-	 * returns public question in a special area of index sort by createDate and
-	 * questionID
+	 * Returns public questions in a special area by the langauge and sorts by
+	 * createDate and questionID
 	 *
 	 * @param startIndex
-	 *            the startindex; begin is 0 (excluded)
+	 *            the startindex, begin is 0 (excluded), so 0 means the first
+	 *            row
 	 * @param quantity
-	 *            how much public Questions should be selected
+	 *            how much public questions should be selected
 	 * @param language
 	 *            the langauge
-	 * @return a list of public questions
+	 * @return a array of public questions; if no questions where found it
+	 *         returns a empty array
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public PublicQuestion[] getPublicQuestions(int startIndex, int quantity, String language) throws DatabaseLayerException;
 
 	/**
-	 * Returns a specific PublicQuestion
+	 * Returns a specific public question
 	 *
-	 * @return
-	 * @param question
-	 *            the questionID
+	 * @param questionID
+	 *            the id of the public question or null of not found
+	 * @return the specific
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public PublicQuestion getPublicQuestion(long questionID) throws DatabaseLayerException;
 
 	/**
-	 * return a specific PrivateQuestion
+	 * Returns a specific private question
+	 * 
+	 * @param questionID
+	 *            the id of the private question
 	 *
-	 * @param question
-	 *            the questionID
-	 * @return
+	 * @return the specific question or null if not found
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public PrivateQuestion getPrivateQuestion(long questionID) throws DatabaseLayerException;
 
 	/**
-	 * returns all questions of a group within a puffer
+	 * Returns all questions of a group within an area
 	 *
-	 * @param user
-	 *            the groupID
+	 * @param groupID
+	 *            the if of the group
 	 * @param startIndex
+	 *            the startindex, begin is 0 (excluded), so 0 means the first
 	 * @param quantity
-	 * @return
+	 *            how much questions should be selected
+	 * 
+	 * @return a array of private questions; if no question where found it
+	 *         returns a empty array
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public PrivateQuestion[] getQuestionsOfGroup(long groupID, int startIndex, int quantity) throws DatabaseLayerException;
 
 	/**
-	 * search by username
+	 * Returns the username of a user
 	 *
-	 * @param searchPattern
-	 * @return
-	 * @throws DatabaseLayerException
-	 *             if a exception occurs in the database
-	 */
-	public User[] searchUsersByUsername(String searchPattern) throws DatabaseLayerException;
-
-	/**
-	 * returns the username of a user
-	 *
-	 * @param user
+	 * @param userID
 	 *            the userID the id of the user
-	 * @return
+	 * @return the username of the given user or null if not found
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public String getUsername(long userID) throws DatabaseLayerException;
 
 	/**
-	 * returns all users of a PublicQuestion
+	 * Returns all users of a public question
 	 *
-	 * @param question
+	 * @param questionID
 	 *            the questionID
-	 * @return
+	 * @return a array of the users maybe empty, cause no users are assigned to
+	 *         the question or the question wans't found
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public User[] getUsersOfPublicQuestion(long questionID) throws DatabaseLayerException;
 
 	/**
-	 * returns all users of a PrivateQuestion
+	 * Returns all users of a private question
 	 *
-	 * @param question
+	 * @param questionID
 	 *            the questionID
-	 * @return
+	 * @return a array of the users maybe empty, cause no users are assigned to
+	 *         the question or the question wans't found
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public User[] getUsersOfPrivateQuestion(long questionID) throws DatabaseLayerException;
 
 	/**
-	 *
-	 * @param question
-	 *            the questionID
-	 * @return
+	 * Returns the user which answer with a specific answer to a private
+	 * question
+	 * 
+	 * @param answerID
+	 *            the id of the answer
+	 * @return a array of the users maybe empty, cause no users answered with
+	 *         this answer or the question wasn't found
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public User[] getUsersOfAnswerPrivateQuestion(long answerID) throws DatabaseLayerException;
 
 	/**
+	 * Returns the user which answer with a specific answer to a public question
 	 *
-	 *
-	 * @param question
-	 *            the questionID
-	 * @return
+	 * @param answerID
+	 *            the id of the answer
+	 * @return a array of the users maybe empty, cause no users answered with
+	 *         this answer or the question wasn't found
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public User[] getUsersOfAnswerPublicQuestion(long answerID) throws DatabaseLayerException;
 
 	/**
-	 * returns the users of a group
+	 * Returns the users of a group
 	 *
-	 * @param user
-	 *            the groupID
-	 * @return
+	 * @param groupID
+	 *            the id of the group
+	 * @return a array of the users maybe empty, cause no users are assigned to
+	 *         the group or the group wasn't found
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public User[] getUsersOfGroup(long groupID) throws DatabaseLayerException;
 
 	/**
+	 * Returns the global score of a user
 	 *
-	 * @param user
-	 *            the userID the id of the user
-	 * @return
+	 * @param userID
+	 *            the id of the user
+	 * @return the gloabl score or null if the user wasn't found
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public Long getUserScoreOfGlobal(long userID) throws DatabaseLayerException;
 
 	/**
+	 * Returns the score of an user in a group
 	 *
-	 * @param user
+	 * @param userID
 	 *            the userID the id of the user
-	 * @return
+	 * @param groupID
+	 *            the id of the group
+	 * @return the score in the group or null if the user or the group wasn't
+	 *         found
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public Long getUserScoreInGroup(long userID, long groupID) throws DatabaseLayerException;
 
 	/**
+	 * Returns the phonenumber hash of a user
 	 *
-	 * @param user
-	 *            the userID the id of the user
-	 * @return
+	 * @param userID
+	 *            the id of the user
+	 * @return the phonenumber hash or null of the user wasn't found
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public String getPhoneNumberHash(long userID) throws DatabaseLayerException;
 
 	/**
+	 * Returns the choosen answer of a user in a public question
 	 *
-	 * @param question
-	 *            the questionID
-	 * @param user
-	 *            the userID the id of the user
-	 * @return
+	 * @param questionID
+	 *            the id of the public question
+	 * @param userID
+	 *            the id of the user
+	 * @return the choosen answer or null if the user, question or no assigment
+	 *         of the user to this question were found
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public Answer getChoseAnswerInPublicQuestion(long questionID, long userID) throws DatabaseLayerException;
 
 	/**
-	 *
-	 * @param question
-	 *            the questionID
-	 * @param user
-	 *            the userID the id of the user
-	 * @return
+	 * Returns the choosen answer of a user in a private question
+	 * 
+	 * @param questionID
+	 *            the id of the private question
+	 * @param userID
+	 *            the id of the user
+	 * @return the choosen answer or null if the user, question or no assigment
+	 *         of the user to this question were found
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public Answer getChoseAnswerInPrivateQuestion(long questionID, long userID) throws DatabaseLayerException;
 
 	/**
+	 * Returns the selected answer of a private question
 	 *
-	 * @param question
-	 *            the questionID
-	 * @param user
-	 *            the userID the id of the user
-	 * @return
+	 * @param questionID
+	 *            the id of the private question
+	 * @return the selected answer or null if the question wasn't found or the
+	 *         selected answer wasn't set
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public Answer getSelectedAnswerInPrivateQuestion(long questionID) throws DatabaseLayerException;
 
 	/**
-	 * returns the place in the Ranking of a user in a group
+	 * Returns the place in the ranking of a user in a group
 	 *
-	 * @param user
-	 *            the userID the id of the user
-	 * @param user
-	 *            the groupID
-	 * @return
+	 * @param userID
+	 *            the id of the user
+	 * @param groupID
+	 *            the id of the group
+	 * @return the place in the ranking or null if the user, group or no
+	 *         assigment of the user to the group were found
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public Long getRankingInGroup(long userID, long groupID) throws DatabaseLayerException;
 
 	/**
-	 * returns the passwordHash of a user
+	 * Returns the password hash of an user
 	 *
-	 * @param user
-	 *            the userID the id of the user
-	 * @return
+	 * @param userID
+	 *            the id of the user
+	 * @return the password hash or null if the user wasn't found or the
+	 *         password hash wasn't set
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public String getPasswordHash(long userID) throws DatabaseLayerException;
 
 	/**
+	 * Returns the language of an user
 	 * 
-	 * @param user
-	 *            the userID the id of the user
-	 * @return
+	 * @param userID
+	 *            the id of the user
+	 * @return the langauge or null if the user wasn't found
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public String getLanguage(long userID) throws DatabaseLayerException;
 
 	/**
-	 * get the profilePictureURI a user
+	 * Returns the profile picture uri of an user
 	 *
-	 * @param user
-	 *            the userID the id of the user
-	 * @return
+	 * @param userID
+	 *            the id of the user
+	 * @return the uri or null if the user wasn't found
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public String getProfilePictureURI(long userID) throws DatabaseLayerException;
 
 	/**
-	 * get the groupPicture
+	 * Returns the group picture uri of a group
 	 *
-	 * @param user
-	 *            the groupID
-	 * @return
+	 * @param groupID
+	 *            the id of the group
+	 * @return the uri or null if the group wasn't found
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public String getGroupPictureURI(long groupID) throws DatabaseLayerException;
 
 	/**
-	 * get the group name
+	 * Returns the group name of a group
 	 *
-	 * @param user
-	 *            the groupID
-	 * @return
+	 * @param groupID
+	 *            the id of the group
+	 * @return the group name or null if the user wasn't found
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public String getGroupName(long groupID) throws DatabaseLayerException;
 
 	/**
+	 * Returns finished private questions in a group in a specific area
 	 *
-	 *
-	 * @param user
-	 *            the groupID
+	 * @param groupID
+	 *            the id of the group
 	 * @param startIndex
+	 *            the startindex, begin is 0 (excluded), so 0 means the first
 	 * @param quantity
-	 * @return
+	 *            how much questions should be selected
+	 * @return an array of private questions maybe empty
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public PrivateQuestion[] getOldPrivateQuestions(long groupID, int startIndex, int quantity) throws DatabaseLayerException;
 
 	/**
-	 *
-	 * @param question
-	 *            the questionID
-	 * @return
+	 * Returns all answers of a public question and counts for each question how
+	 * often it was choosed
+	 * 
+	 * @param questionID
+	 *            the id of the public question
+	 * @return a pair array may empty of the answers with count
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public Pair<Answer, Integer>[] getAnswersOfPublicQuestionAndCount(long questionID) throws DatabaseLayerException;
 
 	/**
-	 * @param question
-	 *            the questionID
-	 * @return
+	 * Returns all answers of a private question and counts for each question
+	 * how often
+	 * 
+	 * @param questionID
+	 *            the id of the private question
+	 * @return a pair array may empty of the answers with count
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public Pair<Answer, Integer>[] getAnswersOfPrivateQuestionAndCount(long questionID) throws DatabaseLayerException;
 
 	/**
-	 *
-	 * @param user
-	 *            the userID the id of the user
+	 * Returns all not finished public questions of an user in a specific area
+	 * 
+	 * @param userID
+	 *            the id of the user
 	 * @param startIndex
+	 *            the startindex, begin is 0 (excluded), so 0 means the first
 	 * @param quantity
-	 * @return
+	 *            how much questions should be selected
+	 * @return an array may empty of public questions
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public PublicQuestion[] getActivePublicQuestionsOfUser(long userID, int startIndex, int quantity) throws DatabaseLayerException;
 
 	/**
-	 *
-	 * @param user
-	 *            the userID the id of the user
+	 * Returns all not finished private questions of an user in a specific area
+	 * 
+	 * @param userID
+	 *            the id of the user
 	 * @param startIndex
+	 *            the startindex, begin is 0 (excluded), so 0 means the first
 	 * @param quantity
-	 * @return
+	 *            how much questions should be selected
+	 * @return an array may empty of private questions
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public PrivateQuestion[] getActivePrivateQuestionsOfUser(long userID, int startIndex, int quantity) throws DatabaseLayerException;
 
 	/**
-	 *
-	 * @param user
-	 *            the userID the id of the user
+	 * Returns all finished public questions of an user in a specific area
+	 * 
+	 * @param userID
+	 *            the id of the user
 	 * @param startIndex
+	 *            the startindex, begin is 0 (excluded), so 0 means the first
 	 * @param quantity
-	 * @return
+	 *            how much questions should be selected
+	 * @return an array may empty of public questions
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public PublicQuestion[] getOldPublicQuestionsOfUser(long userID, int startIndex, int quantity) throws DatabaseLayerException;
 
 	/**
-	 *
-	 * @param user
-	 *            the userID the id of the user
+	 * Returns all finished private questions of an user in a specific area
+	 * 
+	 * @param userID
+	 *            the id of the user
 	 * @param startIndex
+	 *            the startindex, begin is 0 (excluded), so 0 means the first
 	 * @param quantity
-	 * @return
+	 *            how much questions should be selected
+	 * @return an array may empty of private questions
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public PrivateQuestion[] getOldPrivateQuestionsOfUser(long userID, int startIndex, int quantity) throws DatabaseLayerException;
 
 	/**
-	 *
-	 * @param user
-	 *            the userID the id of the user
-	 * @return
+	 * Returns a list of all groups of an user with his score in this group and
+	 * also his global score (the group is in this case empty)
+	 * 
+	 * @param userID
+	 *            the id of the user
+	 * @return a pair array may empty of groups with scores
+	 * @throws DatabaseLayerException
+	 *             if a exception occurs in the database
 	 */
 	public Pair<String, Integer>[] getAllGroupScoresAndGlobalScoreOfUser(long userID) throws DatabaseLayerException;;
 
 	/**
-	 *
-	 * @param user
-	 *            the groupID
-	 * @return
+	 * Returns a list of all users in a group with his score in this group
+	 * 
+	 * @param groupID
+	 *            the id of the group
+	 * @return a pair array may empty of user name with scores
+	 * @throws DatabaseLayerException
+	 *             if a exception occurs in the database
 	 */
 	public Pair<String, Integer>[] getUsersOfGroupsWithScore(long groupID) throws DatabaseLayerException;
 
 	/**
+	 * Returns the email of an user
+	 * 
 	 * @param userID
-	 * @return
+	 *            the id of the user
+	 * @return the email or null if the user wasn't found
 	 * @throws DatabaseLayerException
+	 *             if a exception occurs in the database
 	 */
 	String getEmail(long userID) throws DatabaseLayerException;
 
@@ -530,129 +579,171 @@ public interface QueryManager {
 	// ================================================================================
 
 	/**
-	 * @param user
-	 *            the userID the id of the user
+	 * Updates the langauge of an user
+	 * 
+	 * @param userID
+	 *            the id of the user
 	 * @param newLanguage
+	 *            the new language
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void setLanguage(long userID, String newLanguage) throws DatabaseLayerException;
 
 	/**
-	 * @param user
-	 *            the userID the id of the user
+	 * Updates the profile picture of an user
+	 * 
+	 * @param userID
+	 *            the id of the user
 	 * @param newProfilePictureURI
+	 *            the new profile picture uri
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void setProfilPictureOfUser(long userID, String newProfilePictureURI) throws DatabaseLayerException;
 
 	/**
-	 * @param user
-	 *            the groupID
+	 * Updates the group picture of a group
+	 * 
+	 * @param groupID
+	 *            the id of the group
 	 * @param newGroupPictureURI
+	 *            the new group picture uri
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void setGroupPicture(long groupID, String newGroupPictureURI) throws DatabaseLayerException;
 
 	/**
-	 * @param user
-	 *            the userID the id of the user
+	 * Updates the password hash of an user
+	 * 
+	 * @param userID
+	 *            the id of the user
 	 * @param newPasswordHash
+	 *            the new password hash
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void setPasswordHash(long userID, String newPasswordHash) throws DatabaseLayerException;
 
 	/**
-	 * @param user
-	 *            the userID the id of the user
-	 * @param question
-	 *            the questionID
+	 * Sets or updates the choosen answer of a private question
+	 * 
+	 * @param userID
+	 *            the id of the user
+	 * @param questionID
+	 *            the id of the private question
 	 * @param answerID
+	 *            the id of the (new) answer
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void setChoosedAnswerOfPrivateQuestion(long userID, long questionID, long answerID) throws DatabaseLayerException;
 
 	/**
-	 * @param user
-	 *            the userID the id of the user
-	 * @param question
-	 *            the questionID
+	 * Sets or updates the choosen answer of a public question
+	 * 
+	 * @param userID
+	 *            the id of the user
+	 * @param questionID
+	 *            the id of the public question
 	 * @param answerID
+	 *            the id of the answer
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void setChoosedAnswerOfPublicQuestion(long userID, long questionID, long answerID) throws DatabaseLayerException;
 
 	/**
-	 * @param question
-	 *            the questionID
+	 * Sets or updates the selected answer of a private question
+	 * 
+	 * @param questionID
+	 *            the id of the private question
 	 * @param answerID
+	 *            the id of the answer
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void setSelectedAnswerOfPrivateQuestion(long questionID, long answerID) throws DatabaseLayerException;
 
 	/**
-	 * @param user
-	 *            the groupID
+	 * Updates the group admin of a group
+	 * 
+	 * @param groupID
+	 *            the id of the group
 	 * @param newAdmminID
+	 *            the id of the admin
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void setGroupAdmin(long groupID, long newAdmminID) throws DatabaseLayerException;
 
 	/**
-	 * @param user
-	 *            the userID the id of the user
+	 * Updates the phone number hash of an user
+	 * 
+	 * @param userID
+	 *            the id of the user
 	 * @param newPhoneNumberHash
+	 *            the new phone number hash
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void setPhoneNumberHash(long userID, String newPhoneNumberHash) throws DatabaseLayerException;
 
 	/**
-	 * @param user
-	 *            the groupID
+	 * Update the group name of a group
+	 * 
+	 * @param groupID
+	 *            the id of the group
 	 * @param newGroupName
+	 *            the new name of the group
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void setGroupName(long groupID, String newGroupName) throws DatabaseLayerException;
 
 	/**
-	 * @param user
-	 *            the userID the id of the user
+	 * Update the username of an user
+	 * 
+	 * @param userID
+	 *            the id of the user
 	 * @param newUsername
+	 *            the new username
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void setUsername(long userID, String newUsername) throws DatabaseLayerException;
 
 	/**
-	 * @param user
-	 *            the userID the id of the user
-	 * @param newUsername
+	 * Sets a public question to finish
+	 * 
+	 * @param questionID
+	 *            the id of the public question
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void setPublicQuestionToFinish(long questionID) throws DatabaseLayerException;
 
 	/**
-	 * @param question
-	 *            the questionID
+	 * Sets a private question to finish
+	 * 
+	 * @param questionID
+	 *            the id of the private question
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void setPrivateQuestionToFinish(long questionID) throws DatabaseLayerException;
 
 	/**
+	 * Sets or Updates the email adress of an user
+	 * 
 	 * @param userID
+	 *            the id of the user
+	 * 
 	 * @param newEmail
+	 *            the (new) email adress
 	 * @throws DatabaseLayerException
+	 *             if a exception occurs in the database
 	 */
 	public void setEmail(long userID, String newEmail) throws DatabaseLayerException;
 
@@ -661,35 +752,44 @@ public interface QueryManager {
 	// ================================================================================
 
 	/**
-	 * @param question
-	 *            the questionID
+	 * Deletes a private question
+	 * 
+	 * @param questionID
+	 *            the id of the private question
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void deletePrivateQuestion(long questionID) throws DatabaseLayerException;
 
 	/**
-	 * @param user
-	 *            the groupID
-	 * @param user
-	 *            the userID the id of the user
+	 * Deletes an user from a group
+	 * 
+	 * @param groupID
+	 *            the id of the group
+	 * @param userID
+	 *            the id of the user
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void deleteUserFromGroup(long groupID, long userID) throws DatabaseLayerException;
 
 	/**
-	 * @param user
-	 *            the groupID
+	 * Deletes a group
+	 * 
+	 * @param groupID
+	 *            the id of the group
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public void deleteGroup(long groupID) throws DatabaseLayerException;
 
 	/**
-	 * @param user
-	 *            the userID the id of the user
+	 * Deletes a contact of a user
+	 * 
+	 * @param userID
+	 *            the id of the user
 	 * @param contactID
+	 *            the id of the contact
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
@@ -700,32 +800,54 @@ public interface QueryManager {
 	// ================================================================================
 
 	/**
-	 * @param user
-	 *            the userID the id of the user
+	 * Searches within the groups by group name
+	 * 
+	 * @param userID
+	 *            the id of the user
 	 * @param nameSearchPattern
-	 * @return
+	 *            the pattern to search
+	 * @return an array of groups matches the search pattern may empty
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public Group[] searchForGroup(long userID, String nameSearchPattern) throws DatabaseLayerException;
 
 	/**
-	 * @param user
-	 *            the groupID
-	 * @param question
-	 *            the questionSearchPattern
-	 * @return
+	 * Searches within the private question by question
+	 * 
+	 * @param questionID
+	 *            the id of the private question
+	 * @param questionSearchPattern
+	 *            the pattern to search
+	 * @return an array of private questions matches the search pattern may
+	 *         empty
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
-	public PrivateQuestion[] searchForPrivateQuestionInGroup(long groupID, String questionSearchPattern) throws DatabaseLayerException;
+	public PrivateQuestion[] searchForPrivateQuestionInGroup(long questionID, String questionSearchPattern) throws DatabaseLayerException;
 
 	/**
+	 * Searches within the public question by question and the language
+	 * 
 	 * @param nameSearchPattern
-	 * @return
+	 *            the pattern to search
+	 * @param language
+	 *            the langauge
+	 * @return an array of public questions matches the search pattern may empty
 	 * @throws DatabaseLayerException
 	 *             if a exception occurs in the database
 	 */
 	public PublicQuestion[] searchForPublicQuestion(String nameSearchPattern, String language) throws DatabaseLayerException;
+
+	/**
+	 * Searches within users by username
+	 *
+	 * @param searchPattern
+	 *            the pattern to search
+	 * @return an array of users matches the search pattern may empty
+	 * @throws DatabaseLayerException
+	 *             if a exception occurs in the database
+	 */
+	public User[] searchUsersByUsername(String searchPattern) throws DatabaseLayerException;
 
 }

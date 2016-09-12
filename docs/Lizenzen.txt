@@ -1,0 +1,28 @@
+--MariaDB
+https://mariadb.com/kb/en/mariadb/mariadb-license/
+
+--MariaDB Connector for Java
+https://mariadb.com/kb/en/mariadb/mariadb-license/#mariadb-lgpl-client-libraries-for-c-and-java
+
+--Java EE
+http://www.oracle.com/technetwork/java/javase/downloads/366879
+
+--Java
+http://www.oracle.com/technetwork/java/javase/terms/license/index.html
+https://www.java.com/en/download/faq/distribution.xml
+
+--phpMyAdmin
+https://www.phpmyadmin.net/license/
+
+--GSON
+https://github.com/google/gson/blob/master/LICENSE
+
+--Apache Commons
+http://www.apache.org/licenses/LICENSE-2.0
+
+--javax mail
+https://java.net/projects/javamail/pages/License
+
+--Tomcat
+http://tomcat.apache.org/legal.html
+

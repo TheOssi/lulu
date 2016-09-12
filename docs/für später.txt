@@ -1,0 +1,9 @@
+﻿Abfragecache verwenden
+Optimierung (Explain) und siehe Manual
+Shard-Query & Partitionen
+5.2.1. Befehlsoptionen für mysqld inkl Sicherheit, InnoDB, SSH, etc
+Abschnitt 5.2.2, „Server-Systemvariablen“,
+Engines
+Preparred Statements in datenbank
+Datenbank mit anderen Nutzer starten
+Startoptionen für mysqld in Bezug auf Sicherheit -> config datei checken

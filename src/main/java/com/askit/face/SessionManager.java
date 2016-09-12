@@ -70,13 +70,12 @@ public class SessionManager implements Runnable {
 	 * @throws DatabaseLayerException
 	 *             if something in the database layer went wrong
 	 */
-	public String createSession(final String username, final String passwordHash)
-			throws WrongHashException, DuplicateHashException, DatabaseLayerException {
+	public String createSession(final String username, final String passwordHash) throws WrongHashException, DuplicateHashException,
+			DatabaseLayerException {
 		if (checkHash(username, passwordHash)) {
 			final String sessionHash = createSessionHash(username);
 			if (!sessionMap.containsKey(sessionHash)) {
-				sessionMap.put(sessionHash,
-						new MappedUserHash(username, Calendar.getInstance().getTimeInMillis() + SESSIONTIME));
+				sessionMap.put(sessionHash, new MappedUserHash(username, Calendar.getInstance().getTimeInMillis() + SESSIONTIME));
 				return sessionHash;
 			} else {
 				throw new DuplicateHashException("Hash already existing");
@@ -144,10 +143,11 @@ public class SessionManager implements Runnable {
 		} else {
 			seed = seed.concat("TestMaxSaschaFabiKai");
 		}
+		// TODO andere seed bei math random
 		for (int i = 0; i < seed.length(); i++) {
 			hash = hash * 31 + seed.charAt(i) * Double.doubleToLongBits(Math.random() * 100);
 		}
-		return Long.toString(Math.abs((hash) * Calendar.getInstance().getTimeInMillis()), Character.MAX_RADIX);
+		return Long.toString(Math.abs(hash * Calendar.getInstance().getTimeInMillis()), Character.MAX_RADIX);
 	}
 
 	/**
@@ -161,11 +161,12 @@ public class SessionManager implements Runnable {
 	public boolean isValidSessionHash(final String sessionHash) {
 		return sessionMap.containsKey(sessionHash);
 	}
-	
-	public String getSessionStats(){
-		JSONBuilder jb = new JSONBuilder();
+
+	public String getSessionStats() {
+		final JSONBuilder jb = new JSONBuilder();
 		return jb.createJSON(sessionMap);
 	}
+
 	/*
 	 * runing logic(non-Javadoc)
 	 * 

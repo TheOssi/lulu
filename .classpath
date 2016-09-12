@@ -73,5 +73,10 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/sqlbuilder-2.1.4.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://openhms.sourceforge.net/sqlbuilder/apidocs"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
